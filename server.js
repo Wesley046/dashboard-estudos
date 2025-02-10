@@ -1,31 +1,45 @@
 const express = require('express');
+const app = express();
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
-const db = require('./src/config/db'); // Corrigido caminho de importação
-const app = express();
-const port = 1000;
+const db = require('./src/config/db');
+const path = require('path'); // Para servir arquivos estáticos
 
-// Middleware para parsing do corpo das requisições
+// Configuração do body-parser para o express
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// Rota de login
+// Configurar Express para servir arquivos estáticos (como CSS, imagens, etc.)
+app.use(express.static(path.join(__dirname, 'public')));  // Define o diretório de arquivos estáticos
+
+// Rota para redirecionar para a página de login
+app.get('/', (req, res) => {
+  res.redirect('/login');
+});
+
+// Rota para a página de login
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));  // Envia o arquivo HTML
+});
+
+// Rota de login (processamento do formulário de login)
 app.post('/api/auth/login', async (req, res) => {
   const { email, senha } = req.body;
-  
+
   try {
     const result = await db.query('SELECT * FROM usuarios WHERE email = $1', [email]);
     if (result.rows.length === 0) {
       return res.status(400).json({ error: 'Email ou senha incorretos' });
     }
-    
+
     const user = result.rows[0];
 
-    // Verificando senha com bcrypt
+    // bcrypt
     const match = await bcrypt.compare(senha, user.senha);
     if (!match) {
       return res.status(400).json({ error: 'Email ou senha incorretos' });
     }
-    
+
     res.status(200).json({ message: 'Login bem-sucedido', user });
   } catch (err) {
     console.error(err);
@@ -33,8 +47,8 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// Iniciando o servidor
-app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`);
+// Iniciar o servidor
+const PORT = process.env.PORT || 1000;
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
-

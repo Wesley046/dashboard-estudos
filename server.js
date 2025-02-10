@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Servir arquivos estáticos (como HTML, CSS, JS)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rota para a página de login
+// Rota para a página inicial, redirecionando para login
 app.get('/', (req, res) => {
   res.redirect('/login');
 });
@@ -34,7 +34,7 @@ app.post('/api/auth/login', async (req, res) => {
 
     const user = result.rows[0];
 
-    // bcrypt
+    // Verificação da senha com bcrypt
     const match = await bcrypt.compare(senha, user.senha);
     if (!match) {
       return res.status(400).json({ error: 'Email ou senha incorretos' });
@@ -42,13 +42,13 @@ app.post('/api/auth/login', async (req, res) => {
 
     res.status(200).json({ message: 'Login bem-sucedido', user });
   } catch (err) {
-    console.error(err);
+    console.error('Erro no login:', err);
     res.status(500).json({ error: 'Erro no servidor' });
   }
 });
 
 // Iniciar o servidor
-const PORT = process.env.PORT || 1000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });

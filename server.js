@@ -1,25 +1,25 @@
-const express = require('express');
-const app = express();
-const port = process.env.PORT || 10000;
-const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
 
-// Middleware
-app.use(bodyParser.json());
-
-// Importar rotas
-const authRoutes = require('./src/routes/authRoutes');
-const dashboardRoutes = require('./src/routes/dashboardRoutes');
-
-// Usar rotas
-app.use('/api/auth', authRoutes);
-app.use('/api', dashboardRoutes);
-
-// Rota de Teste
-app.get('/', (req, res) => {
-  res.send('Bem-vindo ao projeto');
-});
-
-app.listen(port, '0.0.0.0', () => {
-    console.log(`Servidor rodando na porta ${port}`);
-  });
+exports.login = async (req, res) => {
+  const { email, senha } = req.body;
   
+  try {
+    const result = await db.query('SELECT * FROM usuarios WHERE email = $1', [email]);
+    if (result.rows.length === 0) {
+      return res.status(400).json({ error: 'Email ou senha incorretos' });
+    }
+    
+    const user = result.rows[0];
+
+    //  bcrypt
+    const match = await bcrypt.compare(senha, user.senha);
+    if (!match) {
+      return res.status(400).json({ error: 'Email ou senha incorretos' });
+    }
+    
+    res.status(200).json({ message: 'Login bem-sucedido', user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Erro no servidor' });
+  }
+};

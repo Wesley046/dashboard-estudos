@@ -1,28 +1,28 @@
 const express = require('express');
 const app = express();
-const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
+const bodyParser = require('body-parser');
 const db = require('./src/config/db');
-const path = require('path'); // Para servir arquivos estáticos
+const path = require('path');
 
 // Configuração do body-parser para o express
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Configurar Express para servir arquivos estáticos (como CSS, imagens, etc.)
-app.use(express.static(path.join(__dirname, 'public')));  // Define o diretório de arquivos estáticos
+// Servir arquivos estáticos (como HTML, CSS, JS)
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Rota para redirecionar para a página de login
+// Rota para a página de login
 app.get('/', (req, res) => {
   res.redirect('/login');
 });
 
 // Rota para a página de login
 app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));  // Envia o arquivo HTML
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// Rota de login (processamento do formulário de login)
+// Rota de login
 app.post('/api/auth/login', async (req, res) => {
   const { email, senha } = req.body;
 

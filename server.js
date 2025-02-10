@@ -1,6 +1,15 @@
+const express = require('express');
+const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
+const db = require('./src/config/db'); // Corrigido caminho de importação
+const app = express();
+const port = 1000;
 
-exports.login = async (req, res) => {
+// Middleware para parsing do corpo das requisições
+app.use(bodyParser.json());
+
+// Rota de login
+app.post('/api/auth/login', async (req, res) => {
   const { email, senha } = req.body;
   
   try {
@@ -11,7 +20,7 @@ exports.login = async (req, res) => {
     
     const user = result.rows[0];
 
-    //  bcrypt
+    // Verificando senha com bcrypt
     const match = await bcrypt.compare(senha, user.senha);
     if (!match) {
       return res.status(400).json({ error: 'Email ou senha incorretos' });
@@ -22,4 +31,10 @@ exports.login = async (req, res) => {
     console.error(err);
     res.status(500).json({ error: 'Erro no servidor' });
   }
-};
+});
+
+// Iniciando o servidor
+app.listen(port, () => {
+  console.log(`Servidor rodando na porta ${port}`);
+});
+

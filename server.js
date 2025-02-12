@@ -6,34 +6,48 @@ const db = require('./src/config/db');
 const path = require('path');
 require('dotenv').config(); // Carrega variáveis de ambiente
 
-// Middleware
+// ✅ Middleware para processar JSON e formulários
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// ✅ Corrige a entrega de arquivos estáticos
+// ✅ Servir arquivos estáticos corretamente
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/css', express.static(path.join(__dirname, 'public/css')));
-app.use('/js', express.static(path.join(__dirname, 'public/js')));
-app.use('/img', express.static(path.join(__dirname, 'public/img'))); // Para garantir imagens, caso precise
+
+// ✅ Garante que arquivos CSS e JS sejam servidos corretamente no Render
+app.use('/css', express.static(path.join(__dirname, 'public/css'), {
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.css')) {
+            res.setHeader('Content-Type', 'text/css');
+        }
+    }
+}));
+
+app.use('/js', express.static(path.join(__dirname, 'public/js'), {
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.js')) {
+            res.setHeader('Content-Type', 'application/javascript');
+        }
+    }
+}));
 
 console.log("📂 Servindo arquivos estáticos de:", path.join(__dirname, 'public'));
 
-// Rota para a página inicial
+// ✅ Rota para a página inicial
 app.get('/', (req, res) => {
     res.redirect('/login');
 });
 
-// Rota para exibir a tela de login
+// ✅ Rota para exibir a tela de login
 app.get('/login', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// Rota para exibir a dashboard
+// ✅ Rota para exibir a dashboard
 app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-// Rota de login
+// ✅ Rota de login
 app.post('/api/auth/login', async (req, res) => {
     const { email, senha } = req.body;
 
@@ -51,7 +65,6 @@ app.post('/api/auth/login', async (req, res) => {
             return res.status(400).json({ error: 'Email ou senha incorretos' });
         }
 
-        // Retorna apenas os dados necessários, incluindo o ID do usuário
         res.status(200).json({ 
             message: '✅ Login bem-sucedido', 
             usuario_id: user.id,
@@ -64,7 +77,7 @@ app.post('/api/auth/login', async (req, res) => {
     }
 });
 
-// Rota para inserir estudos no banco
+// ✅ Rota para inserir estudos no banco
 app.post('/api/estudos', async (req, res) => {
     const { usuario_id, disciplina, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo } = req.body;
 
@@ -87,7 +100,7 @@ app.post('/api/estudos', async (req, res) => {
     }
 });
 
-// Rota para obter dados dos gráficos
+// ✅ Rota para obter dados dos gráficos
 app.get('/api/estudos/graficos', async (req, res) => {
     const usuario_id = req.query.usuario_id;
     
@@ -126,7 +139,6 @@ app.get('/api/estudos/graficos', async (req, res) => {
             WHERE usuario_id = $1;
         `, [usuario_id]);
 
-        // Evita erro caso não tenha registros
         const totalDias = diasEstudadosQuery.rows.length > 0 ? diasEstudadosQuery.rows[0].total_dias : 0;
 
         res.json({
@@ -142,7 +154,7 @@ app.get('/api/estudos/graficos', async (req, res) => {
     }
 });
 
-// Inicia o servidor na porta definida no .env ou 1000
+// ✅ Inicia o servidor na porta definida no .env ou 1000
 const PORT = process.env.PORT || 1000;
 app.listen(PORT, () => {
     console.log(`🚀 Servidor rodando na porta ${PORT}`);

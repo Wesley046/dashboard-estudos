@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const openFormButton = document.getElementById("openForm");
     const closeFormButton = document.getElementById("closeForm");
     const formPopup = document.getElementById("formPopup");
+    const studyForm = document.getElementById("studyForm");
 
     // Abrir formulário
     openFormButton.addEventListener("click", () => {
@@ -19,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Buscar disciplinas do backend
     async function carregarDisciplinas() {
         try {
-            const response = await fetch('/api/disciplinas');
+            const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/disciplinas");
             if (!response.ok) throw new Error("Erro ao buscar disciplinas");
 
             const disciplinas = await response.json();
@@ -44,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!disciplina) return;
 
         try {
-            const response = await fetch(`/api/assuntos/${encodeURIComponent(disciplina)}`);
+            const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/assuntos/${encodeURIComponent(disciplina)}`);
             if (!response.ok) throw new Error("Erro ao buscar assuntos");
 
             const assuntos = await response.json();
@@ -60,6 +61,52 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log(`✅ Assuntos carregados para ${disciplina}:`, assuntos);
         } catch (error) {
             console.error("❌ Erro ao carregar assuntos:", error);
+        }
+    });
+
+    // Envio do formulário para o backend
+    studyForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const usuarioId = localStorage.getItem("usuario_id");
+        if (!usuarioId) {
+            alert("Erro: Usuário não autenticado. Faça login novamente.");
+            return;
+        }
+
+        const formData = {
+            usuario_id: usuarioId,
+            disciplina: disciplinaSelect.value,
+            assunto: assuntoSelect.value,
+            horas_estudadas: document.getElementById("horas").value,
+            data_estudo: document.getElementById("data_estudo").value,
+            questoes_erradas: document.getElementById("questoes_erradas").value,
+            questoes_certas: document.getElementById("questoes_certas").value,
+            tipo_estudo: document.getElementById("tipo_estudo").value,
+        };
+
+        console.log("📤 Enviando dados:", formData);
+
+        try {
+            const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/estudos", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert("✅ Estudo registrado com sucesso!");
+                studyForm.reset();
+            } else {
+                alert("❌ Erro ao registrar estudo: " + result.error);
+            }
+        } catch (error) {
+            console.error("❌ Erro ao enviar os dados:", error);
+            alert("Erro ao conectar com o servidor.");
         }
     });
 });

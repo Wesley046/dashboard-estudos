@@ -87,6 +87,29 @@ app.get('/api/assuntos/:disciplina', async (req, res) => {
     }
 });
 
+// ✅ Rota para inserir os dados do formulário no banco
+app.post('/api/estudos', async (req, res) => {
+  const { usuario_id, disciplina, assunto, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo } = req.body;
+
+  if (!usuario_id || !disciplina || !assunto || !horas_estudadas || !data_estudo || !tipo_estudo) {
+      return res.status(400).json({ error: "Todos os campos obrigatórios devem ser preenchidos!" });
+  }
+
+  try {
+      await db.query(
+          "INSERT INTO estudos (usuario_id, disciplina, assunto, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+          [usuario_id, disciplina, assunto, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo]
+      );
+
+      console.log("✅ Estudo cadastrado com sucesso!");
+      res.status(201).json({ message: "✅ Estudo cadastrado com sucesso!" });
+
+  } catch (err) {
+      console.error("❌ Erro ao cadastrar estudo:", err);
+      res.status(500).json({ error: "Erro interno ao cadastrar estudo no banco de dados" });
+  }
+});
+
 // ✅ Corrigir erro 404 no Render (Garantir que todas as rotas API sejam reconhecidas)
 app.use('/api', (req, res) => {
     res.status(404).json({ error: 'Rota não encontrada' });

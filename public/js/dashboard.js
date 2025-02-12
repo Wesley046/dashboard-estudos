@@ -78,12 +78,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             usuario_id: usuarioId,
             disciplina: disciplinaSelect.value,
             assunto: assuntoSelect.value,
-            horas_estudadas: document.getElementById("horas").value,
+            horas_estudadas: document.getElementById("horas").value.trim(),
             data_estudo: document.getElementById("data_estudo").value,
-            questoes_erradas: document.getElementById("questoes_erradas").value,
-            questoes_certas: document.getElementById("questoes_certas").value,
+            questoes_erradas: document.getElementById("questoes_erradas").value.trim(),
+            questoes_certas: document.getElementById("questoes_certas").value.trim(),
             tipo_estudo: document.getElementById("tipo_estudo").value,
         };
+
+        if (!formData.disciplina || !formData.assunto || !formData.horas_estudadas || !formData.data_estudo || !formData.questoes_erradas || !formData.questoes_certas || !formData.tipo_estudo) {
+            alert("❌ Todos os campos são obrigatórios!");
+            return;
+        }
 
         console.log("📤 Enviando dados:", formData);
 

@@ -1,5 +1,4 @@
 const db = require('../config/db');
-const bcrypt = require('bcrypt'); // Importar o bcrypt
 
 exports.login = async (req, res) => {
   const { email, senha } = req.body;
@@ -12,9 +11,8 @@ exports.login = async (req, res) => {
     
     const user = result.rows[0];
 
-    // Comparar a senha usando bcrypt
-    const isPasswordCorrect = await bcrypt.compare(senha, user.senha);
-    if (!isPasswordCorrect) {
+    // Verificar senha (aqui você pode usar bcrypt para comparar senhas com hash)
+    if (user.senha !== senha) {
       return res.status(400).json({ error: 'Email ou senha incorretos' });
     }
     
@@ -24,4 +22,5 @@ exports.login = async (req, res) => {
     res.status(500).json({ error: 'Erro no servidor' });
   }
 };
+
 

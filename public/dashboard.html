@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="sidebar">
+        <button class="menu-toggle"><img src="logo.png" alt="Menu"></button>
+        <button id="openForm">Abrir Formulário</button>
+    </div>
+
+    <div class="content">
+        <h1>DASHBOARD</h1>
+        
+        <!-- Gráficos -->
+        <div class="charts-container">
+            <canvas id="lineChart"></canvas>
+            <canvas id="pieChart"></canvas>
+            <canvas id="barChart"></canvas>
+        </div>
+        
+        <!-- Total de dias estudados -->
+        <div class="total-dias">
+            <h2>Total de Dias Estudados: <span id="totalDias">0</span></h2>
+        </div>
+    </div>
+
+    <!-- Caixa flutuante do formulário -->
+    <div id="formPopup" class="form-container">
+        <form id="studyForm">
+            <h2>Registro de Estudos</h2>
+            <label for="disciplina">Disciplina:</label>
+            <input type="text" id="disciplina" name="disciplina" required>
+
+            <label for="horas">Horas Estudadas:</label>
+            <input type="number" id="horas" name="horas_estudadas" required>
+
+            <label for="data">Data do Estudo:</label>
+            <input type="date" id="data" name="data_estudo" required>
+
+            <label for="questoes_erradas">Questões Erradas:</label>
+            <input type="number" id="questoes_erradas" name="questoes_erradas" required>
+
+            <label for="questoes_certas">Questões Certas:</label>
+            <input type="number" id="questoes_certas" name="questoes_certas" required>
+
+            <label for="tipo_estudo">Tipo de Estudo:</label>
+            <select id="tipo_estudo" name="tipo_estudo">
+                <option value="teoria">Teoria</option>
+                <option value="prática">Prática</option>
+                <option value="revisão">Revisão</option>
+            </select>
+
+            <button type="submit">Enviar</button>
+            <button type="button" id="closeForm">Fechar</button>
+        </form>
+    </div>
+
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

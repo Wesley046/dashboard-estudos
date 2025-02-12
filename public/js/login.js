@@ -29,7 +29,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const data = await resposta.json();
 
             if (resposta.ok) {
-                // Login bem-sucedido
+                // Armazena o usuário logado corretamente
+                localStorage.setItem("usuario_id", data.usuario_id);
+                localStorage.setItem("nome", data.nome);
                 window.location.href = "/dashboard"; // Redireciona para o dashboard
             } else {
                 // Exibe mensagem de erro retornada pelo servidor

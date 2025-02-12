@@ -11,6 +11,36 @@ const disciplinasRoutes = require("./src/routes/disciplinasRoutes");
 const estudosRoutes = require("./src/routes/estudosRoutes"); // ✅ Importando nova rota
 
 const app = express();
+const bcrypt = require("bcryptjs");
+
+app.post('/api/auth/login', async (req, res) => {
+    const { email, senha } = req.body;
+
+    try {
+        const result = await db.query('SELECT id, nome, email, senha FROM usuarios WHERE email = $1', [email]);
+
+        if (result.rows.length === 0) {
+            return res.status(400).json({ error: 'Email ou senha incorretos' });
+        }
+
+        const user = result.rows[0];
+        const match = await bcrypt.compare(senha, user.senha); // 🔑 Verifica a senha
+
+        if (!match) {
+            return res.status(400).json({ error: 'Email ou senha incorretos' });
+        }
+
+        res.status(200).json({ 
+            message: '✅ Login bem-sucedido', 
+            usuario_id: user.id,
+            nome: user.nome
+        });
+
+    } catch (err) {
+        console.error('❌ Erro no login:', err);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
 
 // ✅ Permitir requisições de qualquer origem (CORS)
 app.use(cors());

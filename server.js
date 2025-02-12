@@ -47,110 +47,26 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-// ✅ Rota de login
-app.post('/api/auth/login', async (req, res) => {
-    const { email, senha } = req.body;
-
+// ✅ Rota para buscar disciplinas
+app.get('/api/disciplinas', async (req, res) => {
     try {
-        const result = await db.query('SELECT id, nome, email, senha FROM usuarios WHERE email = $1', [email]);
-
-        if (result.rows.length === 0) {
-            return res.status(400).json({ error: 'Email ou senha incorretos' });
-        }
-
-        const user = result.rows[0];
-        const match = await bcrypt.compare(senha, user.senha);
-
-        if (!match) {
-            return res.status(400).json({ error: 'Email ou senha incorretos' });
-        }
-
-        res.status(200).json({ 
-            message: '✅ Login bem-sucedido', 
-            usuario_id: user.id,
-            nome: user.nome
-        });
-
-    } catch (err) {
-        console.error('❌ Erro no login:', err);
-        res.status(500).json({ error: 'Erro interno do servidor' });
+        const result = await db.query('SELECT DISTINCT disciplina FROM disciplinas_assuntos ORDER BY disciplina;');
+        res.json(result.rows);
+    } catch (error) {
+        console.error('❌ Erro ao buscar disciplinas:', error);
+        res.status(500).json({ error: 'Erro no servidor' });
     }
 });
 
-// ✅ Rota para inserir estudos no banco
-app.post('/api/estudos', async (req, res) => {
-    const { usuario_id, disciplina, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo } = req.body;
-
-    if (!usuario_id) {
-        return res.status(400).json({ error: "Usuário não autenticado" });
-    }
-
+// ✅ Rota para buscar assuntos com base na disciplina selecionada
+app.get('/api/assuntos/:disciplina', async (req, res) => {
     try {
-        await db.query(
-            "INSERT INTO estudos (usuario_id, disciplina, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo) VALUES ($1, $2, $3, $4, $5, $6, $7)",
-            [usuario_id, disciplina, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo]
-        );
-
-        console.log("✅ Estudo cadastrado com sucesso!");
-        res.status(201).json({ message: "✅ Estudo cadastrado com sucesso!" });
-
-    } catch (err) {
-        console.error("❌ Erro ao cadastrar estudo:", err);
-        res.status(500).json({ error: "Erro interno ao cadastrar estudo no banco de dados" });
-    }
-});
-
-// ✅ Rota para obter dados dos gráficos
-app.get('/api/estudos/graficos', async (req, res) => {
-    const usuario_id = req.query.usuario_id;
-    
-    if (!usuario_id) {
-        return res.status(400).json({ error: "Usuário não autenticado" });
-    }
-
-    try {
-        const questoesQuery = await db.query(`
-            SELECT data_estudo, 
-                   SUM(questoes_erradas) AS total_erradas, 
-                   SUM(questoes_certas) AS total_certas
-            FROM estudos 
-            WHERE usuario_id = $1
-            GROUP BY data_estudo
-            ORDER BY data_estudo;
-        `, [usuario_id]);
-
-        const tipoEstudoQuery = await db.query(`
-            SELECT tipo_estudo, SUM(horas_estudadas) AS total_horas 
-            FROM estudos 
-            WHERE usuario_id = $1
-            GROUP BY tipo_estudo;
-        `, [usuario_id]);
-
-        const disciplinaQuery = await db.query(`
-            SELECT disciplina, SUM(horas_estudadas) AS total_horas 
-            FROM estudos 
-            WHERE usuario_id = $1
-            GROUP BY disciplina;
-        `, [usuario_id]);
-
-        const diasEstudadosQuery = await db.query(`
-            SELECT COUNT(DISTINCT data_estudo) AS total_dias 
-            FROM estudos 
-            WHERE usuario_id = $1;
-        `, [usuario_id]);
-
-        const totalDias = diasEstudadosQuery.rows.length > 0 ? diasEstudadosQuery.rows[0].total_dias : 0;
-
-        res.json({
-            questoes: questoesQuery.rows,
-            tipoEstudo: tipoEstudoQuery.rows,
-            disciplina: disciplinaQuery.rows,
-            totalDias: totalDias
-        });
-
-    } catch (err) {
-        console.error("❌ Erro ao buscar dados para os gráficos:", err);
-        res.status(500).json({ error: "Erro interno ao buscar dados" });
+        const disciplina = req.params.disciplina;
+        const result = await db.query('SELECT assunto FROM disciplinas_assuntos WHERE disciplina = $1 ORDER BY assunto;', [disciplina]);
+        res.json(result.rows);
+    } catch (error) {
+        console.error('❌ Erro ao buscar assuntos:', error);
+        res.status(500).json({ error: 'Erro no servidor' });
     }
 });
 

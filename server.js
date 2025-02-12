@@ -10,13 +10,13 @@ require('dotenv').config(); // Carrega variáveis de ambiente
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Servir arquivos estáticos corretamente
+// ✅ Corrige a entrega de arquivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/css', express.static(path.join(__dirname, 'public/css')));
 app.use('/js', express.static(path.join(__dirname, 'public/js')));
+app.use('/img', express.static(path.join(__dirname, 'public/img'))); // Para garantir imagens, caso precise
 
-// Verificação do carregamento correto
-console.log("📂 Arquivos estáticos servidos a partir de:", path.join(__dirname, 'public'));
+console.log("📂 Servindo arquivos estáticos de:", path.join(__dirname, 'public'));
 
 // Rota para a página inicial
 app.get('/', (req, res) => {

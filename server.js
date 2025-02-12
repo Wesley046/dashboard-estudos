@@ -9,7 +9,14 @@ require('dotenv').config(); // Carrega variáveis de ambiente
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Servir arquivos estáticos corretamente
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/css', express.static(path.join(__dirname, 'public/css')));
+app.use('/js', express.static(path.join(__dirname, 'public/js')));
+
+// Verificação do carregamento correto
+console.log("📂 Arquivos estáticos servidos a partir de:", path.join(__dirname, 'public'));
 
 // Rota para a página inicial
 app.get('/', (req, res) => {
@@ -46,7 +53,7 @@ app.post('/api/auth/login', async (req, res) => {
 
         // Retorna apenas os dados necessários, incluindo o ID do usuário
         res.status(200).json({ 
-            message: 'Login bem-sucedido', 
+            message: '✅ Login bem-sucedido', 
             usuario_id: user.id,
             nome: user.nome
         });
@@ -71,7 +78,9 @@ app.post('/api/estudos', async (req, res) => {
             [usuario_id, disciplina, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo]
         );
 
+        console.log("✅ Estudo cadastrado com sucesso!");
         res.status(201).json({ message: "✅ Estudo cadastrado com sucesso!" });
+
     } catch (err) {
         console.error("❌ Erro ao cadastrar estudo:", err);
         res.status(500).json({ error: "Erro interno ao cadastrar estudo no banco de dados" });

@@ -52,8 +52,8 @@ app.post('/api/auth/login', async (req, res) => {
         });
 
     } catch (err) {
-        console.error('Erro no login:', err);
-        res.status(500).json({ error: 'Erro no servidor' });
+        console.error('❌ Erro no login:', err);
+        res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });
 
@@ -71,10 +71,10 @@ app.post('/api/estudos', async (req, res) => {
             [usuario_id, disciplina, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo]
         );
 
-        res.status(201).json({ message: "Estudo cadastrado com sucesso!" });
+        res.status(201).json({ message: "✅ Estudo cadastrado com sucesso!" });
     } catch (err) {
-        console.error("Erro ao cadastrar estudo:", err);
-        res.status(500).json({ error: "Erro ao cadastrar estudo no banco de dados" });
+        console.error("❌ Erro ao cadastrar estudo:", err);
+        res.status(500).json({ error: "Erro interno ao cadastrar estudo no banco de dados" });
     }
 });
 
@@ -117,21 +117,24 @@ app.get('/api/estudos/graficos', async (req, res) => {
             WHERE usuario_id = $1;
         `, [usuario_id]);
 
+        // Evita erro caso não tenha registros
+        const totalDias = diasEstudadosQuery.rows.length > 0 ? diasEstudadosQuery.rows[0].total_dias : 0;
+
         res.json({
             questoes: questoesQuery.rows,
             tipoEstudo: tipoEstudoQuery.rows,
             disciplina: disciplinaQuery.rows,
-            totalDias: diasEstudadosQuery.rows[0].total_dias
+            totalDias: totalDias
         });
 
     } catch (err) {
-        console.error("Erro ao buscar dados para os gráficos:", err);
-        res.status(500).json({ error: "Erro ao buscar dados" });
+        console.error("❌ Erro ao buscar dados para os gráficos:", err);
+        res.status(500).json({ error: "Erro interno ao buscar dados" });
     }
 });
 
-// Servidor rodando na porta 1000
-const PORT = 1000;
+// Inicia o servidor na porta definida no .env ou 1000
+const PORT = process.env.PORT || 1000;
 app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+    console.log(`🚀 Servidor rodando na porta ${PORT}`);
 });

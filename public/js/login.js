@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         try {
-            const resposta = await fetch("/api/auth/login", {
+            const resposta = await fetch("https://dashboard-objetivo-policial.onrender.com/api/auth/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

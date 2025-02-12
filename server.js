@@ -24,6 +24,11 @@ app.use(express.static(path.join(__dirname, "public")));
 
 console.log("📂 Servindo arquivos estáticos de:", path.join(__dirname, "public"));
 
+// ✅ Rota para página inicial
+app.get("/", (req, res) => {
+    res.redirect("/login"); // Redireciona para a página de login
+});
+
 // ✅ Registrar Rotas
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
@@ -43,6 +48,11 @@ app.get("/dashboard", (req, res) => {
 // ✅ Rota para evitar erro 404 e garantir que as rotas API sejam reconhecidas
 app.use("/api", (req, res) => {
     res.status(404).json({ error: "Rota não encontrada" });
+});
+
+// ✅ Rota genérica para evitar erro "Cannot GET /"
+app.use((req, res) => {
+    res.status(404).send("Página não encontrada");
 });
 
 // ✅ Inicia o servidor corrigido para Render

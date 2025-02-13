@@ -8,7 +8,8 @@ require("dotenv").config(); // Carrega variáveis de ambiente
 const authRoutes = require("./src/routes/authRoutes");
 const dashboardRoutes = require("./src/routes/dashboardRoutes");
 const disciplinasRoutes = require("./src/routes/disciplinasRoutes");
-const estudosRoutes = require("./src/routes/estudosRoutes"); // ✅ Importando nova rota
+const estudosRoutes = require("./src/routes/estudosRoutes");
+app.use("/api/estudos", estudosRoutes);
 
 const app = express();
 const bcrypt = require("bcryptjs");

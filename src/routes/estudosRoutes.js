@@ -24,4 +24,58 @@ router.post('/estudos', async (req, res) => {
     }
 });
 
+// ✅ Rota para obter dados dos gráficos
+router.get('/graficos', async (req, res) => {
+    const usuario_id = req.query.usuario_id;
+
+    if (!usuario_id) {
+        return res.status(400).json({ error: "Usuário não autenticado" });
+    }
+
+    try {
+        const questoesQuery = await db.query(`
+            SELECT data_estudo, 
+                   SUM(questoes_erradas) AS total_erradas, 
+                   SUM(questoes_certas) AS total_certas
+            FROM estudos 
+            WHERE usuario_id = $1
+            GROUP BY data_estudo
+            ORDER BY data_estudo;
+        `, [usuario_id]);
+
+        const tipoEstudoQuery = await db.query(`
+            SELECT tipo_estudo, SUM(horas_estudadas) AS total_horas 
+            FROM estudos 
+            WHERE usuario_id = $1
+            GROUP BY tipo_estudo;
+        `, [usuario_id]);
+
+        const disciplinaQuery = await db.query(`
+            SELECT disciplina, SUM(horas_estudadas) AS total_horas 
+            FROM estudos 
+            WHERE usuario_id = $1
+            GROUP BY disciplina;
+        `, [usuario_id]);
+
+        const diasEstudadosQuery = await db.query(`
+            SELECT COUNT(DISTINCT data_estudo) AS total_dias 
+            FROM estudos 
+            WHERE usuario_id = $1;
+        `, [usuario_id]);
+
+        const totalDias = diasEstudadosQuery.rows.length > 0 ? diasEstudadosQuery.rows[0].total_dias : 0;
+
+        res.json({
+            questoes: questoesQuery.rows,
+            tipoEstudo: tipoEstudoQuery.rows,
+            disciplina: disciplinaQuery.rows,
+            totalDias: totalDias
+        });
+
+    } catch (err) {
+        console.error("❌ Erro ao buscar dados para os gráficos:", err);
+        res.status(500).json({ error: "Erro interno ao buscar dados" });
+    }
+});
+
 module.exports = router;

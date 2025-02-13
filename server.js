@@ -32,58 +32,49 @@ app.use("/api/estudos", estudosRoutes);
 
 // ✅ Rota para autenticação do usuário (Login)
 app.post("/api/auth/login", async (req, res) => {
-    const { email, senha } = req.body;
+  const { email, senha } = req.body;
 
-    console.log("📥 Recebendo requisição de login:", { email, senha });
+  console.log(`📥 Recebendo requisição de login`);
+  console.log(`📩 Email recebido: ${email}`);
+  console.log(`🔑 Senha recebida: ${senha}`);
 
-    // 1️⃣ Verifica se os campos estão preenchidos
-    if (!email || !senha) {
-        console.warn("⚠️ Erro: Email ou senha não foram fornecidos!");
-        return res.status(400).json({ error: "Preencha todos os campos obrigatórios" });
-    }
+  try {
+      if (!email || !senha) {
+          console.warn("⚠️ Erro: Campos vazios.");
+          return res.status(400).json({ error: "Preencha todos os campos" });
+      }
 
-    try {
-        console.log(`🔎 Buscando usuário no banco para o email: ${email}`);
+      const result = await db.query("SELECT id, nome, email, senha FROM usuarios WHERE email = $1", [email]);
 
-        // 2️⃣ Busca o usuário no banco de dados
-        const result = await db.query("SELECT id, nome, email, senha FROM usuarios WHERE email = $1", [email]);
+      if (result.rows.length === 0) {
+          console.warn("❌ Usuário não encontrado.");
+          return res.status(400).json({ error: "Email ou senha incorretos" });
+      }
 
-        if (result.rows.length === 0) {
-            console.warn("❌ Nenhum usuário encontrado com esse email.");
-            return res.status(400).json({ error: "Email ou senha incorretos" });
-        }
+      const user = result.rows[0];
+      console.log("✅ Usuário encontrado:", user.email);
+      console.log("🔑 Hash armazenado no banco:", user.senha);
 
-        const user = result.rows[0];
-        console.log("✅ Usuário encontrado no banco:", user);
+      const match = await bcrypt.compare(senha, user.senha);
 
-        // 3️⃣ Verifica se a senha está no formato correto
-        if (!user.senha || typeof user.senha !== "string") {
-            console.error("⚠️ Senha armazenada no banco está inválida.");
-            return res.status(500).json({ error: "Erro interno ao verificar credenciais" });
-        }
+      if (!match) {
+          console.warn("❌ Senha incorreta para o usuário:", email);
+          return res.status(400).json({ error: "Email ou senha incorretos" });
+      }
 
-        // 4️⃣ Comparando a senha digitada com a senha do banco
-        console.log("🔑 Comparando senha...");
-        const match = await bcrypt.compare(senha, user.senha);
-        console.log("🔑 Resultado da comparação:", match);
+      console.log("✅ Login bem-sucedido:", user.nome);
+      res.status(200).json({
+          message: "✅ Login bem-sucedido",
+          usuario_id: user.id,
+          nome: user.nome
+      });
 
-        if (!match) {
-            console.warn("❌ Senha incorreta para o usuário:", email);
-            return res.status(400).json({ error: "Email ou senha incorretos" });
-        }
-
-        console.log("✅ Login bem-sucedido para:", user.nome);
-        res.status(200).json({
-            message: "✅ Login bem-sucedido",
-            usuario_id: user.id,
-            nome: user.nome
-        });
-
-    } catch (err) {
-        console.error("❌ Erro ao tentar fazer login:", err);
-        res.status(500).json({ error: "Erro interno do servidor" });
-    }
+  } catch (err) {
+      console.error("❌ Erro no login:", err);
+      res.status(500).json({ error: "Erro interno do servidor" });
+  }
 });
+
 
 // ✅ Rota para a página inicial
 app.get("/", (req, res) => {

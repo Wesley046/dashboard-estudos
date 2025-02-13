@@ -2,10 +2,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("loginForm");
 
     form.addEventListener("submit", async function (event) {
-        event.preventDefault(); // Impede o envio padrão do formulário
+        event.preventDefault();
 
-        const email = document.getElementById("email").value;
-        const senha = document.getElementById("senha").value;
+        const email = document.getElementById("email").value.trim();
+        const senha = document.getElementById("senha").value.trim();
         const mensagemErro = document.getElementById("mensagemErro");
 
         mensagemErro.textContent = "";
@@ -20,9 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const resposta = await fetch("https://dashboard-objetivo-policial.onrender.com/api/auth/login", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, senha }),
             });
 

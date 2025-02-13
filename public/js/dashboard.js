@@ -71,7 +71,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         const usuarioId = localStorage.getItem("usuario_id");
         const disciplina = disciplinaSelect.value.trim();
         const assunto = assuntoSelect.value.trim();
-        const horasEstudadas = document.getElementById("horas").value.trim();
+        const horasEstudadas = document.getElementById("horas").value;
+if (!horasEstudadas) {
+    alert("❌ O campo Horas Estudadas é obrigatório!");
+    return;
+}
+
         let dataEstudo = document.getElementById("data_estudo").value;
         
         if (!dataEstudo) {

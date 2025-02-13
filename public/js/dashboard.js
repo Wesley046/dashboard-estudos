@@ -69,26 +69,29 @@ document.addEventListener("DOMContentLoaded", async () => {
         event.preventDefault();
 
         const usuarioId = localStorage.getItem("usuario_id");
-        if (!usuarioId) {
-            alert("Erro: Usuário não autenticado. Faça login novamente.");
+        const disciplina = disciplinaSelect.value.trim();
+        const assunto = assuntoSelect.value.trim();
+        const horasEstudadas = document.getElementById("horas").value.trim();
+        const dataEstudo = document.getElementById("data_estudo").value;
+        const questoesErradas = document.getElementById("questoes_erradas").value.trim();
+        const questoesCertas = document.getElementById("questoes_certas").value.trim();
+        const tipoEstudo = document.getElementById("tipo_estudo").value;
+
+        if (!usuarioId || !disciplina || !assunto || !horasEstudadas || !dataEstudo || !questoesErradas || !questoesCertas || !tipoEstudo) {
+            alert("❌ Todos os campos são obrigatórios!");
             return;
         }
 
         const formData = {
             usuario_id: usuarioId,
-            disciplina: disciplinaSelect.value,
-            assunto: assuntoSelect.value,
-            horas_estudadas: document.getElementById("horas").value.trim(),
-            data_estudo: document.getElementById("data_estudo").value,
-            questoes_erradas: document.getElementById("questoes_erradas").value.trim(),
-            questoes_certas: document.getElementById("questoes_certas").value.trim(),
-            tipo_estudo: document.getElementById("tipo_estudo").value,
+            disciplina,
+            assunto,
+            horas_estudadas: horasEstudadas,
+            data_estudo: dataEstudo,
+            questoes_erradas: questoesErradas,
+            questoes_certas: questoesCertas,
+            tipo_estudo: tipoEstudo,
         };
-
-        if (!formData.disciplina || !formData.assunto || !formData.horas_estudadas || !formData.data_estudo || !formData.questoes_erradas || !formData.questoes_certas || !formData.tipo_estudo) {
-            alert("❌ Todos os campos são obrigatórios!");
-            return;
-        }
 
         console.log("📤 Enviando dados:", formData);
 

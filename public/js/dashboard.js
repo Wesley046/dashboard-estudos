@@ -142,3 +142,12 @@ if (!horasEstudadas) {
         }
     });
 });
+document.addEventListener("DOMContentLoaded", () => {
+    const sidebar = document.querySelector(".sidebar");
+    const toggleButton = document.querySelector(".toggle-btn");
+
+    // Expandir e recolher menu ao clicar no botão
+    toggleButton.addEventListener("click", () => {
+        sidebar.classList.toggle("expanded");
+    });
+});

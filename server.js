@@ -13,35 +13,6 @@ const estudosRoutes = require("./src/routes/estudosRoutes"); // ✅ Importando n
 const app = express();
 const bcrypt = require("bcryptjs");
 
-app.post('/api/auth/login', async (req, res) => {
-    const { email, senha } = req.body;
-
-    try {
-        const result = await db.query('SELECT id, nome, email, senha FROM usuarios WHERE email = $1', [email]);
-
-        if (result.rows.length === 0) {
-            return res.status(400).json({ error: 'Email ou senha incorretos' });
-        }
-
-        const user = result.rows[0];
-        const match = await bcrypt.compare(senha, user.senha); // 🔑 Verifica a senha
-
-        if (!match) {
-            return res.status(400).json({ error: 'Email ou senha incorretos' });
-        }
-
-        res.status(200).json({ 
-            message: '✅ Login bem-sucedido', 
-            usuario_id: user.id,
-            nome: user.nome
-        });
-
-    } catch (err) {
-        console.error('❌ Erro no login:', err);
-        res.status(500).json({ error: 'Erro interno do servidor' });
-    }
-});
-
 // ✅ Permitir requisições de qualquer origem (CORS)
 app.use(cors());
 
@@ -57,6 +28,36 @@ console.log("📂 Servindo arquivos estáticos de:", path.join(__dirname, "publi
 // ✅ Rota para página inicial
 app.get("/", (req, res) => {
     res.redirect("/login"); // Redireciona para a página de login
+});
+
+// ✅ Rota de login
+app.post("/api/auth/login", async (req, res) => {
+    const { email, senha } = req.body;
+
+    try {
+        const result = await db.query("SELECT id, nome, email, senha FROM usuarios WHERE email = $1", [email]);
+
+        if (result.rows.length === 0) {
+            return res.status(400).json({ error: "Email ou senha incorretos" });
+        }
+
+        const user = result.rows[0];
+        const match = await bcrypt.compare(senha, user.senha); // 🔑 Verifica a senha
+
+        if (!match) {
+            return res.status(400).json({ error: "Email ou senha incorretos" });
+        }
+
+        res.status(200).json({ 
+            message: "✅ Login bem-sucedido", 
+            usuario_id: user.id,
+            nome: user.nome
+        });
+
+    } catch (err) {
+        console.error("❌ Erro no login:", err);
+        res.status(500).json({ error: "Erro interno do servidor" });
+    }
 });
 
 // ✅ Registrar Rotas
@@ -76,7 +77,7 @@ app.get("/dashboard", (req, res) => {
 });
 
 // ✅ Rota para evitar erro 404 e garantir que as rotas API sejam reconhecidas
-app.use("/api", (req, res) => {
+app.use("/api", (req, res, next) => {
     res.status(404).json({ error: "Rota não encontrada" });
 });
 

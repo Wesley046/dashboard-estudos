@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 
+// ✅ Rota para inserir um novo estudo
 router.post('/estudos', async (req, res) => {
     const { usuario_id, disciplina, assunto, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo } = req.body;
 
@@ -25,7 +26,7 @@ router.post('/estudos', async (req, res) => {
 });
 
 // ✅ Rota para obter dados dos gráficos
-router.get('/graficos', async (req, res) => {
+router.get('/estudos/graficos', async (req, res) => {
     const usuario_id = req.query.usuario_id;
 
     if (!usuario_id) {

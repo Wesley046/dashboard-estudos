@@ -30,20 +30,22 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/disciplinas", disciplinasRoutes);
 app.use("/api/estudos", estudosRoutes);
 
-// ✅ Rota para autenticação do usuário
+// ✅ Rota para autenticação do usuário (Login)
 app.post("/api/auth/login", async (req, res) => {
     const { email, senha } = req.body;
 
+    console.log("📥 Recebendo requisição de login:", { email, senha });
+
+    // 1️⃣ Verifica se os campos estão preenchidos
+    if (!email || !senha) {
+        console.warn("⚠️ Erro: Email ou senha não foram fornecidos!");
+        return res.status(400).json({ error: "Preencha todos os campos obrigatórios" });
+    }
+
     try {
         console.log(`🔎 Buscando usuário no banco para o email: ${email}`);
-        
-        // 1️⃣ Verifica se o email foi preenchido
-        if (!email || !senha) {
-            console.warn("⚠️ Erro: Email ou senha não foram fornecidos!");
-            return res.status(400).json({ error: "Preencha todos os campos" });
-        }
 
-        // 2️⃣ Busca o usuário no banco
+        // 2️⃣ Busca o usuário no banco de dados
         const result = await db.query("SELECT id, nome, email, senha FROM usuarios WHERE email = $1", [email]);
 
         if (result.rows.length === 0) {
@@ -52,16 +54,18 @@ app.post("/api/auth/login", async (req, res) => {
         }
 
         const user = result.rows[0];
-        console.log("✅ Usuário encontrado:", user);
+        console.log("✅ Usuário encontrado no banco:", user);
 
         // 3️⃣ Verifica se a senha está no formato correto
         if (!user.senha || typeof user.senha !== "string") {
-            console.error("⚠️ Erro: Senha no banco de dados está incorreta ou não existe.");
+            console.error("⚠️ Senha armazenada no banco está inválida.");
             return res.status(500).json({ error: "Erro interno ao verificar credenciais" });
         }
 
-        // 4️⃣ Verifica se a senha está correta
+        // 4️⃣ Comparando a senha digitada com a senha do banco
+        console.log("🔑 Comparando senha...");
         const match = await bcrypt.compare(senha, user.senha);
+        console.log("🔑 Resultado da comparação:", match);
 
         if (!match) {
             console.warn("❌ Senha incorreta para o usuário:", email);
@@ -76,7 +80,7 @@ app.post("/api/auth/login", async (req, res) => {
         });
 
     } catch (err) {
-        console.error("❌ Erro no login:", err);
+        console.error("❌ Erro ao tentar fazer login:", err);
         res.status(500).json({ error: "Erro interno do servidor" });
     }
 });

@@ -77,7 +77,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         const questoesCertas = document.getElementById("questoes_certas").value.trim();
         const tipoEstudo = document.getElementById("tipo_estudo").value;
 
+        // Debug: Exibir os valores antes da validação
+        console.log("📋 Valores antes da validação:", {
+            usuario_id: usuarioId,
+            disciplina,
+            assunto,
+            horasEstudadas,
+            dataEstudo,
+            questoesErradas,
+            questoesCertas,
+            tipoEstudo
+        });
+
         if (!usuarioId || !disciplina || !assunto || !horasEstudadas || !dataEstudo || !questoesErradas || !questoesCertas || !tipoEstudo) {
+            console.error("❌ ERRO: Algum campo está vazio!");
             alert("❌ Todos os campos são obrigatórios!");
             return;
         }

@@ -1,8 +1,9 @@
+// estudosRoutes.js
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 
-// ✅ Rota para inserir um novo estudo
+// Rota para inserir um novo estudo
 router.post('/estudos', async (req, res) => {
     const { usuario_id, disciplina, assunto, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo } = req.body;
 
@@ -25,7 +26,7 @@ router.post('/estudos', async (req, res) => {
     }
 });
 
-// ✅ Rota para obter dados dos gráficos
+// Rota para obter dados dos gráficos
 router.get('/estudos/graficos', async (req, res) => {
     const usuario_id = req.query.usuario_id;
 
@@ -58,6 +59,15 @@ router.get('/estudos/graficos', async (req, res) => {
             GROUP BY disciplina;
         `, [usuario_id]);
 
+        // Nova query para obter as horas estudadas por dia
+        const horasDataQuery = await db.query(`
+            SELECT data_estudo, SUM(horas_estudadas) AS total_horas
+            FROM estudos
+            WHERE usuario_id = $1
+            GROUP BY data_estudo
+            ORDER BY data_estudo;
+        `, [usuario_id]);
+
         const diasEstudadosQuery = await db.query(`
             SELECT COUNT(DISTINCT data_estudo) AS total_dias 
             FROM estudos 
@@ -70,6 +80,7 @@ router.get('/estudos/graficos', async (req, res) => {
             questoes: questoesQuery.rows,
             tipoEstudo: tipoEstudoQuery.rows,
             disciplina: disciplinaQuery.rows,
+            horasData: horasDataQuery.rows,
             totalDias: totalDias
         });
 

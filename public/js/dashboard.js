@@ -72,7 +72,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         const disciplina = disciplinaSelect.value.trim();
         const assunto = assuntoSelect.value.trim();
         const horasEstudadas = document.getElementById("horas").value.trim();
-        const dataEstudo = document.getElementById("data_estudo").value;
+        let dataEstudo = document.getElementById("data_estudo").value;
+if (!dataEstudo) {
+    dataEstudo = new Date().toISOString().split("T")[0]; // Define a data atual no formato YYYY-MM-DD
+    document.getElementById("data_estudo").value = dataEstudo;
         const questoesErradas = document.getElementById("questoes_erradas").value.trim();
         const questoesCertas = document.getElementById("questoes_certas").value.trim();
         const tipoEstudo = document.getElementById("tipo_estudo").value;
@@ -131,3 +134,4 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 });
+

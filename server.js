@@ -1,3 +1,4 @@
+// ✅ Importação de módulos necessários
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
@@ -5,53 +6,54 @@ const path = require("path");
 const db = require("./src/config/db");
 require("dotenv").config(); // Carrega variáveis de ambiente
 
-const app = express(); // 🔹 Inicializa o Express ANTES de usar as rotas
-
-// ✅ Permitir requisições de qualquer origem (CORS)
-app.use(cors());
+// ✅ Inicializa o Express
+const app = express();
 
 // ✅ Middleware para processar JSON e formulários
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // ✅ Servir arquivos estáticos corretamente
 app.use(express.static(path.join(__dirname, "public")));
-
 console.log("📂 Servindo arquivos estáticos de:", path.join(__dirname, "public"));
 
-// ✅ Importação de Rotas (depois que `app` foi criado!)
+// ✅ Importação das Rotas (AGORA CORRETAMENTE APÓS `app` SER DECLARADO)
 const authRoutes = require("./src/routes/authRoutes");
 const dashboardRoutes = require("./src/routes/dashboardRoutes");
 const disciplinasRoutes = require("./src/routes/disciplinasRoutes");
 const estudosRoutes = require("./src/routes/estudosRoutes");
 
-// ✅ Registrar Rotas
+// ✅ Registrar Rotas API
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/disciplinas", disciplinasRoutes);
-app.use("/api/estudos", estudosRoutes); // ✅ Agora funciona corretamente
+app.use("/api/estudos", estudosRoutes);
 
-// ✅ Rota para exibir a tela de login
+// ✅ Rotas para páginas HTML (Login e Dashboard)
+app.get("/", (req, res) => {
+    res.redirect("/login"); // Redireciona para a página de login
+});
+
 app.get("/login", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "login.html"));
 });
 
-// ✅ Rota para exibir a dashboard
 app.get("/dashboard", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
 
-// ✅ Rota para evitar erro 404 nas APIs
+// ✅ Tratamento de erro 404 para rotas da API
 app.use("/api", (req, res) => {
-    res.status(404).json({ error: "Rota não encontrada" });
+    res.status(404).json({ error: "Rota da API não encontrada" });
 });
 
-// ✅ Rota genérica para evitar erro "Cannot GET /"
+// ✅ Tratamento de erro 404 para outras páginas
 app.use((req, res) => {
     res.status(404).send("Página não encontrada");
 });
 
-// ✅ Inicia o servidor corrigido para Render
+// ✅ Inicia o servidor no Render (ou localmente na porta 1000)
 const PORT = process.env.PORT || 1000;
 const HOST = "0.0.0.0";
 

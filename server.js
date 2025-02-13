@@ -37,6 +37,13 @@ app.post("/api/auth/login", async (req, res) => {
     try {
         console.log(`🔎 Buscando usuário no banco para o email: ${email}`);
         
+        // 1️⃣ Verifica se o email foi preenchido
+        if (!email || !senha) {
+            console.warn("⚠️ Erro: Email ou senha não foram fornecidos!");
+            return res.status(400).json({ error: "Preencha todos os campos" });
+        }
+
+        // 2️⃣ Busca o usuário no banco
         const result = await db.query("SELECT id, nome, email, senha FROM usuarios WHERE email = $1", [email]);
 
         if (result.rows.length === 0) {
@@ -47,12 +54,13 @@ app.post("/api/auth/login", async (req, res) => {
         const user = result.rows[0];
         console.log("✅ Usuário encontrado:", user);
 
-        // Verifica se a senha está no formato correto
+        // 3️⃣ Verifica se a senha está no formato correto
         if (!user.senha || typeof user.senha !== "string") {
             console.error("⚠️ Erro: Senha no banco de dados está incorreta ou não existe.");
             return res.status(500).json({ error: "Erro interno ao verificar credenciais" });
         }
 
+        // 4️⃣ Verifica se a senha está correta
         const match = await bcrypt.compare(senha, user.senha);
 
         if (!match) {
@@ -103,5 +111,3 @@ const HOST = "0.0.0.0";
 app.listen(PORT, HOST, () => {
     console.log(`🚀 Servidor rodando em http://${HOST}:${PORT}`);
 });
-
-

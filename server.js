@@ -34,9 +34,9 @@ app.use("/api/estudos", estudosRoutes);
 app.post("/api/auth/login", async (req, res) => {
   const { email, senha } = req.body;
 
-  console.log(`📥 Recebendo requisição de login`);
-  console.log(`📩 Email recebido: ${email}`);
-  console.log(`🔑 Senha recebida: ${senha}`);
+  console.log("📥 Recebendo requisição de login");
+  console.log(`📩 Email recebido: "${email}"`);
+  console.log(`🔑 Senha recebida: "${senha}"`);
 
   try {
       if (!email || !senha) {
@@ -52,17 +52,24 @@ app.post("/api/auth/login", async (req, res) => {
       }
 
       const user = result.rows[0];
-      console.log("✅ Usuário encontrado:", user.email);
+      console.log("✅ Usuário encontrado no banco:", user.email);
       console.log("🔑 Hash armazenado no banco:", user.senha);
 
+      // Verifica se a senha foi de fato armazenada corretamente
+      if (!user.senha || typeof user.senha !== "string") {
+          console.error("⚠️ Erro: A senha armazenada no banco está inválida.");
+          return res.status(500).json({ error: "Erro interno ao verificar credenciais" });
+      }
+
       const match = await bcrypt.compare(senha, user.senha);
+      console.log(`🔍 Resultado da verificação da senha: ${match ? "✅ Correta" : "❌ Incorreta"}`);
 
       if (!match) {
           console.warn("❌ Senha incorreta para o usuário:", email);
           return res.status(400).json({ error: "Email ou senha incorretos" });
       }
 
-      console.log("✅ Login bem-sucedido:", user.nome);
+      console.log("✅ Login bem-sucedido para:", user.nome);
       res.status(200).json({
           message: "✅ Login bem-sucedido",
           usuario_id: user.id,

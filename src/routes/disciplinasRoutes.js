@@ -3,7 +3,8 @@ const router = express.Router();
 const db = require("../config/db");
 
 // ✅ Rota para buscar todas as disciplinas
-router.get("/disciplinas", async (req, res) => {
+// Como este router é montado em "/api/disciplinas", essa rota responde a GET /api/disciplinas
+router.get("/", async (req, res) => {
     try {
         const result = await db.query("SELECT DISTINCT disciplina FROM disciplinas_assuntos ORDER BY disciplina;");
         res.json(result.rows);
@@ -14,6 +15,7 @@ router.get("/disciplinas", async (req, res) => {
 });
 
 // ✅ Rota para buscar os assuntos de uma disciplina específica
+// Esta rota responderá a GET /api/disciplinas/assuntos/:disciplina
 router.get("/assuntos/:disciplina", async (req, res) => {
     try {
         const disciplina = req.params.disciplina;

@@ -26,10 +26,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             const disciplinas = await response.json();
             disciplinaSelect.innerHTML = '<option value="">Selecione a disciplina</option>';
             
-            disciplinas.forEach(disciplina => {
+            disciplinas.forEach(item => {
                 const option = document.createElement("option");
-                option.value = disciplina.disciplina;
-                option.textContent = disciplina.disciplina;
+                option.value = item.disciplina;
+                option.textContent = item.disciplina;
                 disciplinaSelect.appendChild(option);
             });
 
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!disciplina) return;
 
         try {
-            const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/assuntos/${encodeURIComponent(disciplina)}`);
+            const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/disciplinas/assuntos/${encodeURIComponent(disciplina)}`);
             if (!response.ok) throw new Error("Erro ao buscar assuntos");
 
             const assuntos = await response.json();
@@ -72,13 +72,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         const disciplina = disciplinaSelect.value.trim();
         const assunto = assuntoSelect.value.trim();
         const horasEstudadas = document.getElementById("horas").value;
-if (!horasEstudadas) {
-    alert("❌ O campo Horas Estudadas é obrigatório!");
-    return;
-}
+        
+        if (!horasEstudadas) {
+            alert("❌ O campo Horas Estudadas é obrigatório!");
+            return;
+        }
 
         let dataEstudo = document.getElementById("data_estudo").value;
-        
         if (!dataEstudo) {
             dataEstudo = new Date().toISOString().split("T")[0]; // Define a data atual no formato YYYY-MM-DD
             document.getElementById("data_estudo").value = dataEstudo;
@@ -142,6 +142,8 @@ if (!horasEstudadas) {
         }
     });
 });
+
+// Lógica para o menu lateral
 document.addEventListener("DOMContentLoaded", () => {
     const sidebar = document.querySelector(".sidebar");
     const toggleButton = document.querySelector(".toggle-btn");

@@ -30,60 +30,7 @@ app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/disciplinas", disciplinasRoutes);
 app.use("/api/estudos", estudosRoutes);
 
-// ✅ Rota para autenticação do usuário (Login)
-app.post("/api/auth/login", async (req, res) => {
-  const { email, senha } = req.body;
-
-  console.log("📥 Recebendo requisição de login");
-  console.log(`📩 Email recebido: "${email}"`);
-  console.log(`🔑 Senha recebida: "${senha}"`);
-
-  try {
-      if (!email || !senha) {
-          console.warn("⚠️ Erro: Campos vazios.");
-          return res.status(400).json({ error: "Preencha todos os campos" });
-      }
-
-      const result = await db.query("SELECT id, nome, email, senha FROM usuarios WHERE email = $1", [email]);
-
-      if (result.rows.length === 0) {
-          console.warn("❌ Usuário não encontrado.");
-          return res.status(400).json({ error: "Email ou senha incorretos" });
-      }
-
-      const user = result.rows[0];
-      console.log("✅ Usuário encontrado no banco:", user.email);
-      console.log("🔑 Hash armazenado no banco:", user.senha);
-
-      // Verifica se a senha foi de fato armazenada corretamente
-      if (!user.senha || typeof user.senha !== "string") {
-          console.error("⚠️ Erro: A senha armazenada no banco está inválida.");
-          return res.status(500).json({ error: "Erro interno ao verificar credenciais" });
-      }
-
-      const match = await bcrypt.compare(senha, user.senha);
-      console.log(`🔍 Resultado da verificação da senha: ${match ? "✅ Correta" : "❌ Incorreta"}`);
-
-      if (!match) {
-          console.warn("❌ Senha incorreta para o usuário:", email);
-          return res.status(400).json({ error: "Email ou senha incorretos" });
-      }
-
-      console.log("✅ Login bem-sucedido para:", user.nome);
-      res.status(200).json({
-          message: "✅ Login bem-sucedido",
-          usuario_id: user.id,
-          nome: user.nome
-      });
-
-  } catch (err) {
-      console.error("❌ Erro no login:", err);
-      res.status(500).json({ error: "Erro interno do servidor" });
-  }
-});
-
-
-// ✅ Rota para a página inicial
+// ✅ Rotas para as páginas estáticas
 app.get("/", (req, res) => {
     res.redirect("/login");
 });

@@ -78,7 +78,7 @@ button:hover {
 .footer span {
     color: #ff1a1a;
 }
-/* FORMULÁRIO */
+
 /* FORMULÁRIO */
 .form-container {
     display: none;
@@ -93,7 +93,7 @@ button:hover {
     border-radius: 10px;
     z-index: 1001;
     text-align: center;
-    font-family: "OCR A Std", monospace; /* Aplicando a fonte apenas no formulário */
+    font-family: "OCR A Std", monospace;
 }
 
 .form-container h2 {
@@ -122,7 +122,7 @@ button:hover {
     background: #ffffff;
     color: #333;
     text-align: center;
-    font-family: "OCR A Std", monospace; /* Aplicando a fonte nos inputs */
+    font-family: "OCR A Std", monospace;
 }
 
 .form-container select {
@@ -135,7 +135,7 @@ button:hover {
     background: #ffffff;
     color: #333;
     text-align: center;
-    font-family: "OCR A Std", monospace; /* Aplicando a fonte nos selects */
+    font-family: "OCR A Std", monospace;
 }
 
 .form-container input:focus, 
@@ -179,7 +179,7 @@ button:hover {
     color: #dd1212;
 }
 
-/* Melhorando a responsividade */
+/* Responsividade do formulário */
 @media (max-width: 768px) {
     .form-container {
         width: 90%;
@@ -191,7 +191,7 @@ button:hover {
     position: fixed;
     top: 0;
     left: 0;
-    width: 70px; /* Largura inicial */
+    width: 70px;
     height: 100vh;
     background-color: black;
     color: white;
@@ -205,10 +205,9 @@ button:hover {
 }
 
 .sidebar.expanded {
-    width: 250px; /* Largura expandida */
+    width: 250px;
 }
 
-/* Botão de expandir/recolher */
 .sidebar .toggle-btn {
     background: none;
     border: none;
@@ -217,13 +216,10 @@ button:hover {
 }
 
 .sidebar .toggle-btn img {
-    width: 50px; /* Ajuste do tamanho do botão */
+    width: 50px;
     transition: transform 0.3s ease;
 }
 
-
-
-/* Botão para abrir o formulário */
 .sidebar .menu-item {
     display: none;
     width: 90%;
@@ -246,7 +242,6 @@ button:hover {
     background-color: #ff1a1a;
 }
 
-/* Ajuste do conteúdo quando o menu está escondido */
 .dashboard-container {
     margin-left: 70px;
     padding: 20px;
@@ -257,4 +252,34 @@ button:hover {
 .sidebar.expanded ~ .dashboard-container {
     margin-left: 250px;
     width: calc(100% - 250px);
+}
+
+/* CSS para os Gráficos */
+.charts-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    margin: 20px auto;
+    max-width: 1200px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+}
+
+.charts-container canvas {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin: 10px;
+    /* Responsividade: ajusta para telas menores */
+    width: 45% !important;
+    height: 300px !important;
+}
+
+/* Ajustes para total de dias estudados */
+.total-dias {
+    text-align: center;
+    margin: 20px auto;
+    font-size: 1.2rem;
+    color: #333;
 }

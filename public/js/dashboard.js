@@ -113,4 +113,39 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // ✅ Inicializa os gráficos ao carregar a página
     carregarDadosGraficos();
+
+    // ✅ Lógica para abrir/fechar o menu lateral
+    const sidebar = document.querySelector(".sidebar");
+    const toggleButton = document.querySelector(".toggle-btn");
+
+    toggleButton.addEventListener("click", () => {
+        sidebar.classList.toggle("expanded");
+    });
+
+    // ✅ Fechar menu ao clicar fora dele
+    document.addEventListener("click", (event) => {
+        if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
+            sidebar.classList.remove("expanded");
+        }
+    });
+
+    // ✅ Lógica para abrir/fechar o formulário
+    const formPopup = document.getElementById("formPopup");
+    const openFormButton = document.getElementById("openForm");
+    const closeFormButton = document.getElementById("closeForm");
+
+    openFormButton.addEventListener("click", () => {
+        formPopup.style.display = "flex";
+    });
+
+    closeFormButton.addEventListener("click", () => {
+        formPopup.style.display = "none";
+    });
+
+    // ✅ Fechar formulário ao clicar fora dele
+    window.addEventListener("click", (event) => {
+        if (event.target === formPopup) {
+            formPopup.style.display = "none";
+        }
+    });
 });

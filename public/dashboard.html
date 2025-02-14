@@ -9,59 +9,58 @@
 </head>
 <body class="dashboard-page">
 
-  <div class="sidebar">
-    <button class="toggle-btn">
-      <img src="https://i.ibb.co/xtFND3Rp/SERGIPE-29-7-x-42-cm.png" alt="Expandir/Recolher">
-    </button>
-    <button class="menu-item" id="openForm">Abrir Formulário</button>
-  </div>
-
-  <div id="formPopup" class="form-container">
-    <form id="studyForm">
-      <h2>REGISTRE SEUS ESTUDOS</h2>
-
-      <input type="hidden" id="data_estudo" name="data_estudo">
-
-      <label for="disciplina">Disciplina:</label>
-      <select id="disciplina" name="disciplina" required>
-        <option value="">Selecione a disciplina</option>
-      </select>
-
-      <label for="assunto">Assunto:</label>
-      <select id="assunto" name="assunto" required>
-        <option value="">Selecione o assunto</option>
-      </select>
-
-      <label for="horas">Horas Estudadas:</label>
-      <input type="time" id="horas" name="horas_estudadas" required>
-
-      <label for="questoes_erradas">Questões Erradas:</label>
-      <input type="number" id="questoes_erradas" name="questoes_erradas" required>
-
-      <label for="questoes_certas">Questões Certas:</label>
-      <input type="number" id="questoes_certas" name="questoes_certas" required>
-
-      <label for="tipo_estudo">Tipo de Estudo:</label>
-      <select id="tipo_estudo" name="tipo_estudo">
-        <option value="teoria">Teoria</option>
-        <option value="prática">Prática</option>
-        <option value="revisão">Revisão</option>
-      </select>
-
-      <button type="submit">Enviar</button>
-      <button type="button" id="closeForm">Fechar</button>
-    </form>
-
-    <div class="total-dias">
-      <h2>Total de Dias Estudados: <span id="totalDias">0</span></h2>
+    <div class="sidebar">
+        <button class="toggle-btn" id="toggleSidebar">
+            <img src="https://i.ibb.co/xtFND3Rp/SERGIPE-29-7-x-42-cm.png" alt="Expandir/Recolher">
+        </button>
+        <button class="menu-item" id="openForm">Abrir Formulário</button>
     </div>
-  </div>
+    
+    <!-- ✅ Formulário Popup -->
+    <div id="formPopup" class="form-container">
+        <form id="studyForm">
+            <h2>REGISTRE SEUS ESTUDOS</h2>
 
-  <!-- ✅ Adicionando espaço para os gráficos -->
-  <div class="charts-container">
-      <canvas id="lineChart"></canvas>
-  </div>
+            <input type="hidden" id="data_estudo" name="data_estudo">
 
-  <script src="./js/dashboard.js"></script>
+            <label for="disciplina">Disciplina:</label>
+            <select id="disciplina" name="disciplina" required>
+                <option value="">Selecione a disciplina</option>
+            </select>
+
+            <label for="assunto">Assunto:</label>
+            <select id="assunto" name="assunto" required>
+                <option value="">Selecione o assunto</option>
+            </select>
+
+            <label for="horas">Horas Estudadas:</label>
+            <input type="time" id="horas" name="horas_estudadas" required>
+
+            <label for="questoes_erradas">Questões Erradas:</label>
+            <input type="number" id="questoes_erradas" name="questoes_erradas" required>
+
+            <label for="questoes_certas">Questões Certas:</label>
+            <input type="number" id="questoes_certas" name="questoes_certas" required>
+
+            <label for="tipo_estudo">Tipo de Estudo:</label>
+            <select id="tipo_estudo" name="tipo_estudo">
+                <option value="teoria">Teoria</option>
+                <option value="prática">Prática</option>
+                <option value="revisão">Revisão</option>
+            </select>
+
+            <button type="submit">Enviar</button>
+            <button type="button" id="closeForm">Fechar</button>
+        </form>
+    </div>
+
+    <!-- ✅ Espaço para os gráficos -->
+    <div class="charts-container">
+        <canvas id="lineChart"></canvas>
+    </div>
+
+    <!-- ✅ MOVIDO PARA FORA DO FORMULÁRIO -->
+
+    <script src="./js/dashboard.js"></script>
 </body>
 </html>

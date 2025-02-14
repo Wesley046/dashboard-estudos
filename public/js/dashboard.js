@@ -173,7 +173,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             console.log(`📡 Buscando assuntos para a disciplina: ${disciplinaNome}`);
 
-            const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/disciplinas/assuntos/${encodeURIComponent(disciplinaNome)}`);
+            // Alterado: passando a disciplina como query string, conforme o endpoint do backend
+            const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/disciplinas/assuntos?disciplina=${encodeURIComponent(disciplinaNome)}`);
             if (!response.ok) throw new Error("Erro ao buscar assuntos");
             const assuntos = await response.json();
 

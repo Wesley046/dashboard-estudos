@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 
-// Rota para inserir um novo estudo (mantida, se necessário)
+// ✅ Rota para inserir um novo estudo
 router.post('/estudos', async (req, res) => {
   const { usuario_id, disciplina, assunto, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo } = req.body;
 
@@ -25,11 +25,10 @@ router.post('/estudos', async (req, res) => {
   }
 });
 
-// Rota para obter os dados dos gráficos
+// ✅ Rota para obter dados dos gráficos
 router.get('/graficos', async (req, res) => {
     const usuario_id = req.query.usuario_id;
 
-    // 🔎 Log para depuração
     console.log("🟢 Requisição recebida para gráficos. Usuário ID:", usuario_id);
 
     if (!usuario_id || isNaN(parseInt(usuario_id))) {
@@ -46,80 +45,78 @@ router.get('/graficos', async (req, res) => {
             WHERE usuario_id = $1
             GROUP BY data_estudo
             ORDER BY data_estudo;
-        `, [parseInt(usuario_id)]);  // 📌 Converte para número, garantindo que não seja string "null"
+        `, [parseInt(usuario_id)]);  
 
+        // ✅ Horas por tipo de estudo
+        const tipoEstudoQuery = await db.query(`
+          SELECT tipo_estudo, 
+                 COALESCE(SUM(EXTRACT(HOUR FROM horas_estudadas) + EXTRACT(MINUTE FROM horas_estudadas)/60.0), 0) AS total_horas
+          FROM estudos 
+          WHERE usuario_id = $1
+          GROUP BY tipo_estudo;
+        `, [usuario_id]);
 
-    // Horas por tipo de estudo
-    const tipoEstudoQuery = await db.query(`
-      SELECT tipo_estudo, 
-             COALESCE(SUM(EXTRACT(HOUR FROM horas_estudadas) + EXTRACT(MINUTE FROM horas_estudadas)/60.0), 0) AS total_horas
-      FROM estudos 
-      WHERE usuario_id = $1
-      GROUP BY tipo_estudo;
-    `, [usuario_id]);
+        // ✅ Horas por disciplina
+        const disciplinaQuery = await db.query(`
+          SELECT disciplina, 
+                 COALESCE(SUM(EXTRACT(HOUR FROM horas_estudadas) + EXTRACT(MINUTE FROM horas_estudadas)/60.0), 0) AS total_horas
+          FROM estudos 
+          WHERE usuario_id = $1
+          GROUP BY disciplina;
+        `, [usuario_id]);
 
-    // Horas por disciplina
-    const disciplinaQuery = await db.query(`
-      SELECT disciplina, 
-             COALESCE(SUM(EXTRACT(HOUR FROM horas_estudadas) + EXTRACT(MINUTE FROM horas_estudadas)/60.0), 0) AS total_horas
-      FROM estudos 
-      WHERE usuario_id = $1
-      GROUP BY disciplina;
-    `, [usuario_id]);
+        // ✅ Horas estudadas por dia
+        const horasDataQuery = await db.query(`
+          SELECT data_estudo, 
+                 COALESCE(SUM(EXTRACT(HOUR FROM horas_estudadas) + EXTRACT(MINUTE FROM horas_estudadas)/60.0), 0) AS total_horas
+          FROM estudos
+          WHERE usuario_id = $1
+          GROUP BY data_estudo
+          ORDER BY data_estudo;
+        `, [usuario_id]);
 
-    // Horas estudadas por dia
-    const horasDataQuery = await db.query(`
-      SELECT data_estudo, 
-             COALESCE(SUM(EXTRACT(HOUR FROM horas_estudadas) + EXTRACT(MINUTE FROM horas_estudadas)/60.0), 0) AS total_horas
-      FROM estudos
-      WHERE usuario_id = $1
-      GROUP BY data_estudo
-      ORDER BY data_estudo;
-    `, [usuario_id]);
+        // ✅ Total de dias estudados
+        const diasEstudadosQuery = await db.query(`
+          SELECT COUNT(DISTINCT data_estudo) AS total_dias 
+          FROM estudos 
+          WHERE usuario_id = $1;
+        `, [usuario_id]);
 
-    // Total de dias estudados (conta datas distintas)
-    const diasEstudadosQuery = await db.query(`
-      SELECT COUNT(DISTINCT data_estudo) AS total_dias 
-      FROM estudos 
-      WHERE usuario_id = $1;
-    `, [usuario_id]);
+        // ✅ Processamento dos dados
+        const totalDias = diasEstudadosQuery.rows[0] ? diasEstudadosQuery.rows[0].total_dias : 0;
+        const questoes = questoesQuery.rows.map(row => ({
+            data_estudo: row.data_estudo,
+            total_erradas: Number(row.total_erradas),
+            total_certas: Number(row.total_certas)
+        }));
 
-    const totalDias = diasEstudadosQuery.rows[0] ? diasEstudadosQuery.rows[0].total_dias : 0;
+        const tipoEstudo = tipoEstudoQuery.rows.map(row => ({
+            tipo_estudo: row.tipo_estudo || "Desconhecido",
+            total_horas: Number(row.total_horas)
+        }));
 
-    res.json({
-      questoes: questoesQuery.rows,
-      tipoEstudo: tipoEstudoQuery.rows,
-      disciplina: disciplinaQuery.rows,
-      horasData: horasDataQuery.rows,
-      totalDias: totalDias
-    });
+        const disciplina = disciplinaQuery.rows.map(row => ({
+            disciplina: row.disciplina,
+            total_horas: Number(row.total_horas)
+        }));
 
-  } catch (err) {
-    console.error("❌ Erro ao buscar dados para os gráficos:", err);
-    res.status(500).json({ error: "Erro interno ao buscar dados" });
-  }
+        const horasData = horasDataQuery.rows.map(row => ({
+            data_estudo: row.data_estudo,
+            total_horas: Number(row.total_horas)
+        }));
+
+        res.json({
+            questoes,
+            tipoEstudo,
+            disciplina,
+            horasData,
+            totalDias
+        });
+
+    } catch (err) {
+        console.error("❌ Erro ao buscar dados para os gráficos:", err);
+        res.status(500).json({ error: "Erro interno ao buscar dados" });
+    }
 });
-
-const questoes = questoesQuery.rows.map(row => ({
-    data_estudo: row.data_estudo,
-    total_erradas: row.total_erradas ? Number(row.total_erradas) : 0,
-    total_certas: row.total_certas ? Number(row.total_certas) : 0
-}));
-
-const tipoEstudo = tipoEstudoQuery.rows.map(row => ({
-    tipo_estudo: row.tipo_estudo || "Desconhecido",
-    total_horas: row.total_horas ? Number(row.total_horas) : 0
-}));
-
-const disciplina = disciplinaQuery.rows.map(row => ({
-    disciplina: row.disciplina,
-    total_horas: row.total_horas ? Number(row.total_horas) : 0
-}));
-
-const horasData = horasDataQuery.rows.map(row => ({
-    data_estudo: row.data_estudo,
-    total_horas: row.total_horas ? Number(row.total_horas) : 0
-}));
-
 
 module.exports = router;

@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
     let myChart = null; // Instância do gráfico de linhas
     let myDoughnutChart = null; // Instância do gráfico de rosca
-    
+
     console.log("✅ dashboard.js carregado!");
     console.log(typeof Chart);
     
@@ -33,6 +33,45 @@ document.addEventListener("DOMContentLoaded", async () => {
             const qtdCertas = questoesData.map(item => item.certas);
             const qtdErradas = questoesData.map(item => item.erradas);
             const ctxLine = lineCanvas.getContext("2d");
+
+            //grafico testes
+
+            document.addEventListener("DOMContentLoaded", function () {
+                console.log("✅ DOM carregado. Criando gráfico de rosca...");
+            
+                const ctxDoughnut = document.getElementById("doughnutChart")?.getContext("2d");
+            
+                if (!ctxDoughnut) {
+                    console.error("❌ O elemento #doughnutChart NÃO foi encontrado no DOM.");
+                    return;
+                }
+            
+                console.log("✅ O canvas foi encontrado. Criando gráfico...");
+            
+                new Chart(ctxDoughnut, {
+                    type: "doughnut",
+                    data: {
+                        labels: ["Prática", "Teoria", "Revisão"],
+                        datasets: [{
+                            data: [40, 30, 30], // Teste com valores fixos
+                            backgroundColor: ["#36A2EB", "#FFCE56", "#FF6384"]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: "Teste de Gráfico de Rosca dentro do dashboard.js",
+                                font: { size: 18 },
+                                color: "#FFF"
+                            }
+                        }
+                    }
+                });
+            });
+            
 
             // Se já houver um gráfico, destruí-lo antes de recriar
             if (myChart) {

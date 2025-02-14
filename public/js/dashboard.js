@@ -2,10 +2,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function carregarDadosGraficos() {
         try {
             const usuarioId = localStorage.getItem("usuario_id");
-            if (!usuarioId) {
-                console.error("❌ Usuário não autenticado.");
-                return;
-            }
+
+                // 🔎 Log para depuração
+                console.log("🔍 Usuário ID recuperado:", usuarioId);
+
+                if (!usuarioId || isNaN(parseInt(usuarioId))) {
+                    console.error("❌ Usuário não autenticado ou ID inválido.");
+                    return;
+                }
 
             const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/graficos?usuario_id=${usuarioId}`);
             if (!response.ok) throw new Error("Erro ao buscar dados de estudo");

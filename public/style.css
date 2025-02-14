@@ -1,28 +1,201 @@
-/* =========================
-   Regras Gerais e Background
-   ========================= */
-   body {
-    font-family: Stencil, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+/* LOGIN */
+body {
+    font-family: Stencil, Haettenschweiler, 'Arial Narrow Bold', sans-serif, sans-serif;
     background-image: url('https://i.ibb.co/prZYZ5cG/Banner-Site-01-1920-x-1080-px-1.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
     margin: 0;
     color: #ffffff;
-    /* Para a dashboard, não force altura fixa; o conteúdo define a altura */
 }
 
-/* =========================
-   Sidebar e Menu Lateral
-   ========================= */
+.login-container {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    text-align: center;
+    width: 450px;
+}
+
+.logo img {
+    width: 250px;
+    margin-bottom: 40px;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+
+.input-group input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: #ffffff;
+    outline: none;
+    padding-left: 25px;
+}
+
+.input-group .icon {
+    color: #000000;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #dd1212;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.5s;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #ff5d5d;
+}
+
+.footer {
+    position: absolute;
+    bottom: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.footer span {
+    color: #ff1a1a;
+}
+
+/* FORMULÁRIO */
+.form-container {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 340px;
+    background: rgba(53, 53, 53, 0.9);
+    padding: 25px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    z-index: 1001;
+    text-align: center;
+    font-family: "OCR A Std", monospace; /* Aplicando a fonte apenas no formulário */
+}
+
+.form-container h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.form-container label {
+    display: block;
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #ffffff;
+    text-align: center;
+    font-weight: bold;
+}
+
+.form-container input {
+    width: 50%;
+    padding: 11px;
+    margin-top: 8px;
+    border: 0px solid #ccc;
+    border-radius: 21px;
+    font-size: 0.7rem;
+    background: #ffffff;
+    color: #333;
+    text-align: center;
+    font-family: "OCR A Std", monospace; /* Aplicando a fonte nos inputs */
+}
+
+.form-container select {
+    width: 55%;
+    padding: 11px;
+    margin-top: 8px;
+    border: 0px solid #ccc;
+    border-radius: 21px;
+    font-size: 0.7rem;
+    background: #ffffff;
+    color: #333;
+    text-align: center;
+    font-family: "OCR A Std", monospace; /* Aplicando a fonte nos selects */
+}
+
+.form-container input:focus, 
+.form-container select:focus {
+    border-color: #000000;
+    outline: none;
+}
+
+.form-container button {
+    margin-top: 25px;
+    padding: 12px;
+    width: 60%;
+    background-color: #ff2a2a;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 45px;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.5s ease;
+}
+
+.form-container button:hover {
+    background-color: #ff1a1a;
+}
+
+.form-container .close-btn {
+    background-color: transparent;
+    color: #a52828;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    transition: color 0.3s ease;
+}
+
+.form-container .close-btn:hover {
+    color: #dd1212;
+}
+
+/* Melhorando a responsividade */
+@media (max-width: 768px) {
+    .form-container {
+        width: 90%;
+    }
+}
+
+/* MENU LATERAL */
 .sidebar {
     position: fixed;
     top: 0;
     left: 0;
-    width: 70px;
+    width: 70px; /* Largura inicial */
     height: 100vh;
-    background-color: #000;
-    color: #fff;
+    background-color: black;
+    opacity: 0.9;
+    color: white;
     padding: 10px;
     transition: width 0.3s ease;
     overflow: hidden;
@@ -33,9 +206,10 @@
 }
 
 .sidebar.expanded {
-    width: 250px;
+    width: 200px; /* Largura expandida */
 }
 
+/* Botão de expandir/recolher */
 .sidebar .toggle-btn {
     background: none;
     border: none;
@@ -44,7 +218,7 @@
 }
 
 .sidebar .toggle-btn img {
-    width: 50px;
+    width: 50px; /* Ajuste do tamanho do botão */
     transition: transform 0.3s ease;
 }
 
@@ -53,7 +227,7 @@
     width: 90%;
     padding: 12px;
     background: #ff2a2a;
-    color: #fff;
+    color: white;
     border: none;
     cursor: pointer;
     margin: 10px 0;
@@ -70,145 +244,44 @@
     background-color: #ff1a1a;
 }
 
-/* =========================
-   Main Container e Dashboard
-   ========================= */
-.main-container {
+.dashboard-container {
     margin-left: 70px;
     padding: 20px;
+    width: calc(100% - 70px);
     transition: margin-left 0.3s ease, width 0.3s ease;
 }
 
-.sidebar.expanded ~ .main-container {
+.sidebar.expanded ~ .dashboard-container {
     margin-left: 250px;
+    width: calc(100% - 250px);
 }
 
-/* =========================
-   Container dos Gráficos
-   ========================= */
+/* ==================================================================
+   CSS Adicional: Estilos para os Gráficos (Dashboard)
+   ================================================================== */
 .charts-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
-    margin: 20px auto;
+    margin: 50px auto;
     max-width: 1200px;
     padding: 10px;
-    background: rgba(255, 255, 255, 0.8);
     border-radius: 10px;
 }
 
 .charts-container canvas {
-    background-color: #fff;
+    background-color: #ffffff;
     border: 1px solid #ddd;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin: 10px;
+    margin: 20px;
     width: 45% !important;
-    height: 300px !important;
+    height: 280px !important;
 }
 
-/* =========================
-   Total de Dias Estudados
-   ========================= */
 .total-dias {
-    text-align: center;
-    margin: 20px auto;
+    text-align: left;
+    margin: 10px auto;
     font-size: 1.2rem;
-    color: #333;
-}
-
-/* =========================
-   Formulário de Estudos
-   ========================= */
-.form-container {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 340px;
-    background: rgba(53, 53, 53, 0.9);
-    padding: 25px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-    z-index: 1001;
-    text-align: center;
-    font-family: "OCR A Std", monospace;
-}
-
-.form-container h2 {
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-    color: #fff;
-    font-weight: bold;
-}
-
-.form-container label {
-    display: block;
-    margin-top: 10px;
-    font-size: 1rem;
-    color: #fff;
-    text-align: center;
-    font-weight: bold;
-}
-
-.form-container input,
-.form-container select {
-    width: 50%;
-    padding: 11px;
-    margin-top: 8px;
-    border: none;
-    border-radius: 21px;
-    font-size: 0.7rem;
-    background: #fff;
-    color: #333;
-    text-align: center;
-    font-family: "OCR A Std", monospace;
-}
-
-.form-container input:focus, 
-.form-container select:focus {
-    border-color: #000;
-    outline: none;
-}
-
-.form-container button {
-    margin-top: 25px;
-    padding: 12px;
-    width: 60%;
-    background-color: #ff2a2a;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-    border-radius: 45px;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: background-color 0.5s ease;
-}
-
-.form-container button:hover {
-    background-color: #ff1a1a;
-}
-
-.form-container .close-btn {
-    background: transparent;
-    color: #a52828;
-    font-size: 1.2rem;
-    font-weight: bold;
-    border: none;
-    cursor: pointer;
-    position: absolute;
-    top: 10px;
-    right: 15px;
-    transition: color 0.3s ease;
-}
-
-.form-container .close-btn:hover {
-    color: #dd1212;
-}
-
-/* Responsividade para o formulário */
-@media (max-width: 768px) {
-    .form-container {
-        width: 90%;
-    }
+    color: #ffffff;
+    
 }

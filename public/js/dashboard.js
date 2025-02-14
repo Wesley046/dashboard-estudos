@@ -3,8 +3,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     let myDoughnutChart = null; // Instância do gráfico de rosca
 
     console.log("✅ dashboard.js carregado!");
-    console.log(typeof Chart);
-    
+    console.log("✅ Tipo do Chart.js:", typeof Chart);
+
     async function carregarDadosGraficos() {
         try {
             const usuarioId = localStorage.getItem("usuario_id");
@@ -22,56 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 console.error("❌ O elemento #lineChart não foi encontrado no DOM.");
                 return;
             }
-            const converterNumero = (valor) => (valor ? parseFloat(valor) : 0);
-            const questoesData = dados.questoes.map(item => ({
-                data: new Date(item.data_estudo).toLocaleDateString(),
-                certas: converterNumero(item.total_certas),
-                erradas: converterNumero(item.total_erradas)
-            }));
-
-            const datasQuestao = questoesData.map(item => item.data);
-            const qtdCertas = questoesData.map(item => item.certas);
-            const qtdErradas = questoesData.map(item => item.erradas);
             const ctxLine = lineCanvas.getContext("2d");
-
-            //grafico testes
-
-            document.addEventListener("DOMContentLoaded", function () {
-                console.log("✅ DOM carregado. Criando gráfico de rosca...");
-            
-                const ctxDoughnut = document.getElementById("doughnutChart")?.getContext("2d");
-            
-                if (!ctxDoughnut) {
-                    console.error("❌ O elemento #doughnutChart NÃO foi encontrado no DOM.");
-                    return;
-                }
-            
-                console.log("✅ O canvas foi encontrado. Criando gráfico...");
-            
-                new Chart(ctxDoughnut, {
-                    type: "doughnut",
-                    data: {
-                        labels: ["Prática", "Teoria", "Revisão"],
-                        datasets: [{
-                            data: [40, 30, 30], // Teste com valores fixos
-                            backgroundColor: ["#36A2EB", "#FFCE56", "#FF6384"]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: "Teste de Gráfico de Rosca dentro do dashboard.js",
-                                font: { size: 18 },
-                                color: "#FFF"
-                            }
-                        }
-                    }
-                });
-            });
-            
 
             // Se já houver um gráfico, destruí-lo antes de recriar
             if (myChart) {
@@ -81,11 +32,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             myChart = new Chart(ctxLine, {
                 type: "line",
                 data: {
-                    labels: datasQuestao,
+                    labels: dados.questoes.map(item => new Date(item.data_estudo).toLocaleDateString()),
                     datasets: [
                         {
                             label: "Questões Certas",
-                            data: qtdCertas,
+                            data: dados.questoes.map(item => parseFloat(item.total_certas) || 0),
                             borderColor: "#36A2EB",
                             backgroundColor: "rgba(54, 162, 235, 0.2)",
                             borderWidth: 2,
@@ -97,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         },
                         {
                             label: "Questões Erradas",
-                            data: qtdErradas,
+                            data: dados.questoes.map(item => parseFloat(item.total_erradas) || 0),
                             borderColor: "#FF6384",
                             backgroundColor: "rgba(255, 99, 132, 0.2)",
                             borderWidth: 2,
@@ -111,39 +62,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, // Permite que o CSS controle o tamanho
+                    maintainAspectRatio: false,
                     plugins: {
                         title: {
                             display: true,
                             text: "Total de Questões por Dia",
                             font: { size: 18 },
                             color: "#FFF"
-                        },
-                        tooltip: {
-                            mode: "index",
-                            intersect: false,
-                            backgroundColor: "rgba(0, 0, 0, 0.8)",
-                            titleColor: "#fff",
-                            bodyColor: "#fff"
-                        },
-                        legend: {
-                            labels: { font: { size: 14 }, color: "#FFF" }
                         }
-                    },
-                    scales: {
-                        x: {
-                            title: { display: true, text: "Data", color: "#FFF" },
-                            ticks: { color: "#FFF" }
-                        },
-                        y: {
-                            title: { display: true, text: "Quantidade", color: "#FFF" },
-                            beginAtZero: true,
-                            ticks: { color: "#FFF" }
-                        }
-                    },
-                    animation: {
-                        duration: 1500,
-                        easing: "easeInOutQuart"
                     }
                 }
             });
@@ -208,32 +134,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                     labels: ["Prática", "Teoria", "Revisão"],
                     datasets: [{
                         data: porcentagens,
-                        backgroundColor: ["#36A2EB", "#FFCE56", "#FF6384"],
-                        hoverBackgroundColor: ["#36A2EB", "#FFCE56", "#FF6384"]
+                        backgroundColor: ["#36A2EB", "#FFCE56", "#FF6384"]
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, // Mantém o formato quadrado no CSS
+                    maintainAspectRatio: false,
                     plugins: {
                         title: {
                             display: true,
                             text: "Porcentagem do Tempo de Estudo por Tipo",
                             font: { size: 18 },
                             color: "#FFF"
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.label + ": " + context.parsed + "%";
-                                }
-                            },
-                            backgroundColor: "rgba(0, 0, 0, 0.8)",
-                            titleColor: "#fff",
-                            bodyColor: "#fff"
-                        },
-                        legend: {
-                            labels: { font: { size: 14 }, color: "#FFF" }
                         }
                     }
                 }
@@ -244,8 +156,48 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // Chamada para carregar os gráficos
+    // ✅ Função de teste para verificar o Chart.js
+    function criarGraficoDeTeste() {
+        console.log("🎯 Testando criação manual do gráfico...");
+
+        const ctxDoughnut = document.getElementById("doughnutChart")?.getContext("2d");
+
+        if (!ctxDoughnut) {
+            console.error("❌ O elemento #doughnutChart NÃO foi encontrado no DOM.");
+            return;
+        }
+
+        console.log("✅ O canvas foi encontrado. Criando gráfico...");
+
+        new Chart(ctxDoughnut, {
+            type: "doughnut",
+            data: {
+                labels: ["Exemplo 1", "Exemplo 2", "Exemplo 3"],
+                datasets: [{
+                    data: [25, 50, 25],
+                    backgroundColor: ["#36A2EB", "#FFCE56", "#FF6384"]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "Teste de Gráfico de Rosca",
+                        font: { size: 18 },
+                        color: "#FFF"
+                    }
+                }
+            }
+        });
+
+        console.log("✅ Gráfico de teste criado com sucesso!");
+    }
+
+    // ✅ Chamada para carregar os gráficos
     await carregarDadosGraficos();
-    await carregarDadosDoughnut(); // Agora o gráfico de rosca será carregado corretamente
+    await carregarDadosDoughnut(); 
+    criarGraficoDeTeste(); // Agora o gráfico de teste será criado
 
 });

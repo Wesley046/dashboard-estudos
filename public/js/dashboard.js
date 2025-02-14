@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const dados = await response.json();
             console.log("✅ Dados carregados:", dados);
 
-            // ✅ Verifica se os elementos <canvas> existem antes de criar os gráficos
+            // ✅ Verifica se o elemento <canvas> do gráfico de linha existe
             const lineCanvas = document.getElementById("lineChart");
             if (!lineCanvas) {
                 console.error("❌ O elemento #lineChart não foi encontrado no DOM.");
@@ -32,34 +32,79 @@ document.addEventListener("DOMContentLoaded", async () => {
             const qtdCertas = questoesData.map(item => item.certas);
             const qtdErradas = questoesData.map(item => item.erradas);
 
-            // ✅ Criando o gráfico de linha
-            setTimeout(() => {
-                const ctxLine = lineCanvas.getContext("2d");
-                new Chart(ctxLine, {
-                    type: "line",
-                    data: {
-                        labels: datasQuestao,
-                        datasets: [
-                            {
-                                label: "Questões Certas",
-                                data: qtdCertas,
-                                borderColor: "blue",
-                                backgroundColor: "rgba(0, 0, 255, 0.1)",
-                                tension: 0.4,
-                                fill: false
-                            },
-                            {
-                                label: "Questões Erradas",
-                                data: qtdErradas,
-                                borderColor: "red",
-                                backgroundColor: "rgba(255, 0, 0, 0.1)",
-                                tension: 0.4,
-                                fill: false
-                            }
-                        ]
+            // ✅ Criando o gráfico de linha com estilos otimizados
+            const ctxLine = lineCanvas.getContext("2d");
+            new Chart(ctxLine, {
+                type: "line",
+                data: {
+                    labels: datasQuestao,
+                    datasets: [
+                        {
+                            label: "Questões Certas",
+                            data: qtdCertas,
+                            borderColor: "#36A2EB",
+                            backgroundColor: "rgba(54, 162, 235, 0.2)",
+                            borderWidth: 2,
+                            pointBackgroundColor: "#36A2EB",
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: "Questões Erradas",
+                            data: qtdErradas,
+                            borderColor: "#FF6384",
+                            backgroundColor: "rgba(255, 99, 132, 0.2)",
+                            borderWidth: 2,
+                            pointBackgroundColor: "#FF6384",
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "Total de Questões por Dia",
+                            font: { size: 18 }
+                        },
+                        tooltip: {
+                            mode: "index",
+                            intersect: false,
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            titleColor: "#fff",
+                            bodyColor: "#fff"
+                        },
+                        legend: {
+                            labels: { font: { size: 14 } }
+                        }
+                    },
+                    interaction: {
+                        mode: "index",
+                        intersect: false
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: "Data" },
+                            ticks: { color: "#000" }
+                        },
+                        y: {
+                            title: { display: true, text: "Quantidade" },
+                            beginAtZero: true,
+                            ticks: { color: "#000" }
+                        }
+                    },
+                    animation: {
+                        duration: 1500,
+                        easing: "easeInOutQuart"
                     }
-                });
-            }, 500); // ✅ Delay de 500ms para garantir que o DOM carregue
+                }
+            });
 
         } catch (error) {
             console.error("❌ Erro ao carregar dados para os gráficos:", error);

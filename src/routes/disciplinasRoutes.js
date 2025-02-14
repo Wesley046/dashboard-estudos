@@ -24,8 +24,9 @@ router.get("/assuntos", async (req, res) => {
         console.log(`📡 Buscando assuntos para a disciplina: ${disciplina}`);
 
         const result = await db.query("SELECT assunto FROM disciplinas_assuntos WHERE disciplina = $1 ORDER BY assunto;", [disciplina]);
-
-        res.json(result.rows);
+        // Mapeia os resultados para que cada objeto possua a propriedade 'nome'
+        const assuntosRenomeados = result.rows.map(item => ({ nome: item.assunto }));
+        res.json(assuntosRenomeados);
     } catch (error) {
         console.error("❌ Erro ao buscar assuntos:", error);
         res.status(500).json({ error: "Erro no servidor" });

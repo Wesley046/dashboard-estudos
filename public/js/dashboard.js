@@ -1,7 +1,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
     let myChart = null; // Instância do gráfico de linhas
     let myDoughnutChart = null; // Instância do gráfico de rosca
-
+    
+    console.log("✅ dashboard.js carregado!");
+    console.log(typeof Chart);
+    
     async function carregarDadosGraficos() {
         try {
             const usuarioId = localStorage.getItem("usuario_id");

@@ -46,8 +46,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                             backgroundColor: "rgba(54, 162, 235, 0.2)",
                             borderWidth: 2,
                             pointBackgroundColor: "#36A2EB",
-                            pointRadius: 5,
-                            pointHoverRadius: 7,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
                             tension: 0.3,
                             fill: true
                         },
@@ -58,8 +58,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                             backgroundColor: "rgba(255, 99, 132, 0.2)",
                             borderWidth: 2,
                             pointBackgroundColor: "#FF6384",
-                            pointRadius: 5,
-                            pointHoverRadius: 7,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
                             tension: 0.3,
                             fill: true
                         }
@@ -67,21 +67,26 @@ document.addEventListener("DOMContentLoaded", async () => {
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false, // Permite que o CSS controle o tamanho
                     plugins: {
                         title: {
                             display: true,
                             text: "Total de Questões por Dia",
+                            color: "#ffffff",
                             font: { size: 18 }
                         },
                         tooltip: {
                             mode: "index",
                             intersect: false,
                             backgroundColor: "rgba(0, 0, 0, 0.8)",
-                            titleColor: "#fff",
-                            bodyColor: "#fff"
+                            titleColor: "#ffffff",
+                            bodyColor: "#ffffff"
                         },
                         legend: {
-                            labels: { font: { size: 14 } }
+                            labels: {
+                                color: "#ffffff",
+                                font: { size: 14 }
+                            }
                         }
                     },
                     interaction: {
@@ -90,13 +95,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                     },
                     scales: {
                         x: {
-                            title: { display: true, text: "Data" },
-                            ticks: { color: "#000" }
+                            title: { display: true, text: "Data", color: "#ffffff" },
+                            ticks: { color: "#ffffff" }
                         },
                         y: {
-                            title: { display: true, text: "Quantidade" },
+                            title: { display: true, text: "Quantidade", color: "#ffffff" },
                             beginAtZero: true,
-                            ticks: { color: "#000" }
+                            ticks: { color: "#ffffff" }
                         }
                     },
                     animation: {
@@ -116,7 +121,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // ✅ Lógica para abrir/fechar o menu lateral
     const sidebar = document.querySelector(".sidebar");
-    const toggleButton = document.querySelector(".toggle-btn");
+    const toggleButton = document.querySelector("#toggleSidebar");
 
     toggleButton.addEventListener("click", () => {
         sidebar.classList.toggle("expanded");

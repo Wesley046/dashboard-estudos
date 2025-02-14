@@ -103,6 +103,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             });
 
+            // Atualizar o total de dias estudados
+            document.getElementById("totalDias").textContent = dados.totalDias;
+
         } catch (error) {
             console.error("❌ Erro ao carregar dados para os gráficos:", error);
         }
@@ -126,14 +129,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     openFormButton.addEventListener("click", () => {
         formPopup.style.display = "flex";
-        carregarDisciplinas(); // ✅ Garante que as disciplinas são carregadas ao abrir o formulário
+        carregarDisciplinas();
     });
 
     closeFormButton.addEventListener("click", () => {
         formPopup.style.display = "none";
     });
 
-    // ✅ Fechar formulário ao clicar fora dele
     window.addEventListener("click", (event) => {
         if (event.target === formPopup) {
             formPopup.style.display = "none";
@@ -148,7 +150,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const disciplinas = await response.json();
 
             const selectDisciplina = document.getElementById("disciplina");
-            selectDisciplina.innerHTML = `<option value="">Selecione a disciplina</option>`; // Resetando antes de adicionar
+            selectDisciplina.innerHTML = `<option value="">Selecione a disciplina</option>`;
 
             disciplinas.forEach(disciplina => {
                 const option = document.createElement("option");
@@ -167,45 +169,68 @@ document.addEventListener("DOMContentLoaded", async () => {
     // ✅ Função para carregar assuntos com base na disciplina selecionada
     async function carregarAssuntos(disciplinaNome) {
         try {
-            if (!disciplinaNome) {
-                console.warn("⚠ Nenhuma disciplina selecionada.");
-                return;
-            }
+            if (!disciplinaNome) return;
 
             console.log(`📡 Buscando assuntos para a disciplina: ${disciplinaNome}`);
 
-            const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/disciplinas/assuntos?disciplina=${encodeURIComponent(disciplinaNome)}`);
+            const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/disciplinas/assuntos/${encodeURIComponent(disciplinaNome)}`);
             if (!response.ok) throw new Error("Erro ao buscar assuntos");
             const assuntos = await response.json();
 
             const selectAssunto = document.getElementById("assunto");
-            selectAssunto.innerHTML = `<option value="">Selecione o assunto</option>`; // Resetando antes de adicionar
+            selectAssunto.innerHTML = `<option value="">Selecione o assunto</option>`;
 
-            if (assuntos.length === 0) {
-                console.warn(`⚠ Nenhum assunto encontrado para a disciplina: ${disciplinaNome}`);
-            } else {
-                assuntos.forEach(assunto => {
-                    const option = document.createElement("option");
-                    option.value = assunto.assunto;
-                    option.textContent = assunto.assunto;
-                    selectAssunto.appendChild(option);
-                });
+            assuntos.forEach(assunto => {
+                const option = document.createElement("option");
+                option.value = assunto.assunto;
+                option.textContent = assunto.assunto;
+                selectAssunto.appendChild(option);
+            });
 
-                console.log("✅ Assuntos carregados:", assuntos);
-            }
+            console.log("✅ Assuntos carregados:", assuntos);
 
         } catch (error) {
             console.error("❌ Erro ao carregar assuntos:", error);
         }
     }
 
-    // ✅ Evento para carregar os assuntos quando a disciplina for selecionada
     document.getElementById("disciplina").addEventListener("change", (event) => {
-        const disciplinaNome = event.target.value;
-        if (disciplinaNome) {
-            carregarAssuntos(disciplinaNome);
-        } else {
-            console.warn("⚠ Nenhuma disciplina foi selecionada.");
+        carregarAssuntos(event.target.value);
+    });
+
+    // ✅ Envio do formulário e atualização dos gráficos
+    document.getElementById("studyForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const usuarioId = localStorage.getItem("usuario_id");
+        if (!usuarioId) return;
+
+        const formData = {
+            usuario_id: usuarioId,
+            disciplina: document.getElementById("disciplina").value,
+            assunto: document.getElementById("assunto").value,
+            horas_estudadas: document.getElementById("horas").value,
+            data_estudo: new Date().toISOString().split("T")[0],
+            questoes_erradas: document.getElementById("questoes_erradas").value || 0,
+            questoes_certas: document.getElementById("questoes_certas").value || 0,
+            tipo_estudo: document.getElementById("tipo_estudo").value
+        };
+
+        try {
+            const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/estudos", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) throw new Error("Erro ao enviar os dados!");
+
+            document.getElementById("studyForm").reset();
+            formPopup.style.display = "none";
+            carregarDadosGraficos();
+
+        } catch (error) {
+            console.error("❌ Erro ao enviar os dados:", error);
         }
     });
 

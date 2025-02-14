@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    // Função para converter objeto de horas (ex: { hours: 2, minutes: 30 }) para número decimal
+    // Função para converter objeto de horas (ex: { hours: 2, minutes: 30 }) em número decimal
     function converterHoras(obj) {
       if (!obj) return 0;
       const horas = obj.hours ? Number(obj.hours) : 0;
@@ -16,60 +16,69 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("Dados para gráficos:", dados);
     
         // Processamento dos dados:
-    
-        // Gráfico 1: Questões por dia
-        const questoesData = dados.questoes.map(item => ({
-          data: new Date(item.data_estudo).toLocaleDateString(),
-          certas: item.total_certas ? Number(item.total_certas) : 0,
-          erradas: item.total_erradas ? Number(item.total_erradas) : 0
-        }));
-        questoesData.sort((a, b) => new Date(a.data) - new Date(b.data));
+        
+        // Gráfico 1: Questões por dia  
+        // Aqui armazenamos tanto o objeto Date quanto a string formatada para ordenação correta.
+        const questoesData = dados.questoes.map(item => {
+          const d = new Date(item.data_estudo);
+          return {
+            date: d,
+            data: d.toLocaleDateString(),
+            certas: item.total_certas ? Number(item.total_certas) : 0,
+            erradas: item.total_erradas ? Number(item.total_erradas) : 0
+          };
+        });
+        questoesData.sort((a, b) => a.date - b.date);
         const datasQuestao = questoesData.map(item => item.data);
         const qtdCertas = questoesData.map(item => item.certas);
         const qtdErradas = questoesData.map(item => item.erradas);
     
-        // Gráfico 2: Tipo de Estudo – soma das horas por tipo
+        // Gráfico 2: Tipo de Estudo – soma das horas por tipo  
         const tipoEstudoData = dados.tipoEstudo.map(item => ({
           tipo: item.tipo_estudo || "Não informado",
-          total: Number(item.total_horas)
+          total: converterHoras(item.total_horas)
         }));
         const tipos = tipoEstudoData.map(item => item.tipo);
         const totalHorasPorTipo = tipoEstudoData.map(item => item.total);
     
-        // Gráfico 3: Horas estudadas por dia
-        const horasData = dados.horasData.map(item => ({
-          data: new Date(item.data_estudo).toLocaleDateString(),
-          total: Number(item.total_horas)
-        }));
-        horasData.sort((a, b) => new Date(a.data) - new Date(b.data));
+        // Gráfico 3: Horas estudadas por dia  
+        const horasData = dados.horasData.map(item => {
+          const d = new Date(item.data_estudo);
+          return {
+            date: d,
+            data: d.toLocaleDateString(),
+            total: converterHoras(item.total_horas)
+          };
+        });
+        horasData.sort((a, b) => a.date - b.date);
         const datasHoras = horasData.map(item => item.data);
         const totalHoras = horasData.map(item => item.total);
     
-        // Gráfico 4: Horas por Disciplina
+        // Gráfico 4: Horas por Disciplina  
         const disciplinaData = dados.disciplina.map(item => ({
           disciplina: item.disciplina,
-          total: Number(item.total_horas)
+          total: converterHoras(item.total_horas)
         }));
         // Ordena do maior para o menor
         disciplinaData.sort((a, b) => b.total - a.total);
         const disciplinasLabels = disciplinaData.map(item => item.disciplina);
         const totalHorasDisciplinas = disciplinaData.map(item => item.total);
-        const somaTotalHorasDisciplinas = totalHorasDisciplinas.reduce((a, b) => a + b, 0);
+        const somaTotalHorasDisciplinas = totalHorasDisciplinas.reduce((acc, cur) => acc + cur, 0);
         const percentuaisDisciplinas = totalHorasDisciplinas.map(horas => ((horas / somaTotalHorasDisciplinas) * 100).toFixed(2));
     
-        // Atualiza o total de dias estudados (se houver elemento)
+        // Atualiza o total de dias estudados
         const totalDiasElement = document.getElementById("totalDias");
-        if(totalDiasElement) {
+        if (totalDiasElement) {
           totalDiasElement.textContent = dados.totalDias;
         }
     
         // Destrói gráficos antigos, se existirem
-        if(window.lineChart) window.lineChart.destroy();
-        if(window.doughnutChart) window.doughnutChart.destroy();
-        if(window.barChart) window.barChart.destroy();
-        if(window.horizontalBarChart) window.horizontalBarChart.destroy();
+        if (window.lineChart) window.lineChart.destroy();
+        if (window.doughnutChart) window.doughnutChart.destroy();
+        if (window.barChart) window.barChart.destroy();
+        if (window.horizontalBarChart) window.horizontalBarChart.destroy();
     
-        // Gráfico 1: Linha - Questões por Dia
+        // Gráfico 1: Linha – Questões por Dia
         const ctxLine = document.getElementById("lineChart").getContext("2d");
         window.lineChart = new Chart(ctxLine, {
           type: "line",
@@ -122,7 +131,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
         });
     
-        // Gráfico 2: Rosca - Horas por Tipo de Estudo
+        // Gráfico 2: Rosca – Horas por Tipo de Estudo
         const ctxDoughnut = document.getElementById("doughnutChart").getContext("2d");
         window.doughnutChart = new Chart(ctxDoughnut, {
           type: "doughnut",
@@ -155,7 +164,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
         });
     
-        // Gráfico 3: Barras - Horas Estudadas por Dia
+        // Gráfico 3: Barras – Horas Estudadas por Dia
         const ctxBar = document.getElementById("barChart").getContext("2d");
         window.barChart = new Chart(ctxBar, {
           type: "bar",
@@ -187,7 +196,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
         });
     
-        // Gráfico 4: Barras Horizontal - Percentual de Horas por Disciplina
+        // Gráfico 4: Barras Horizontal – Percentual de Horas por Disciplina
         const ctxHorizontal = document.getElementById("horizontalBarChart").getContext("2d");
         window.horizontalBarChart = new Chart(ctxHorizontal, {
           type: "bar",

@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    let myChart = null; // Guarda a instância do gráfico
+
     async function carregarDadosGraficos() {
         try {
             const usuarioId = localStorage.getItem("usuario_id");
@@ -10,13 +12,104 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (!response.ok) throw new Error("Erro ao buscar dados de estudo");
             const dados = await response.json();
             console.log("✅ Dados carregados:", dados);
+
             const lineCanvas = document.getElementById("lineChart");
             if (!lineCanvas) {
                 console.error("❌ O elemento #lineChart não foi encontrado no DOM.");
                 return;
             }
-            // Processamento e criação do gráfico...
-            document.getElementById("totalDias").textContent = dados.totalDias;
+            const converterNumero = (valor) => (valor ? parseFloat(valor) : 0);
+            const questoesData = dados.questoes.map(item => ({
+                data: new Date(item.data_estudo).toLocaleDateString(),
+                certas: converterNumero(item.total_certas),
+                erradas: converterNumero(item.total_erradas)
+            }));
+
+            const datasQuestao = questoesData.map(item => item.data);
+            const qtdCertas = questoesData.map(item => item.certas);
+            const qtdErradas = questoesData.map(item => item.erradas);
+            const ctxLine = lineCanvas.getContext("2d");
+
+            // Se existir um gráfico anterior, destrói-o antes de criar um novo
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctxLine, {
+                type: "line",
+                data: {
+                    labels: datasQuestao,
+                    datasets: [
+                        {
+                            label: "Questões Certas",
+                            data: qtdCertas,
+                            borderColor: "#36A2EB",
+                            backgroundColor: "rgba(54, 162, 235, 0.2)",
+                            borderWidth: 2,
+                            pointBackgroundColor: "#36A2EB",
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: "Questões Erradas",
+                            data: qtdErradas,
+                            borderColor: "#FF6384",
+                            backgroundColor: "rgba(255, 99, 132, 0.2)",
+                            borderWidth: 2,
+                            pointBackgroundColor: "#FF6384",
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "Total de Questões por Dia",
+                            font: { size: 18 },
+                            color: "#FFF"
+                        },
+                        tooltip: {
+                            mode: "index",
+                            intersect: false,
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            titleColor: "#fff",
+                            bodyColor: "#fff"
+                        },
+                        legend: {
+                            labels: { font: { size: 14 }, color: "#FFF" }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: "Data", color: "#FFF" },
+                            ticks: { color: "#FFF" }
+                        },
+                        y: {
+                            title: { display: true, text: "Quantidade", color: "#FFF" },
+                            beginAtZero: true,
+                            ticks: { color: "#FFF" }
+                        }
+                    },
+                    animation: {
+                        duration: 1500,
+                        easing: "easeInOutQuart"
+                    }
+                }
+            });
+
+            // Atualiza o total de dias estudados (se o elemento existir)
+            const totalDiasElement = document.getElementById("totalDias");
+            if(totalDiasElement) {
+                totalDiasElement.textContent = dados.totalDias;
+            }
+
         } catch (error) {
             console.error("❌ Erro ao carregar dados para os gráficos:", error);
         }
@@ -24,14 +117,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     carregarDadosGraficos();
 
-    // Lógica do menu lateral e formulário...
+    // Lógica para o menu lateral
     const sidebar = document.querySelector(".sidebar");
     const toggleButton = document.querySelector("#toggleSidebar");
-
     toggleButton.addEventListener("click", () => {
         sidebar.classList.toggle("expanded");
     });
 
+    // Lógica para exibir/fechar o formulário
     const formPopup = document.getElementById("formPopup");
     const openFormButton = document.getElementById("openForm");
     const closeFormButton = document.getElementById("closeForm");
@@ -95,7 +188,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         carregarAssuntos(event.target.value);
     });
 
-    // Event listener para o envio do formulário
+    // Envio do formulário
     document.getElementById("studyForm").addEventListener("submit", async (event) => {
         event.preventDefault();
         console.log("Formulário enviado!");
@@ -106,11 +199,19 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
+        // Converte o input de horas (formato "hh:mm") para número de horas decimais
+        const horasInput = document.getElementById("horas").value;
+        let horasEstudadas = 0;
+        if (horasInput) {
+            const [horas, minutos] = horasInput.split(':').map(Number);
+            horasEstudadas = horas + minutos / 60;
+        }
+
         const formData = {
             usuario_id: usuarioId,
             disciplina: document.getElementById("disciplina").value,
             assunto: document.getElementById("assunto").value,
-            horas_estudadas: document.getElementById("horas").value,
+            horas_estudadas: horasEstudadas,
             data_estudo: new Date().toISOString().split("T")[0],
             questoes_erradas: document.getElementById("questoes_erradas").value || 0,
             questoes_certas: document.getElementById("questoes_certas").value || 0,
@@ -124,6 +225,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 body: JSON.stringify(formData)
             });
             if (!response.ok) throw new Error("Erro ao enviar os dados!");
+
+            console.log("✅ Dados enviados com sucesso");
             document.getElementById("studyForm").reset();
             formPopup.style.display = "none";
             carregarDadosGraficos();

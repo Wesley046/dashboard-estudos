@@ -68,6 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false, // <-- Essa linha permite que o canvas respeite as dimensões definidas no CSS
                     plugins: {
                         title: {
                             display: true,
@@ -103,6 +104,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }
                 }
             });
+            
 
             // Atualiza o total de dias estudados (se o elemento existir)
             const totalDiasElement = document.getElementById("totalDias");

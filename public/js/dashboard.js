@@ -92,44 +92,45 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function carregarDadosDoughnut() {
         try {
             console.log("📡 Carregando dados para o gráfico de rosca...");
-
+    
             const usuarioId = localStorage.getItem("usuario_id");
             if (!usuarioId) {
                 console.error("❌ Usuário não autenticado.");
                 return;
             }
-
+    
             const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/graficos?usuario_id=${usuarioId}`);
             if (!response.ok) throw new Error("Erro ao buscar dados de estudo");
             const dados = await response.json();
+    
             console.log("✅ Dados carregados para o gráfico de rosca:", dados);
-
-            // Verifica se os dados realmente vieram da API
-            if (!dados.tipoEstudo || dados.tipoEstudo.length === 0) {
-                console.warn("⚠️ Nenhum dado recebido para o gráfico de rosca.");
+    
+            // Verifique a estrutura dos dados no console antes de processá-los
+            console.log("📌 Estrutura dos dados recebidos:", JSON.stringify(dados, null, 2));
+    
+            if (!dados.tipoEstudo || !Array.isArray(dados.tipoEstudo) || dados.tipoEstudo.length === 0) {
+                console.warn("⚠️ Nenhum dado válido recebido para o gráfico de rosca.");
                 return;
             }
-
-            // Processar os dados no formato correto
-            const categorias = dados.tipoEstudo.map(item => item.tipo);
+    
+            const categorias = dados.tipoEstudo.map(item => item.tipo || "Desconhecido");
             const horasPorTipo = dados.tipoEstudo.map(item => parseFloat(item.horas_estudadas) || 0);
-
+    
             console.log("📊 Processando os dados do gráfico de rosca...");
-            console.log("📌 Categorias:", categorias);
-            console.log("📌 Valores:", horasPorTipo);
-
+            console.log("📌 Categorias (labels):", categorias);
+            console.log("📌 Valores (data):", horasPorTipo);
+    
             const doughnutCanvas = document.getElementById("doughnutChart");
             if (!doughnutCanvas) {
                 console.error("❌ O elemento #doughnutChart não foi encontrado no DOM.");
                 return;
             }
             const ctxDoughnut = doughnutCanvas.getContext("2d");
-
-            // Se já houver um gráfico, destruí-lo antes de recriar
+    
             if (myDoughnutChart) {
                 myDoughnutChart.destroy();
             }
-
+    
             myDoughnutChart = new Chart(ctxDoughnut, {
                 type: "doughnut",
                 data: {
@@ -163,14 +164,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }
                 }
             });
-
+    
             console.log("✅ Gráfico de rosca criado com sucesso!");
-
+    
         } catch (error) {
             console.error("❌ Erro ao carregar dados para o gráfico de rosca:", error);
         }
     }
-
+    
     // ✅ Chamada para carregar os gráficos
     await carregarDadosGraficos();
     await carregarDadosDoughnut();

@@ -4,25 +4,25 @@ const db = require('../config/db');
 
 // ✅ Rota para inserir um novo estudo
 router.post('/estudos', async (req, res) => {
-  const { usuario_id, disciplina, assunto, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo } = req.body;
+    const { usuario_id, disciplina, assunto, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo } = req.body;
 
-  if (!usuario_id || !disciplina || !assunto || !horas_estudadas || !data_estudo || !tipo_estudo) {
-    return res.status(400).json({ error: "Todos os campos obrigatórios devem ser preenchidos!" });
-  }
+    if (!usuario_id || !disciplina || !assunto || !horas_estudadas || !data_estudo || !tipo_estudo) {
+        return res.status(400).json({ error: "Todos os campos obrigatórios devem ser preenchidos!" });
+    }
 
-  try {
-    await db.query(
-      "INSERT INTO estudos (usuario_id, disciplina, assunto, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
-      [usuario_id, disciplina, assunto, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo]
-    );
+    try {
+        await db.query(
+            "INSERT INTO estudos (usuario_id, disciplina, assunto, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)",
+            [usuario_id, disciplina, assunto, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo]
+        );
 
-    console.log("✅ Estudo cadastrado com sucesso!");
-    res.status(201).json({ message: "✅ Estudo cadastrado com sucesso!" });
+        console.log("✅ Estudo cadastrado com sucesso!");
+        res.status(201).json({ message: "✅ Estudo cadastrado com sucesso!" });
 
-  } catch (err) {
-    console.error("❌ Erro ao cadastrar estudo:", err);
-    res.status(500).json({ error: "Erro interno ao cadastrar estudo no banco de dados" });
-  }
+    } catch (err) {
+        console.error("❌ Erro ao cadastrar estudo:", err);
+        res.status(500).json({ error: "Erro interno ao cadastrar estudo no banco de dados" });
+    }
 });
 
 // ✅ Rota para obter dados dos gráficos
@@ -118,5 +118,38 @@ router.get('/graficos', async (req, res) => {
         res.status(500).json({ error: "Erro interno ao buscar dados" });
     }
 });
+
+// ✅ Rota para obter os assuntos de uma disciplina específica
+router.get("/assuntos", async (req, res) => {
+    const disciplina = req.query.disciplina;
+
+    if (!disciplina) {
+        return res.status(400).json({ error: "O nome da disciplina é obrigatório!" });
+    }
+
+    try {
+        console.log(`📡 Buscando assuntos para a disciplina: ${disciplina}`);
+
+        const query = `
+            SELECT a.nome 
+            FROM assuntos a
+            JOIN disciplinas d ON a.disciplina_id = d.id
+            WHERE d.nome ILIKE $1;
+        `;
+
+        const result = await db.query(query, [disciplina]);
+
+        if (result.rows.length === 0) {
+            console.warn(`⚠ Nenhum assunto encontrado para a disciplina: ${disciplina}`);
+        }
+
+        res.json(result.rows);
+
+    } catch (error) {
+        console.error("❌ Erro ao buscar assuntos:", error);
+        res.status(500).json({ error: "Erro interno ao buscar assuntos." });
+    }
+});
+
 
 module.exports = router;

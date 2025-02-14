@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const path = require("path");
-const bcrypt = require("bcryptjs");
 const db = require("./src/config/db");
 require("dotenv").config(); // Carrega variáveis de ambiente
 
@@ -24,24 +23,15 @@ const dashboardRoutes = require("./src/routes/dashboardRoutes");
 const disciplinasRoutes = require("./src/routes/disciplinasRoutes");
 const estudosRoutes = require("./src/routes/estudosRoutes");
 
+// ✅ Adicionando a rota correta para assuntos!
+const assuntosRoutes = require("./src/routes/disciplinasRoutes"); // <- Corrigido
+app.use("/api/disciplinas", disciplinasRoutes);
+app.use("/api/disciplinas/assuntos", assuntosRoutes); // <- Garantindo a rota correta
+
 // ✅ Registrar Rotas
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/disciplinas", disciplinasRoutes);
 app.use("/api/estudos", estudosRoutes);
-
-// ✅ Rotas para as páginas estáticas
-app.get("/", (req, res) => {
-    res.redirect("/login");
-});
-
-app.get("/login", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "login.html"));
-});
-
-app.get("/dashboard", (req, res) => {
-    res.sendFile(path.join(__dirname, "public", "dashboard.html"));
-});
 
 // ✅ Tratamento de erro 404 para API
 app.use("/api", (req, res) => {

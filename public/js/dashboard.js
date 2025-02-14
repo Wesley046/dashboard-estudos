@@ -12,105 +12,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             const dados = await response.json();
             console.log("✅ Dados carregados:", dados);
 
-            // ✅ Verifica se o elemento <canvas> do gráfico de linha existe
-            const lineCanvas = document.getElementById("lineChart");
-            if (!lineCanvas) {
-                console.error("❌ O elemento #lineChart não foi encontrado no DOM.");
-                return;
-            }
-
-            // ✅ Processamento dos dados
-            const converterNumero = (valor) => (valor ? parseFloat(valor) : 0);
-
-            const questoesData = dados.questoes.map(item => ({
-                data: new Date(item.data_estudo).toLocaleDateString(),
-                certas: converterNumero(item.total_certas),
-                erradas: converterNumero(item.total_erradas)
-            }));
-
-            const datasQuestao = questoesData.map(item => item.data);
-            const qtdCertas = questoesData.map(item => item.certas);
-            const qtdErradas = questoesData.map(item => item.erradas);
-
-            // ✅ Criando o gráfico de linha com estilos otimizados
-            const ctxLine = lineCanvas.getContext("2d");
-            new Chart(ctxLine, {
-                type: "line",
-                data: {
-                    labels: datasQuestao,
-                    datasets: [
-                        {
-                            label: "Questões Certas",
-                            data: qtdCertas,
-                            borderColor: "#36A2EB",
-                            backgroundColor: "rgba(54, 162, 235, 0.2)",
-                            borderWidth: 2,
-                            pointBackgroundColor: "#36A2EB",
-                            pointRadius: 4,
-                            pointHoverRadius: 6,
-                            tension: 0.3,
-                            fill: true
-                        },
-                        {
-                            label: "Questões Erradas",
-                            data: qtdErradas,
-                            borderColor: "#FF6384",
-                            backgroundColor: "rgba(255, 99, 132, 0.2)",
-                            borderWidth: 2,
-                            pointBackgroundColor: "#FF6384",
-                            pointRadius: 4,
-                            pointHoverRadius: 6,
-                            tension: 0.3,
-                            fill: true
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false, // Permite que o CSS controle o tamanho
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: "Total de Questões por Dia",
-                            color: "#ffffff",
-                            font: { size: 18 }
-                        },
-                        tooltip: {
-                            mode: "index",
-                            intersect: false,
-                            backgroundColor: "rgba(0, 0, 0, 0.8)",
-                            titleColor: "#ffffff",
-                            bodyColor: "#ffffff"
-                        },
-                        legend: {
-                            labels: {
-                                color: "#ffffff",
-                                font: { size: 14 }
-                            }
-                        }
-                    },
-                    interaction: {
-                        mode: "index",
-                        intersect: false
-                    },
-                    scales: {
-                        x: {
-                            title: { display: true, text: "Data", color: "#ffffff" },
-                            ticks: { color: "#ffffff" }
-                        },
-                        y: {
-                            title: { display: true, text: "Quantidade", color: "#ffffff" },
-                            beginAtZero: true,
-                            ticks: { color: "#ffffff" }
-                        }
-                    },
-                    animation: {
-                        duration: 1500,
-                        easing: "easeInOutQuart"
-                    }
-                }
-            });
-
         } catch (error) {
             console.error("❌ Erro ao carregar dados para os gráficos:", error);
         }
@@ -127,13 +28,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         sidebar.classList.toggle("expanded");
     });
 
-    // ✅ Fechar menu ao clicar fora dele
-    document.addEventListener("click", (event) => {
-        if (!sidebar.contains(event.target) && !toggleButton.contains(event.target)) {
-            sidebar.classList.remove("expanded");
-        }
-    });
-
     // ✅ Lógica para abrir/fechar o formulário
     const formPopup = document.getElementById("formPopup");
     const openFormButton = document.getElementById("openForm");
@@ -141,6 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     openFormButton.addEventListener("click", () => {
         formPopup.style.display = "flex";
+        carregarDisciplinas(); // ✅ Garante que as disciplinas são carregadas ao abrir o formulário
     });
 
     closeFormButton.addEventListener("click", () => {
@@ -153,4 +48,75 @@ document.addEventListener("DOMContentLoaded", async () => {
             formPopup.style.display = "none";
         }
     });
+
+    // ✅ Função para carregar disciplinas
+    async function carregarDisciplinas() {
+        try {
+            const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/disciplinas");
+            if (!response.ok) throw new Error("Erro ao buscar disciplinas");
+            const disciplinas = await response.json();
+
+            const selectDisciplina = document.getElementById("disciplina");
+            selectDisciplina.innerHTML = `<option value="">Selecione a disciplina</option>`; // Resetando antes de adicionar
+
+            disciplinas.forEach(disciplina => {
+                const option = document.createElement("option");
+                option.value = disciplina.disciplina; // Corrigido para usar o nome correto da chave
+                option.textContent = disciplina.disciplina; // Exibir corretamente
+                selectDisciplina.appendChild(option);
+            });
+
+            console.log("✅ Disciplinas carregadas:", disciplinas);
+
+        } catch (error) {
+            console.error("❌ Erro ao carregar disciplinas:", error);
+        }
+    }
+
+    // ✅ Função para carregar assuntos com base na disciplina selecionada
+    async function carregarAssuntos(disciplinaNome) {
+        try {
+            if (!disciplinaNome) {
+                console.warn("⚠ Nenhuma disciplina selecionada.");
+                return;
+            }
+
+            console.log(`📡 Buscando assuntos para a disciplina: ${disciplinaNome}`);
+
+            // ✅ URL ajustada para seguir a rota correta "/api/disciplinas/assuntos/:disciplina"
+            const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/disciplinas/assuntos/${encodeURIComponent(disciplinaNome)}`);
+            if (!response.ok) throw new Error("Erro ao buscar assuntos");
+            const assuntos = await response.json();
+
+            const selectAssunto = document.getElementById("assunto");
+            selectAssunto.innerHTML = `<option value="">Selecione o assunto</option>`; // Resetando antes de adicionar
+
+            if (assuntos.length === 0) {
+                console.warn(`⚠ Nenhum assunto encontrado para a disciplina: ${disciplinaNome}`);
+            } else {
+                assuntos.forEach(assunto => {
+                    const option = document.createElement("option");
+                    option.value = assunto.assunto; // Corrigido para a chave correta
+                    option.textContent = assunto.assunto;
+                    selectAssunto.appendChild(option);
+                });
+
+                console.log("✅ Assuntos carregados:", assuntos);
+            }
+
+        } catch (error) {
+            console.error("❌ Erro ao carregar assuntos:", error);
+        }
+    }
+
+    // ✅ Evento para carregar os assuntos quando a disciplina for selecionada
+    document.getElementById("disciplina").addEventListener("change", (event) => {
+        const disciplinaNome = event.target.value;
+        if (disciplinaNome) {
+            carregarAssuntos(disciplinaNome);
+        } else {
+            console.warn("⚠ Nenhuma disciplina foi selecionada.");
+        }
+    });
+
 });

@@ -21,13 +21,11 @@ const authRoutes = require("./src/routes/authRoutes");
 const dashboardRoutes = require("./src/routes/dashboardRoutes");
 const disciplinasRoutes = require("./src/routes/disciplinasRoutes");
 const estudosRoutes = require("./src/routes/estudosRoutes");
-const assuntosRoutes = require("./src/routes/assuntosRoutes"); // ✅ Agora está correto!
 
 // ✅ Registrar Rotas
 app.use("/api/auth", authRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/disciplinas", disciplinasRoutes);
-app.use("/api/assuntos", assuntosRoutes); // ✅ Agora `/api/assuntos` está sendo reconhecido corretamente!
+app.use("/api/disciplinas", disciplinasRoutes); // 🔥 Aqui está correto!
 app.use("/api/estudos", estudosRoutes);
 
 // ✅ Rotas para páginas estáticas
@@ -39,12 +37,12 @@ app.get("/dashboard", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
 
-// ✅ Tratamento de erro 404 para APIs (mantido)
+// ✅ Tratamento de erro 404 para APIs
 app.use("/api", (req, res) => {
     res.status(404).json({ error: "Rota não encontrada" });
 });
 
-// ✅ Tratamento de erro 404 para páginas comuns (mantido)
+// ✅ Tratamento de erro 404 para páginas comuns
 app.use((req, res) => {
     res.status(404).send("Página não encontrada");
 });

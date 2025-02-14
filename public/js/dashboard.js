@@ -109,7 +109,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             if(totalDiasElement) {
                 totalDiasElement.textContent = dados.totalDias;
             }
-
         } catch (error) {
             console.error("❌ Erro ao carregar dados para os gráficos:", error);
         }
@@ -174,8 +173,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             selectAssunto.innerHTML = `<option value="">Selecione o assunto</option>`;
             assuntos.forEach(assunto => {
                 const option = document.createElement("option");
-                option.value = assunto.assunto;
-                option.textContent = assunto.assunto;
+                // Note que o backend retornou { nome: "valor" } para os assuntos
+                option.value = assunto.nome;
+                option.textContent = assunto.nome;
                 selectAssunto.appendChild(option);
             });
             console.log("✅ Assuntos carregados:", assuntos);
@@ -188,7 +188,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         carregarAssuntos(event.target.value);
     });
 
-    // Envio do formulário
+    // Envio do formulário com logs detalhados
     document.getElementById("studyForm").addEventListener("submit", async (event) => {
         event.preventDefault();
         console.log("Formulário enviado!");
@@ -199,13 +199,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        // Converte o input de horas (formato "hh:mm") para número de horas decimais
-        const horasInput = document.getElementById("horas").value;
-        let horasEstudadas = 0;
-        if (horasInput) {
-            const [horas, minutos] = horasInput.split(':').map(Number);
-            horasEstudadas = horas + minutos / 60;
-        }
+        // Obter o valor original do input de horas (formato "HH:MM")
+        const horasEstudadas = document.getElementById("horas").value;
+        console.log("Horas estudadas:", horasEstudadas);
 
         const formData = {
             usuario_id: usuarioId,
@@ -218,13 +214,21 @@ document.addEventListener("DOMContentLoaded", async () => {
             tipo_estudo: document.getElementById("tipo_estudo").value
         };
 
+        console.log("Dados do formulário:", formData);
+
         try {
             const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/estudos", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)
             });
-            if (!response.ok) throw new Error("Erro ao enviar os dados!");
+
+            // Log de verificação do status da resposta
+            console.log("Status da resposta:", response.status);
+            const result = await response.json();
+            console.log("Resposta do servidor:", result);
+
+            if (!response.ok) throw new Error(result.error || "Erro ao enviar os dados!");
 
             console.log("✅ Dados enviados com sucesso");
             document.getElementById("studyForm").reset();

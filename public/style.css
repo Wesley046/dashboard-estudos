@@ -325,7 +325,6 @@ body {
 }
 
 
-
 /* ========================== */
 /* ESTILOS PARA OS GRÁFICOS */
 /* ========================== */
@@ -364,6 +363,25 @@ body {
     width: 100%;
     height: 180px !important; /* Deixa os gráficos ainda mais finos */
     max-height: 200px;
+}
+
+/* Espaçamento entre os gráficos */
+#lineChart {
+    margin-bottom: 20px; /* Ajuste conforme necessário */
+}
+.charts-container {
+    display: block;
+    top: 90px;
+    left: 12%;
+    right: 0;
+    text-align: left; /* Garante que o conteúdo seja alinhado à esquerda */
+}
+
+/* Configuração para o gráfico de rosca */
+#doughnutChart {
+    width: 400px !important;
+    height: 600px !important;
+    margin: 190px 0 0 0;
 }
 
 

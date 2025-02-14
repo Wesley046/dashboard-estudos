@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    let myChart = null; // Guarda a instância do gráfico
+    let myChart = null; // Guarda a instância do gráfico de linhas
+    let myDoughnutChart = null; // Guarda a instância do gráfico de rosca
 
     async function carregarDadosGraficos() {
         try {
@@ -105,6 +106,106 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             });
             
+            let myDoughnutChart = null; // Guarda a instância do gráfico de rosca
+
+async function carregarDadosDoughnut() {
+    try {
+        const usuarioId = localStorage.getItem("usuario_id");
+        if (!usuarioId) {
+            console.error("❌ Usuário não autenticado.");
+            return;
+        }
+        
+        // Supondo que exista uma rota que retorne os estudos do usuário
+        const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos?usuario_id=${usuarioId}`);
+        if (!response.ok) throw new Error("Erro ao buscar dados de estudo");
+        const dados = await response.json();
+        console.log("✅ Dados para gráfico de rosca carregados:", dados);
+
+        // Inicializa os totais para cada tipo de estudo
+        const totalHoras = {
+            pratica: 0,
+            teoria: 0,
+            revisao: 0
+        };
+
+        // Processa cada registro para somar as horas por tipo
+        dados.forEach(item => {
+            const tipo = item.tipo_estudo.toLowerCase(); // padroniza para minúsculo
+            // Converte o valor de horas_estudadas (formato "HH:MM") para horas decimais
+            if(item.horas_estudadas){
+                const partes = item.horas_estudadas.split(":");
+                const horas = parseFloat(partes[0]) + parseFloat(partes[1]) / 60;
+                if(totalHoras.hasOwnProperty(tipo)) {
+                    totalHoras[tipo] += horas;
+                }
+            }
+        });
+
+        const somaTotal = totalHoras.pratica + totalHoras.teoria + totalHoras.revisao;
+        // Calcula a porcentagem para cada tipo (caso somaTotal seja maior que zero)
+        const porcentagens = somaTotal > 0 ? [
+            (totalHoras.pratica / somaTotal * 100).toFixed(2),
+            (totalHoras.teoria / somaTotal * 100).toFixed(2),
+            (totalHoras.revisao / somaTotal * 100).toFixed(2)
+        ] : [0, 0, 0];
+
+        // Seleciona o canvas do gráfico de rosca
+        const doughnutCanvas = document.getElementById("doughnutChart");
+        if (!doughnutCanvas) {
+            console.error("❌ O elemento #doughnutChart não foi encontrado no DOM.");
+            return;
+        }
+        const ctxDoughnut = doughnutCanvas.getContext("2d");
+
+        // Se existir um gráfico anterior, destrua-o antes de criar um novo
+        if (myDoughnutChart) {
+            myDoughnutChart.destroy();
+        }
+
+        // Cria o gráfico de rosca utilizando Chart.js
+        myDoughnutChart = new Chart(ctxDoughnut, {
+            type: "doughnut",
+            data: {
+                labels: ["Prática", "Teoria", "Revisão"],
+                datasets: [{
+                    data: porcentagens,
+                    backgroundColor: ["#36A2EB", "#FFCE56", "#FF6384"],
+                    hoverBackgroundColor: ["#36A2EB", "#FFCE56", "#FF6384"]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false, // Essencial para respeitar seu CSS
+                plugins: {
+                    title: {
+                        display: true,
+                        text: "Porcentagem do Tempo de Estudo por Tipo",
+                        font: { size: 18 },
+                        color: "#FFF"
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ": " + context.parsed + "%";
+                            }
+                        },
+                        backgroundColor: "rgba(0, 0, 0, 0.8)",
+                        titleColor: "#fff",
+                        bodyColor: "#fff"
+                    },
+                    legend: {
+                        labels: { font: { size: 14 }, color: "#FFF" }
+                    }
+                }
+            }
+        });
+        
+    } catch (error) {
+        console.error("❌ Erro ao carregar dados para o gráfico de rosca:", error);
+    }
+}
+
 
             // Atualiza o total de dias estudados (se o elemento existir)
             const totalDiasElement = document.getElementById("totalDias");
@@ -241,3 +342,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 });
+
+
+document.addEventListener

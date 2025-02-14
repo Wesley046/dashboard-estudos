@@ -3,7 +3,8 @@ const router = express.Router();
 const db = require('../config/db');
 
 // ✅ Rota para inserir um novo estudo
-router.post('/estudos', async (req, res) => {
+// Alterado de router.post('/estudos', ...) para router.post('/', ...)
+router.post('/', async (req, res) => {
     const { usuario_id, disciplina, assunto, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo } = req.body;
 
     if (!usuario_id || !disciplina || !assunto || !horas_estudadas || !data_estudo || !tipo_estudo) {

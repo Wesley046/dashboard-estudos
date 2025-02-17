@@ -99,13 +99,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
     
+            // Buscar os dados da API
             const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/graficos?usuario_id=${usuarioId}`);
             if (!response.ok) throw new Error("Erro ao buscar dados de estudo");
             const dados = await response.json();
     
             console.log("✅ Dados carregados para o gráfico de rosca:", dados);
     
-            // Verifique a estrutura dos dados no console antes de processá-los
+            // Verifique a estrutura dos dados recebidos no console
             console.log("📌 Estrutura dos dados recebidos:", JSON.stringify(dados, null, 2));
     
             if (!dados.tipoEstudo || !Array.isArray(dados.tipoEstudo) || dados.tipoEstudo.length === 0) {
@@ -113,6 +114,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
     
+            // Processamento dos dados
             const categorias = dados.tipoEstudo.map(item => item.tipo || "Desconhecido");
             const horasPorTipo = dados.tipoEstudo.map(item => parseFloat(item.horas_estudadas) || 0);
     
@@ -120,6 +122,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log("📌 Categorias (labels):", categorias);
             console.log("📌 Valores (data):", horasPorTipo);
     
+            // Criar o gráfico de rosca
             const doughnutCanvas = document.getElementById("doughnutChart");
             if (!doughnutCanvas) {
                 console.error("❌ O elemento #doughnutChart não foi encontrado no DOM.");
@@ -171,6 +174,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.error("❌ Erro ao carregar dados para o gráfico de rosca:", error);
         }
     }
+    
     
     // ✅ Chamada para carregar os gráficos
     await carregarDadosGraficos();

@@ -285,7 +285,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
     
-            // Usando os dados de "disciplina" do endpoint '/graficos'
+            // Usa os dados da propriedade "disciplina" do endpoint "/graficos"
             const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/graficos?usuario_id=${usuarioId}`);
             if (!response.ok) throw new Error("Erro ao buscar dados de estudo");
             const dados = await response.json();
@@ -332,6 +332,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }]
                 },
                 options: {
+                    // Garante que o gráfico seja vertical
+                    indexAxis: 'x',
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
@@ -375,8 +377,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } catch (error) {
             console.error("❌ Erro ao carregar dados para o gráfico de percentual por disciplina:", error);
         }
-    }
-    
+    }    
     // Chamada para carregar os gráficos
     await carregarDadosGraficos();
     await carregarDadosDoughnut();

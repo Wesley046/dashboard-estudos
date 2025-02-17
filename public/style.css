@@ -332,68 +332,80 @@ body {
 /* Contêiner principal que mantém os gráficos */
 .charts-wrapper {
     display: flex;
-    flex-direction: column; /* Mantém um gráfico abaixo do outro */
-    align-items: center; /* Mantém o gráfico de linhas centralizado */
-    justify-content: flex-start; /* Mantém os elementos visíveis */
+    flex-direction: column;  /* Coloca os gráficos um abaixo do outro */
+    align-items: center;      /* Centraliza os elementos */
     width: 100%;
     height: auto;
-    padding-top: 110px; /* Adiciona espaçamento no topo */
+    padding-top: 110px;       /* Espaço no topo para o gráfico de linhas */
 }
 
 /* Contêiner do gráfico de linhas */
 .line-chart-container {
     width: 80%;
-    max-width: 1100px; /* Permite expandir até 900px */
-    height: 130px; /* Ajuste a altura conforme necessário */
+    max-width: 1100px;
+    height: 130px;            /* Ajuste conforme necessário */
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 20px;
-    margin-bottom: 10; /* Espaçamento entre os gráficos */
+    margin-bottom: 20px;      /* Espaçamento abaixo do gráfico de linhas */
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-
-
-/* Configuração específica para o gráfico de rosca */
-.doughnut-chart-container {
+/* Contêiner para agrupar os gráficos de rosca e barras em linha */
+.row-charts {
     display: flex;
+    flex-direction: row;
+    justify-content: center;  /* Centraliza horizontalmente a linha de gráficos */
+    align-items: flex-start;
+    width: 100%;
+}
+
+/* Contêiner do gráfico de rosca */
+.doughnut-chart-container {
     width: 350px;
     height: 270px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 10px;
-    margin: 40px auto; /* Adiciona espaçamento entre os gráficos */
-    justify-content: left !important;
-    align-items: left !important;
-    
+    margin: 40px 20px 40px 10%; /* Espaçamento, com empuxo para a esquerda */
+    /* Garante que este gráfico fique alinhado à esquerda */
+    align-self: flex-start;
 }
 
-/* Ajuste do tamanho do gráfico dentro do canvas */
+/* Contêiner do gráfico de barras */
+.bar-chart-container {
+    width: 350px;
+    height: 270px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 40px 10% 40px auto; /* Espaçamento: mais margem à direita para empurrar para a esquerda */
+    /* Esse container ficará ao lado do de rosca */
+    align-self: flex-start;
+}
+
+/* Faz com que o canvas ocupe todo o contêiner */
 .line-chart-container canvas,
-.doughnut-chart-container canvas {
+.doughnut-chart-container canvas,
+.bar-chart-container canvas {
     width: 100% !important;
     height: 100% !important;
 }
 
-/* Ajuste do tamanho do gráfico dentro do canvas */
-.line-chart-container canvas,
-.doughnut-chart-container canvas {
-    width: 100% !important;
-    height: 100% !important;
-}
-
-/* Ajuste de layout para melhor distribuição dos gráficos */
+/* Responsividade: Em telas menores, os contêineres se ajustam */
 @media (max-width: 1024px) {
-    .charts-container {
+    .row-charts {
         flex-direction: column;
         align-items: center;
     }
     
-    .charts-container canvas {
-        width: 90% !important; /* Em telas menores, os gráficos ocupam mais espaço */
-        height: 280px !important;
+    .doughnut-chart-container,
+    .bar-chart-container {
+        width: 90% !important;
+        height: auto !important;
+        margin: 20px auto;
     }
 }
 
@@ -405,4 +417,3 @@ body {
     font-weight: bold;
     color: #ffffff;
 }
-

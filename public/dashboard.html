@@ -56,14 +56,19 @@
 
     <!-- ✅ Gráficos -->
     <div class="charts-wrapper">
-        <!-- Contêiner do gráfico de linhas -->
+        <!-- Gráfico de Linhas (acima) -->
         <div class="chart-container line-chart-container">
             <canvas id="lineChart"></canvas>
         </div>
     
-        <!-- Contêiner do gráfico de rosca -->
-        <div class="chart-container doughnut-chart-container">
-            <canvas id="doughnutChart"></canvas>
+        <!-- Linha contendo o gráfico de rosca e o gráfico de barras -->
+        <div class="row-charts">
+            <div class="chart-container doughnut-chart-container">
+                <canvas id="doughnutChart"></canvas>
+            </div>
+            <div class="chart-container bar-chart-container">
+                <canvas id="barChart"></canvas>
+            </div>
         </div>
     </div>
     

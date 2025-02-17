@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
     
-            // Extraindo os rótulos e os valores corretamente a partir de 'tipoEstudo'
+            // Extraindo os rótulos e os valores a partir de 'tipoEstudo'
             const categorias = dados.tipoEstudo.map(item => item.tipo_estudo || "Desconhecido");
             const horasPorTipo = dados.tipoEstudo.map(item => parseFloat(item.total_horas) || 0);
     
@@ -165,7 +165,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                         legend: {
                             labels: { font: { size: 14 }, color: "#FFF" }
                         },
-                        // Configuração do plugin de data labels:
                         datalabels: {
                             color: "#FFF",
                             font: { weight: 'bold', size: 14 },

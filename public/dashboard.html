@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
   <link rel="stylesheet" href="style.css">
-
 </head>
 <body class="dashboard-page">
 
@@ -16,45 +15,37 @@
         <button class="menu-item" id="openForm">Abrir Formulário</button>
     </div>
 
-    <!-- ✅ Formulário Popup -->
+    <!-- Formulário Popup -->
     <div id="formPopup" class="form-container">
         <form id="studyForm">
             <h2>REGISTRE SEUS ESTUDOS</h2>
-
             <input type="hidden" id="data_estudo" name="data_estudo">
-
             <label for="disciplina">Disciplina:</label>
             <select id="disciplina" name="disciplina" required>
                 <option value="">Selecione a disciplina</option>
             </select>
-
             <label for="assunto">Assunto:</label>
             <select id="assunto" name="assunto" required>
                 <option value="">Selecione o assunto</option>
             </select>
-
             <label for="horas">Horas Estudadas:</label>
             <input type="time" id="horas" name="horas_estudadas" required>
-
             <label for="questoes_erradas">Questões Erradas:</label>
             <input type="number" id="questoes_erradas" name="questoes_erradas" required>
-
             <label for="questoes_certas">Questões Certas:</label>
             <input type="number" id="questoes_certas" name="questoes_certas" required>
-
             <label for="tipo_estudo">Tipo de Estudo:</label>
             <select id="tipo_estudo" name="tipo_estudo">
                 <option value="teoria">Teoria</option>
                 <option value="prática">Prática</option>
                 <option value="revisão">Revisão</option>
             </select>
-
             <button type="submit">Enviar</button>
             <button type="button" id="closeForm">Fechar</button>
         </form>
     </div>
 
-    <!-- ✅ Gráficos -->
+    <!-- Gráficos -->
     <div class="charts-wrapper">
         <!-- Gráfico de Linhas (acima) -->
         <div class="chart-container line-chart-container">
@@ -72,7 +63,7 @@
         </div>
     </div>
     
-    <!-- ✅ Movido para o final para garantir que tudo tenha carregado -->
+    <!-- Scripts: Chart.js, Plugin e seu dashboard.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
     <script src="./js/dashboard.js"></script>

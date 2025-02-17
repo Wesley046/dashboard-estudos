@@ -358,12 +358,15 @@ body {
 
 /* Configuração específica para o gráfico de rosca */
 .doughnut-chart-container {
+    display: flex;
     width: 350px;
     height: 270px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 10px;
     margin: 40px auto; /* Adiciona espaçamento entre os gráficos */
+    justify-content: left !important;
+    align-items: left !important;
     
 }
 

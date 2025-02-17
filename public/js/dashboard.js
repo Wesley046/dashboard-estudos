@@ -137,37 +137,44 @@ document.addEventListener("DOMContentLoaded", async () => {
             myDoughnutChart = new Chart(ctxDoughnut, {
                 type: "doughnut",
                 data: {
-                    labels: categorias,
+                    labels: ["Teórico", "Prático", "Revisão"],
                     datasets: [{
-                        data: horasPorTipo,
-                        backgroundColor: ["#36A2EB", "#FFCE56", "#FF6384", "#4BC0C0"],
-                        hoverBackgroundColor: ["#36A2EB", "#FFCE56", "#FF6384", "#4BC0C0"]
+                        data: horasPorTipo, // seu array de dados para cada sessão
+                        backgroundColor: ["#87CEFA", "#8B0000", "#7FFFD4"],
+                        borderWidth: 0 // remove as bordas
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    cutout: "75%", // aumenta o centro para 75%
                     plugins: {
                         title: {
                             display: true,
                             text: "Porcentagem do Tempo de Estudo por Tipo",
                             font: { size: 18 },
-                            color: "#FFF"
+                            color: "#FFF" // fonte branca
                         },
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return `${context.label}: ${context.parsed.toFixed(2)} horas`;
+                                    return `${context.label}: ${context.parsed.toFixed(2)}h`;
                                 }
-                            }
+                            },
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            titleColor: "#FFF",
+                            bodyColor: "#FFF"
                         },
                         legend: {
-                            labels: { font: { size: 14 }, color: "#FFF" }
+                            labels: { 
+                                font: { size: 14 },
+                                color: "#FFF" // legenda em branco
+                            }
                         }
                     }
                 }
             });
-    
+            
             console.log("✅ Gráfico de rosca criado com sucesso!");
     
         } catch (error) {

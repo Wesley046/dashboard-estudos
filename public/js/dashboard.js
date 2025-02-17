@@ -114,9 +114,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
     
-            // Processamento dos dados
-            const categorias = dados.tipoEstudo.map(item => item.tipo || "Desconhecido");
-            const horasPorTipo = dados.tipoEstudo.map(item => parseFloat(item.horas_estudadas) || 0);
+            // ✅ Extraindo os rótulos (labels) e os valores corretamente
+            const categorias = dados.tipoEstudo.map(item => item.tipo_estudo || "Desconhecido");
+            const horasPorTipo = dados.tipoEstudo.map(item => parseFloat(item.total_horas) || 0);
     
             console.log("📊 Processando os dados do gráfico de rosca...");
             console.log("📌 Categorias (labels):", categorias);
@@ -140,8 +140,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     labels: categorias,
                     datasets: [{
                         data: horasPorTipo,
-                        backgroundColor: ["#36A2EB", "#FFCE56", "#FF6384"],
-                        hoverBackgroundColor: ["#36A2EB", "#FFCE56", "#FF6384"]
+                        backgroundColor: ["#36A2EB", "#FFCE56", "#FF6384", "#4BC0C0"],
+                        hoverBackgroundColor: ["#36A2EB", "#FFCE56", "#FF6384", "#4BC0C0"]
                     }]
                 },
                 options: {
@@ -157,7 +157,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                         tooltip: {
                             callbacks: {
                                 label: function(context) {
-                                    return `${context.label}: ${context.parsed.toFixed(2)}h`;
+                                    return `${context.label}: ${context.parsed.toFixed(2)} horas`;
                                 }
                             }
                         },

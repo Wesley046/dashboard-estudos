@@ -3,7 +3,6 @@ const router = express.Router();
 const db = require('../config/db');
 
 // ✅ Rota para inserir um novo estudo
-// Alterado de router.post('/estudos', ...) para router.post('/', ...)
 router.post('/', async (req, res) => {
     const { usuario_id, disciplina, assunto, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo } = req.body;
 
@@ -152,5 +151,26 @@ router.get("/assuntos", async (req, res) => {
     }
 });
 
+// ✅ NOVA ROTA: Obter total de questões respondidas por disciplina
+router.get('/questoesPorDisciplina', async (req, res) => {
+    const usuario_id = req.query.usuario_id;
+    if (!usuario_id || isNaN(parseInt(usuario_id))) {
+        return res.status(400).json({ error: "Usuário não autenticado ou ID inválido!" });
+    }
+    try {
+        const query = `
+            SELECT disciplina,
+                   COALESCE(SUM(questoes_certas + questoes_erradas), 0) AS total_questoes
+            FROM estudos
+            WHERE usuario_id = $1
+            GROUP BY disciplina;
+        `;
+        const result = await db.query(query, [parseInt(usuario_id)]);
+        res.json(result.rows);
+    } catch (error) {
+        console.error("❌ Erro ao buscar questões por disciplina:", error);
+        res.status(500).json({ error: "Erro interno ao buscar dados" });
+    }
+});
 
 module.exports = router;

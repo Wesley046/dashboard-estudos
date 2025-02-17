@@ -139,21 +139,21 @@ document.addEventListener("DOMContentLoaded", async () => {
                 data: {
                     labels: ["Teórico", "Prático", "Revisão"],
                     datasets: [{
-                        data: horasPorTipo, // seu array de dados para cada sessão
+                        data: horasPorTipo, // seu array de dados
                         backgroundColor: ["#87CEFA", "#8B0000", "#7FFFD4"],
-                        borderWidth: 0 // remove as bordas
+                        borderWidth: 0
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    cutout: "75%", // aumenta o centro para 75%
+                    cutout: "75%",
                     plugins: {
                         title: {
                             display: true,
                             text: "Porcentagem do Tempo de Estudo por Tipo",
                             font: { size: 18 },
-                            color: "#FFF" // fonte branca
+                            color: "#FFF"
                         },
                         tooltip: {
                             callbacks: {
@@ -166,13 +166,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                             bodyColor: "#FFF"
                         },
                         legend: {
-                            labels: { 
-                                font: { size: 14 },
-                                color: "#FFF" // legenda em branco
+                            labels: { font: { size: 14 }, color: "#FFF" }
+                        },
+                        // Configuração do plugin de data labels:
+                        datalabels: {
+                            color: "#FFF",           // Cor dos rótulos
+                            font: { weight: 'bold', size: 14 },
+                            formatter: function(value, context) {
+                                return value; // ou retorne uma string formatada, como percentuais
                             }
                         }
                     }
-                }
+                },
+                plugins: [ChartDataLabels] // Certifica que o plugin seja registrado
             });
             
             console.log("✅ Gráfico de rosca criado com sucesso!");

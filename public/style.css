@@ -594,9 +594,9 @@ body {
 
 /* Contêiner para o gráfico de linhas (acima) */
 .line-chart-container {
-    width: 90%;
-    max-width: 1100px;
-    height: 350px;  /* Ajuste conforme necessário */
+    width: 85%;
+    max-width: 1000px;
+    height: 190px;  /* Ajuste conforme necessário */
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 20px;
@@ -625,20 +625,20 @@ body {
 
 /* Contêiner do gráfico de rosca */
 .doughnut-chart-container {
-    width: 350px;
-    height: 350px;
+    width: 300px;
+    height: 300px;
 }
 
 /* Contêiner do gráfico de barras (total de questões) */
 .bar-chart-container {
-    width: 350px;
-    height: 350px;
+    width: 300px;
+    height: 300px;
 }
 
 /* Contêiner do gráfico de percentual */
 .percent-bar-chart-container {
-    width: 350px;
-    height: 350px;
+    width: 300px;
+    height: 300px;
 }
 
 /* Garante que o canvas ocupe todo o contêiner */

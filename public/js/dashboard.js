@@ -294,7 +294,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
     
+            // Calcula o total de horas estudadas em todas as disciplinas
             const totalHorasEstudo = dados.disciplina.reduce((sum, item) => sum + Number(item.total_horas), 0);
+            // Calcula o percentual para cada disciplina
             const disciplinas = dados.disciplina.map(item => item.disciplina);
             const percentuais = dados.disciplina.map(item => {
                 const percentual = totalHorasEstudo ? ((Number(item.total_horas) / totalHorasEstudo) * 100) : 0;
@@ -328,6 +330,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }]
                 },
                 options: {
+                    indexAxis: 'x',  // Força a exibição vertical (colunas)
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
@@ -367,11 +370,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
     
             console.log("✅ Gráfico de percentual por disciplina criado com sucesso!");
-    
+        
         } catch (error) {
             console.error("❌ Erro ao carregar dados para o gráfico de percentual por disciplina:", error);
         }
-    }
+    }    
     
     // Chamada para carregar os gráficos
     await carregarDadosGraficos();

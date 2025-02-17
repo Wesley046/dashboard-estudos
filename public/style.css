@@ -329,26 +329,56 @@ body {
 /* ESTILOS PARA OS GRÁFICOS */
 /* ========================== */
 
-.charts-container {
+/* Contêiner principal que mantém os gráficos */
+.charts-wrapper {
     display: flex;
-    flex-direction: column; /* Mantém um abaixo do outro */
-    align-items: center; /* Centraliza horizontalmente */
-    justify-content: center; /* Centraliza verticalmente */
+    flex-direction: column; /* Mantém um gráfico abaixo do outro */
+    align-items: center; /* Mantém o gráfico de linhas centralizado */
+    justify-content: flex-start; /* Mantém os elementos visíveis */
     width: 100%;
-    height: 100vh; /* Garante que ocupe a altura da tela */
-    margin: 0 auto; /* Garante que fique centralizado */
-    position: relative;
+    height: auto;
+    padding-top: 110px; /* Adiciona espaçamento no topo */
 }
 
-.charts-container canvas {
-    padding: 0;
-    background-color: #ffffff27;
+/* Contêiner do gráfico de linhas */
+.line-chart-container {
+    width: 80%;
+    max-width: 1100px; /* Permite expandir até 900px */
+    height: 130px; /* Ajuste a altura conforme necessário */
+    background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
-    width: 400px; /* Define um tamanho fixo para evitar que fique pequeno */
-    height: 225px !important;
-    max-height: 300px;
-    display: block;
-    margin: 20px auto; /* Centraliza cada gráfico */
+    padding: 20px;
+    margin-bottom: 10; /* Espaçamento entre os gráficos */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+/* Configuração específica para o gráfico de rosca */
+.doughnut-chart-container {
+    width: 350px;
+    height: 270px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+    margin: 40px auto; /* Adiciona espaçamento entre os gráficos */
+    
+}
+
+/* Ajuste do tamanho do gráfico dentro do canvas */
+.line-chart-container canvas,
+.doughnut-chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Ajuste do tamanho do gráfico dentro do canvas */
+.line-chart-container canvas,
+.doughnut-chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 /* Ajuste de layout para melhor distribuição dos gráficos */

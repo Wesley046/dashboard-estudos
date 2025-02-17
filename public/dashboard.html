@@ -55,16 +55,18 @@
     </div>
 
     <!-- ✅ Gráficos -->
-    <div class="charts-container">
-        <canvas id="lineChart"></canvas>
-    </div>
-
-    <div class="charts-container">
-        <div class="chart-box">
+    <div class="charts-wrapper">
+        <!-- Contêiner do gráfico de linhas -->
+        <div class="chart-container line-chart-container">
+            <canvas id="lineChart"></canvas>
+        </div>
+    
+        <!-- Contêiner do gráfico de rosca -->
+        <div class="chart-container doughnut-chart-container">
             <canvas id="doughnutChart"></canvas>
         </div>
-    </div>    
-
+    </div>
+    
     <!-- ✅ Movido para o final para garantir que tudo tenha carregado -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./js/dashboard.js"></script>

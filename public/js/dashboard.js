@@ -92,44 +92,44 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function carregarDadosDoughnut() {
         try {
             console.log("📡 Carregando dados para o gráfico de rosca...");
-    
+
             const usuarioId = localStorage.getItem("usuario_id");
             if (!usuarioId) {
                 console.error("❌ Usuário não autenticado.");
                 return;
             }
-    
+
             const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/graficos?usuario_id=${usuarioId}`);
             if (!response.ok) throw new Error("Erro ao buscar dados de estudo");
             const dados = await response.json();
-    
+
             console.log("✅ Dados carregados para o gráfico de rosca:", dados);
             console.log("📌 Estrutura dos dados recebidos:", JSON.stringify(dados, null, 2));
-    
+
             if (!dados.tipoEstudo || !Array.isArray(dados.tipoEstudo) || dados.tipoEstudo.length === 0) {
                 console.warn("⚠️ Nenhum dado válido recebido para o gráfico de rosca.");
                 return;
             }
-    
+
             // Extraindo os rótulos e os valores
             const categorias = dados.tipoEstudo.map(item => item.tipo_estudo || "Desconhecido");
             const horasPorTipo = dados.tipoEstudo.map(item => parseFloat(item.total_horas) || 0);
-    
+
             console.log("📊 Processando os dados do gráfico de rosca...");
             console.log("📌 Categorias (labels):", categorias);
             console.log("📌 Valores (data):", horasPorTipo);
-    
+
             const doughnutCanvas = document.getElementById("doughnutChart");
             if (!doughnutCanvas) {
                 console.error("❌ O elemento #doughnutChart não foi encontrado no DOM.");
                 return;
             }
             const ctxDoughnut = doughnutCanvas.getContext("2d");
-    
+
             if (myDoughnutChart) {
                 myDoughnutChart.destroy();
             }
-    
+
             myDoughnutChart = new Chart(ctxDoughnut, {
                 type: "doughnut",
                 data: {
@@ -182,7 +182,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.error("❌ Erro ao carregar dados para o gráfico de rosca:", error);
         }
     }
-    
+
     async function carregarDadosBarras() {
         try {
             console.log("📡 Carregando dados para o gráfico de barras...");
@@ -204,8 +204,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
     
-            // Supondo que os dados tenham a estrutura:
-            // [{ disciplina: "Matemática", total_questoes: 55 }, ... ]
             const disciplinas = dados.map(item => item.disciplina);
             const totalQuestoes = dados.map(item => parseInt(item.total_questoes) || 0);
     
@@ -296,9 +294,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
     
-            // Calcula o total de horas estudadas em todas as disciplinas
             const totalHorasEstudo = dados.disciplina.reduce((sum, item) => sum + Number(item.total_horas), 0);
-            // Calcula o percentual para cada disciplina
             const disciplinas = dados.disciplina.map(item => item.disciplina);
             const percentuais = dados.disciplina.map(item => {
                 const percentual = totalHorasEstudo ? ((Number(item.total_horas) / totalHorasEstudo) * 100) : 0;
@@ -332,8 +328,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }]
                 },
                 options: {
-                    // Garante que o gráfico seja vertical
-                    indexAxis: 'x',
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
@@ -377,7 +371,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         } catch (error) {
             console.error("❌ Erro ao carregar dados para o gráfico de percentual por disciplina:", error);
         }
-    }    
+    }
+    
     // Chamada para carregar os gráficos
     await carregarDadosGraficos();
     await carregarDadosDoughnut();

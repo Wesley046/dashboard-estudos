@@ -1,11 +1,46 @@
 document.addEventListener("DOMContentLoaded", async () => {
     let myChart = null;          // Gráfico de linhas
-    let myDoughnutChart = null;    // Gráfico de rosca
-    let myBarChart = null;         // Gráfico de barras (total de questões)
-    let myPercentBarChart = null;  // Gráfico de percentual de estudo por disciplina
+    let myDoughnutChart = null;  // Gráfico de rosca
+    let myBarChart = null;       // Gráfico de barras (total de questões)
+    let myPercentBarChart = null;// Gráfico de percentual de estudo por disciplina
 
     console.log("✅ dashboard.js carregado!");
     console.log(typeof Chart);
+// Função para o menu lateral
+const sidebar = document.querySelector(".sidebar");
+const toggleButton = document.querySelector("#toggleSidebar");
+
+if (toggleButton && sidebar) {
+  toggleButton.addEventListener("click", () => {
+    sidebar.classList.toggle("expanded");
+  });
+}
+
+// Funções para o formulário popup
+const formPopup = document.getElementById("formPopup");
+const openFormButton = document.getElementById("openForm");
+const closeFormButton = document.getElementById("closeForm");
+
+if (openFormButton && formPopup) {
+  openFormButton.addEventListener("click", () => {
+    formPopup.style.display = "flex";
+    // Se tiver alguma função extra para carregar disciplinas, etc.
+    // carregarDisciplinas();
+  });
+}
+
+if (closeFormButton && formPopup) {
+  closeFormButton.addEventListener("click", () => {
+    formPopup.style.display = "none";
+  });
+}
+
+// Fechar o formulário quando clicar fora dele
+window.addEventListener("click", (event) => {
+  if (event.target === formPopup) {
+    formPopup.style.display = "none";
+  }
+});
 
     async function carregarDadosGraficos() {
         try {
@@ -25,6 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
 
+            // Prepara os dados para o gráfico de linhas
             const questoesData = dados.questoes.map(item => ({
                 data: new Date(item.data_estudo).toLocaleDateString(),
                 certas: parseFloat(item.total_certas) || 0,
@@ -34,6 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const datasQuestao = questoesData.map(item => item.data);
             const qtdCertas = questoesData.map(item => item.certas);
             const qtdErradas = questoesData.map(item => item.erradas);
+
             const ctxLine = lineCanvas.getContext("2d");
 
             if (myChart) {
@@ -299,7 +336,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             // Calcula o percentual para cada disciplina
             const disciplinas = dados.disciplina.map(item => item.disciplina);
             const percentuais = dados.disciplina.map(item => {
-                const percentual = totalHorasEstudo ? ((Number(item.total_horas) / totalHorasEstudo) * 100) : 0;
+                const percentual = totalHorasEstudo
+                    ? ((Number(item.total_horas) / totalHorasEstudo) * 100)
+                    : 0;
                 return Number(percentual.toFixed(2));
             });
     
@@ -318,6 +357,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 myPercentBarChart.destroy();
             }
     
+            // Força gráfico de barras vertical
             myPercentBarChart = new Chart(ctxPercentBar, {
                 type: "bar",
                 data: {
@@ -330,9 +370,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                     }]
                 },
                 options: {
-                    indexAxis: 'x',  // Força a exibição vertical (colunas)
                     responsive: true,
                     maintainAspectRatio: false,
+                    // indexAxis: 'x' é o default, mas vamos garantir que não seja 'y'
+                    // indexAxis: 'x',
                     scales: {
                         x: {
                             ticks: { color: "#FFF" },
@@ -374,8 +415,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         } catch (error) {
             console.error("❌ Erro ao carregar dados para o gráfico de percentual por disciplina:", error);
         }
-    }    
-    
+    }
+
     // Chamada para carregar os gráficos
     await carregarDadosGraficos();
     await carregarDadosDoughnut();

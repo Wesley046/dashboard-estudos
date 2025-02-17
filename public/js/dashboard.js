@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
-    let myChart = null;          // Instância do gráfico de linhas
-    let myDoughnutChart = null;    // Instância do gráfico de rosca
-    let myBarChart = null;         // Instância do gráfico de barras
+    let myChart = null;          // Gráfico de linhas
+    let myDoughnutChart = null;    // Gráfico de rosca
+    let myBarChart = null;         // Gráfico de barras (total de questões)
+    let myPercentBarChart = null;  // Gráfico de percentual de estudo por disciplina
 
     console.log("✅ dashboard.js carregado!");
     console.log(typeof Chart);
@@ -35,7 +36,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             const qtdErradas = questoesData.map(item => item.erradas);
             const ctxLine = lineCanvas.getContext("2d");
 
-            // Se já houver um gráfico, destruí-lo antes de recriar
             if (myChart) {
                 myChart.destroy();
             }
@@ -99,7 +99,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
     
-            // Buscar os dados da API para o gráfico de rosca
             const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/graficos?usuario_id=${usuarioId}`);
             if (!response.ok) throw new Error("Erro ao buscar dados de estudo");
             const dados = await response.json();
@@ -112,7 +111,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
     
-            // Extraindo os rótulos e os valores a partir de 'tipoEstudo'
+            // Extraindo os rótulos e os valores
             const categorias = dados.tipoEstudo.map(item => item.tipo_estudo || "Desconhecido");
             const horasPorTipo = dados.tipoEstudo.map(item => parseFloat(item.total_horas) || 0);
     
@@ -276,8 +275,111 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
     
+    async function carregarDadosBarrasPercentual() {
+        try {
+            console.log("📡 Carregando dados para o gráfico de percentual por disciplina...");
+    
+            const usuarioId = localStorage.getItem("usuario_id");
+            if (!usuarioId) {
+                console.error("❌ Usuário não autenticado.");
+                return;
+            }
+    
+            // Usando os dados de "disciplina" do endpoint '/graficos'
+            const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/graficos?usuario_id=${usuarioId}`);
+            if (!response.ok) throw new Error("Erro ao buscar dados de estudo");
+            const dados = await response.json();
+            console.log("✅ Dados carregados para o gráfico de percentual:", dados);
+    
+            if (!dados.disciplina || !Array.isArray(dados.disciplina) || dados.disciplina.length === 0) {
+                console.warn("⚠️ Nenhum dado válido recebido para o gráfico de percentual.");
+                return;
+            }
+    
+            // Calcula o total de horas estudadas em todas as disciplinas
+            const totalHorasEstudo = dados.disciplina.reduce((sum, item) => sum + Number(item.total_horas), 0);
+            // Calcula o percentual para cada disciplina
+            const disciplinas = dados.disciplina.map(item => item.disciplina);
+            const percentuais = dados.disciplina.map(item => {
+                const percentual = totalHorasEstudo ? ((Number(item.total_horas) / totalHorasEstudo) * 100) : 0;
+                return Number(percentual.toFixed(2));
+            });
+    
+            console.log("📊 Dados processados para gráfico de percentual:");
+            console.log("📌 Disciplinas:", disciplinas);
+            console.log("📌 Percentuais:", percentuais);
+    
+            const percentBarCanvas = document.getElementById("percentBarChart");
+            if (!percentBarCanvas) {
+                console.error("❌ O elemento #percentBarChart não foi encontrado no DOM.");
+                return;
+            }
+            const ctxPercentBar = percentBarCanvas.getContext("2d");
+    
+            if (myPercentBarChart) {
+                myPercentBarChart.destroy();
+            }
+    
+            myPercentBarChart = new Chart(ctxPercentBar, {
+                type: "bar",
+                data: {
+                    labels: disciplinas,
+                    datasets: [{
+                        label: "% de Estudo por Disciplina",
+                        data: percentuais,
+                        backgroundColor: "#FFCE56",
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            ticks: { color: "#FFF" },
+                            title: { display: true, text: "Disciplinas", color: "#FFF" }
+                        },
+                        y: {
+                            ticks: { color: "#FFF" },
+                            title: { display: true, text: "% de Estudo", color: "#FFF" },
+                            beginAtZero: true,
+                            max: 100
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: "#FFF" }
+                        },
+                        title: {
+                            display: true,
+                            text: "% de Estudo por Disciplina",
+                            font: { size: 18 },
+                            color: "#FFF"
+                        },
+                        tooltip: {
+                            backgroundColor: "rgba(0, 0, 0, 0.8)",
+                            titleColor: "#FFF",
+                            bodyColor: "#FFF",
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.label}: ${context.parsed}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+    
+            console.log("✅ Gráfico de percentual por disciplina criado com sucesso!");
+    
+        } catch (error) {
+            console.error("❌ Erro ao carregar dados para o gráfico de percentual por disciplina:", error);
+        }
+    }
+    
     // Chamada para carregar os gráficos
     await carregarDadosGraficos();
     await carregarDadosDoughnut();
     await carregarDadosBarras();
+    await carregarDadosBarrasPercentual();
 });

@@ -173,4 +173,45 @@ router.get('/questoesPorDisciplina', async (req, res) => {
     }
 });
 
+// ✅ NOVA ROTA: Obter percentual de estudo por disciplina
+router.get('/percentualPorDisciplina', async (req, res) => {
+    const usuario_id = req.query.usuario_id;
+    if (!usuario_id || isNaN(parseInt(usuario_id))) {
+        return res.status(400).json({ error: "Usuário não autenticado ou ID inválido!" });
+    }
+    try {
+        // Query para calcular o total de horas estudadas por usuário
+        const totalHorasQuery = await db.query(`
+            SELECT COALESCE(SUM(EXTRACT(HOUR FROM horas_estudadas) + EXTRACT(MINUTE FROM horas_estudadas)/60.0), 0) AS total_geral
+            FROM estudos
+            WHERE usuario_id = $1;
+        `, [usuario_id]);
+        
+        const totalGeral = totalHorasQuery.rows[0] ? Number(totalHorasQuery.rows[0].total_geral) : 0;
+        
+        // Query para calcular as horas por disciplina
+        const query = `
+            SELECT disciplina,
+                   COALESCE(SUM(EXTRACT(HOUR FROM horas_estudadas) + EXTRACT(MINUTE FROM horas_estudadas)/60.0), 0) AS total_horas
+            FROM estudos
+            WHERE usuario_id = $1
+            GROUP BY disciplina;
+        `;
+        const result = await db.query(query, [parseInt(usuario_id)]);
+        
+        // Processa os resultados para calcular o percentual
+        const percentualPorDisciplina = result.rows.map(row => ({
+            disciplina: row.disciplina,
+            percentual: totalGeral > 0 
+                ? Number(((Number(row.total_horas) / totalGeral) * 100).toFixed(2)) 
+                : 0
+        }));
+        
+        res.json(percentualPorDisciplina);
+    } catch (error) {
+        console.error("❌ Erro ao buscar percentual por disciplina:", error);
+        res.status(500).json({ error: "Erro interno ao buscar dados" });
+    }
+});
+
 module.exports = router;

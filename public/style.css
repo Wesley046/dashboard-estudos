@@ -329,91 +329,82 @@ body {
 /* ESTILOS PARA OS GRÁFICOS */
 /* ========================== */
 
-/* Contêiner principal que mantém os gráficos */
+/* Contêiner principal dos gráficos */
 .charts-wrapper {
     display: flex;
-    flex-direction: column;  /* Coloca os gráficos um abaixo do outro */
-    align-items: center;      /* Centraliza os elementos */
+    flex-direction: column;
+    align-items: center;
     width: 100%;
-    height: auto;
-    padding-top: 110px;       /* Espaço no topo para o gráfico de linhas */
+    padding-top: 20px;
 }
 
-/* Contêiner do gráfico de linhas */
+/* Contêiner para o gráfico de linhas (acima) */
 .line-chart-container {
-    width: 80%;
+    width: 90%;
     max-width: 1100px;
-    height: 130px;            /* Ajuste conforme necessário */
+    height: 350px;  /* Ajuste conforme necessário */
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 20px;
-    margin-bottom: 20px;      /* Espaçamento abaixo do gráfico de linhas */
+    margin-bottom: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* Contêiner para agrupar os gráficos de rosca e barras em linha */
+/* Contêiner para os gráficos em linha */
 .row-charts {
     display: flex;
     flex-direction: row;
-    justify-content: center;  /* Centraliza horizontalmente a linha de gráficos */
+    justify-content: center;
     align-items: flex-start;
+    gap: 20px;  /* Espaço entre os gráficos */
     width: 100%;
 }
 
 /* Contêiner do gráfico de rosca */
 .doughnut-chart-container {
-    width: 350px;
-    height: 270px;
+    width: 350px;    /* Tamanho fixo para o gráfico de rosca */
+    height: 350px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 10px;
-    margin: 40px 20px 40px 10%; /* Espaçamento, com empuxo para a esquerda */
-    /* Garante que este gráfico fique alinhado à esquerda */
-    align-self: flex-start;
 }
 
-/* Contêiner do gráfico de barras */
+/* Contêiner do gráfico de barras (total de questões) */
 .bar-chart-container {
     width: 350px;
-    height: 270px;
+    height: 350px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 10px;
-    margin: 40px 10% 40px auto; /* Espaçamento: mais margem à direita para empurrar para a esquerda */
-    /* Esse container ficará ao lado do de rosca */
-    align-self: flex-start;
 }
 
-/* Faz com que o canvas ocupe todo o contêiner */
-.line-chart-container canvas,
-.doughnut-chart-container canvas,
-.bar-chart-container canvas {
+/* Contêiner do gráfico de percentual */
+.percent-bar-chart-container {
+    width: 350px;
+    height: 350px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* Garante que o canvas ocupe todo o contêiner */
+.chart-container canvas {
     width: 100% !important;
     height: 100% !important;
 }
 
-/* Responsividade: Em telas menores, os contêineres se ajustam */
+/* Responsividade: em telas menores, os gráficos se empilham */
 @media (max-width: 1024px) {
     .row-charts {
         flex-direction: column;
-        align-items: center;
+        gap: 20px;
     }
-    
     .doughnut-chart-container,
-    .bar-chart-container {
+    .bar-chart-container,
+    .percent-bar-chart-container {
         width: 90% !important;
-        height: auto !important;
-        margin: 20px auto;
+        height: 300px !important;
     }
-}
-
-/* TOTAL DE DIAS ESTUDADOS */
-.total-dias {
-    text-align: center;
-    margin: 20px auto;
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #ffffff;
 }

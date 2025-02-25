@@ -8,72 +8,72 @@
 </head>
 <body class="dashboard-page">
 
-    <div class="sidebar">
-        <button class="toggle-btn" id="toggleSidebar">
-            <img src="https://i.ibb.co/xtFND3Rp/SERGIPE-29-7-x-42-cm.png" alt="Expandir/Recolher">
-        </button>
-        <button class="menu-item" id="openForm">Abrir Formulário</button>
+  <div class="sidebar">
+    <button class="toggle-btn" id="toggleSidebar">
+      <img src="https://i.ibb.co/xtFND3Rp/SERGIPE-29-7-x-42-cm.png" alt="Expandir/Recolher">
+    </button>
+    <button class="menu-item" id="openForm">Abrir Formulário</button>
+  </div>
+
+  <!-- Formulário Popup -->
+  <div id="formPopup" class="form-container">
+    <form id="studyForm">
+      <h2>REGISTRE SEUS ESTUDOS</h2>
+      <input type="hidden" id="data_estudo" name="data_estudo">
+      <label for="disciplina">Disciplina:</label>
+      <select id="disciplina" name="disciplina" required>
+        <option value="">Selecione a disciplina</option>
+      </select>
+      <label for="assunto">Assunto:</label>
+      <select id="assunto" name="assunto" required>
+        <option value="">Selecione o assunto</option>
+      </select>
+      <label for="horas">Horas Estudadas:</label>
+      <input type="time" id="horas" name="horas_estudadas" required>
+      <label for="questoes_erradas">Questões Erradas:</label>
+      <input type="number" id="questoes_erradas" name="questoes_erradas" required>
+      <label for="questoes_certas">Questões Certas:</label>
+      <input type="number" id="questoes_certas" name="questoes_certas" required>
+      <label for="tipo_estudo">Tipo de Estudo:</label>
+      <select id="tipo_estudo" name="tipo_estudo">
+        <option value="teoria">Teoria</option>
+        <option value="prática">Prática</option>
+        <option value="revisão">Revisão</option>
+      </select>
+      <button type="submit">Enviar</button>
+      <button type="button" id="closeForm">Fechar</button>
+    </form>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="charts-wrapper">
+    <!-- Gráfico de Linhas (acima) -->
+    <div class="chart-container line-chart-container">
+      <canvas id="lineChart"></canvas>
     </div>
 
-    <!-- Formulário Popup -->
-    <div id="formPopup" class="form-container">
-        <form id="studyForm">
-            <h2>REGISTRE SEUS ESTUDOS</h2>
-            <input type="hidden" id="data_estudo" name="data_estudo">
-            <label for="disciplina">Disciplina:</label>
-            <select id="disciplina" name="disciplina" required>
-                <option value="">Selecione a disciplina</option>
-            </select>
-            <label for="assunto">Assunto:</label>
-            <select id="assunto" name="assunto" required>
-                <option value="">Selecione o assunto</option>
-            </select>
-            <label for="horas">Horas Estudadas:</label>
-            <input type="time" id="horas" name="horas_estudadas" required>
-            <label for="questoes_erradas">Questões Erradas:</label>
-            <input type="number" id="questoes_erradas" name="questoes_erradas" required>
-            <label for="questoes_certas">Questões Certas:</label>
-            <input type="number" id="questoes_certas" name="questoes_certas" required>
-            <label for="tipo_estudo">Tipo de Estudo:</label>
-            <select id="tipo_estudo" name="tipo_estudo">
-                <option value="teoria">Teoria</option>
-                <option value="prática">Prática</option>
-                <option value="revisão">Revisão</option>
-            </select>
-            <button type="submit">Enviar</button>
-            <button type="button" id="closeForm">Fechar</button>
-        </form>
+    <!-- Linha contendo os três gráficos lado a lado -->
+    <div class="row-charts">
+      <div class="chart-container doughnut-chart-container">
+        <canvas id="doughnutChart"></canvas>
+      </div>
+      <div class="chart-container bar-chart-container">
+        <canvas id="barChart"></canvas>
+      </div>
+      <div class="chart-container percent-bar-chart-container">
+        <canvas id="percentBarChart"></canvas>
+      </div>
     </div>
+  </div>
 
-    <!-- Gráficos -->
-    <div class="charts-wrapper">
-        <!-- Gráfico de Linhas (acima) -->
-        <div class="chart-container line-chart-container">
-            <canvas id="lineChart"></canvas>
-        </div>
-    
-        <!-- Linha contendo os três gráficos lado a lado -->
-        <div class="row-charts">
-            <div class="chart-container doughnut-chart-container">
-                <canvas id="doughnutChart"></canvas>
-            </div>
-            <div class="chart-container bar-chart-container">
-                <canvas id="barChart"></canvas>
-            </div>
-            <div class="chart-container percent-bar-chart-container">
-                <canvas id="percentBarChart"></canvas>
-            </div>
-        </div>
-    </div>
-
-    <!-- Contador de dias de estudo -->
-<div class="total-dias-container">
+  <!-- Contador de dias de estudo -->
+  <div class="total-dias-container">
     <p id="totalDias" class="total-dias"></p>
-</div>
-    
-    <!-- Scripts: Chart.js, Plugin e seu dashboard.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
-    <script src="./js/dashboard.js"></script>
+  </div>
+
+  <!-- Scripts: Chart.js, Plugin e seu dashboard.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+  <script src="./js/dashboard.js"></script>
 </body>
 </html>

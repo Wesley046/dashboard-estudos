@@ -589,18 +589,18 @@ body {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    padding-top: 20px;
+    padding-top: 30px;  /* Espaço no topo */
 }
 
 /* Contêiner para o gráfico de linhas (acima) */
 .line-chart-container {
-    width: 85%;
+    width: 90%;
     max-width: 1000px;
-    height: 190px;  /* Ajuste conforme necessário */
+    height: 250px;      /* Aumentado para maior visibilidade */
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 20px;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -612,7 +612,7 @@ body {
     flex-direction: row;
     justify-content: center;
     align-items: flex-start;
-    gap: 20px;  /* Espaço entre os gráficos */
+    gap: 20px;         /* Espaço entre os gráficos */
     width: 100%;
 }
 
@@ -625,20 +625,20 @@ body {
 
 /* Contêiner do gráfico de rosca */
 .doughnut-chart-container {
-    width: 300px;
-    height: 300px;
+    width: 320px;
+    height: 320px;
 }
 
 /* Contêiner do gráfico de barras (total de questões) */
 .bar-chart-container {
-    width: 300px;
-    height: 300px;
+    width: 320px;
+    height: 320px;
 }
 
-/* Contêiner do gráfico de percentual */
+/* Contêiner do gráfico de percentual (deve ser vertical - colunas) */
 .percent-bar-chart-container {
-    width: 300px;
-    height: 300px;
+    width: 320px;
+    height: 320px;
 }
 
 /* Garante que o canvas ocupe todo o contêiner */

@@ -647,6 +647,22 @@ body {
     height: 100% !important;
 }
 
+/* Contêiner para o contador de dias de estudo */
+.total-dias-container {
+    width: 90%;
+    max-width: 1000px;
+    margin: 20px auto 0 auto;  /* 20px de margem no topo, centralizado horizontalmente */
+    text-align: left;         /* Alinha o texto à esquerda */
+}
+
+/* Estilo do próprio contador */
+.total-dias {
+    font-size: 1.5rem;        /* Tamanho de fonte maior, se desejar */
+    color: #ffffff;
+    font-weight: bold;
+}
+
+
 /* Responsividade: em telas menores, os gráficos se empilham */
 @media (max-width: 1024px) {
     .row-charts {

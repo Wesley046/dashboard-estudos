@@ -376,92 +376,96 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function carregarDadosBarras() {
         try {
-            console.log("📡 Carregando dados para o gráfico de barras...");
-
-            const usuarioId = localStorage.getItem("usuario_id");
-            if (!usuarioId) {
-                console.error("❌ Usuário não autenticado.");
-                return;
-            }
-
-            const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/questoesPorDisciplina?usuario_id=${usuarioId}`);
-            if (!response.ok) throw new Error("Erro ao buscar dados de questões por disciplina");
-            const dados = await response.json();
-            console.log("✅ Dados para gráfico de barras carregados:", dados);
-
-            if (!Array.isArray(dados) || dados.length === 0) {
-                console.warn("⚠️ Nenhum dado válido recebido para o gráfico de barras.");
-                return;
-            }
-
-            const disciplinas = dados.map(item => item.disciplina);
-            const totalQuestoes = dados.map(item => parseInt(item.total_questoes) || 0);
-
-            console.log("📊 Dados processados para gráfico de barras:");
-            console.log("📌 Disciplinas:", disciplinas);
-            console.log("📌 Total de Questões:", totalQuestoes);
-
-            const barCanvas = document.getElementById("barChart");
-            if (!barCanvas) {
-                console.error("❌ O elemento #barChart não foi encontrado no DOM.");
-                return;
-            }
-            const ctxBar = barCanvas.getContext("2d");
-
-            if (myBarChart) {
-                myBarChart.destroy();
-            }
-
-            myBarChart = new Chart(ctxBar, {
-                type: "bar",
-                data: {
-                    labels: disciplinas,
-                    datasets: [{
-                        label: "Total de Questões Respondidas",
-                        data: totalQuestoes,
-                        backgroundColor: "#87CEFA",
-                        borderWidth: 0
-                    }]
+          console.log("📡 Carregando dados para o gráfico de barras...");
+      
+          const usuarioId = localStorage.getItem("usuario_id");
+          if (!usuarioId) {
+            console.error("❌ Usuário não autenticado.");
+            return;
+          }
+      
+          const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/questoesPorDisciplina?usuario_id=${usuarioId}`);
+          if (!response.ok) throw new Error("Erro ao buscar dados de questões por disciplina");
+          const dados = await response.json();
+          console.log("✅ Dados para gráfico de barras carregados:", dados);
+      
+          if (!Array.isArray(dados) || dados.length === 0) {
+            console.warn("⚠️ Nenhum dado válido recebido para o gráfico de barras.");
+            return;
+          }
+      
+          const disciplinas = dados.map(item => item.disciplina);
+          const totalQuestoes = dados.map(item => parseInt(item.total_questoes) || 0);
+      
+          console.log("📊 Dados processados para gráfico de barras:");
+          console.log("📌 Disciplinas:", disciplinas);
+          console.log("📌 Total de Questões:", totalQuestoes);
+      
+          const barCanvas = document.getElementById("barChart");
+          if (!barCanvas) {
+            console.error("❌ O elemento #barChart não foi encontrado no DOM.");
+            return;
+          }
+          const ctxBar = barCanvas.getContext("2d");
+      
+          if (myBarChart) {
+            myBarChart.destroy();
+          }
+      
+          myBarChart = new Chart(ctxBar, {
+            type: "bar",
+            data: {
+              labels: disciplinas,
+              datasets: [{
+                label: "Total de Questões Respondidas",
+                data: totalQuestoes,
+                backgroundColor: "#de3c3c", // Cor definida conforme solicitado
+                borderWidth: 0
+              }]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                x: {
+                  ticks: { color: "#FFF" },
+                  title: { display: true, text: "Matérias", color: "#FFF" }
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        x: {
-                            ticks: { color: "#FFF" },
-                            title: { display: true, text: "Matérias", color: "#FFF" }
-                        },
-                        y: {
-                            ticks: { color: "#FFF" },
-                            title: { display: true, text: "Total de Questões", color: "#FFF" },
-                            beginAtZero: true
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            labels: { color: "#FFF" }
-                        },
-                        title: {
-                            display: true,
-                            text: "Questões Respondidas por Disciplina",
-                            font: { size: 18 },
-                            color: "#FFF"
-                        },
-                        tooltip: {
-                            backgroundColor: "rgba(255, 255, 255, 0.93)",
-                            titleColor: "#FFF",
-                            bodyColor: "#FFF"
-                        }
-                    }
+                y: {
+                  ticks: { color: "#FFF" },
+                  title: { display: true, text: "Total de Questões", color: "#FFF" },
+                  beginAtZero: true
                 }
-            });
-
-            console.log("✅ Gráfico de barras criado com sucesso!");
-
+              },
+              plugins: {
+                legend: {
+                  labels: {
+                    color: "#FFF",
+                    font: { size: 14 },
+                    usePointStyle: true,  // Legenda em forma de círculo
+                    pointStyle: "circle"
+                  }
+                },
+                title: {
+                  display: true,
+                  text: "Questões Respondidas por Disciplina",
+                  font: { size: 18 },
+                  color: "#FFF"
+                },
+                tooltip: {
+                  backgroundColor: "rgba(255, 255, 255, 0.93)",
+                  titleColor: "#FFF",
+                  bodyColor: "#FFF"
+                }
+              }
+            }
+          });
+      
+          console.log("✅ Gráfico de barras criado com sucesso!");
         } catch (error) {
-            console.error("❌ Erro ao carregar dados para o gráfico de barras:", error);
+          console.error("❌ Erro ao carregar dados para o gráfico de barras:", error);
         }
-    }
+      }      
 
     async function carregarDadosBarrasPercentual() {
         try {

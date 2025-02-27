@@ -1,4 +1,4 @@
-ocument.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", async () => {
     // Obtém a data atual, adiciona 1 dia e formata no padrão YYYY-MM-DD
     const today = new Date();
     today.setDate(today.getDate() + 1);

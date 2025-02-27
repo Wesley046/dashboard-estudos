@@ -419,7 +419,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               datasets: [{
                 label: "Total de Questões Respondidas",
                 data: totalQuestoes,
-                backgroundColor: "#de3c3c", // Cor definida conforme solicitado
+                backgroundColor: "#de3c3c",
                 borderWidth: 0
               }]
             },
@@ -429,12 +429,14 @@ document.addEventListener("DOMContentLoaded", async () => {
               scales: {
                 x: {
                   ticks: { color: "#FFF" },
-                  title: { display: true, text: "Matérias", color: "#FFF" }
+                  title: { display: true, text: "Matérias", color: "#FFF" },
+                  grid: { display: false }
                 },
                 y: {
                   ticks: { color: "#FFF" },
                   title: { display: true, text: "Total de Questões", color: "#FFF" },
-                  beginAtZero: true
+                  beginAtZero: true,
+                  grid: { display: false }
                 }
               },
               plugins: {
@@ -442,7 +444,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                   labels: {
                     color: "#FFF",
                     font: { size: 14 },
-                    usePointStyle: true,  // Legenda em forma de círculo
+                    usePointStyle: true,
                     pointStyle: "circle"
                   }
                 },
@@ -453,20 +455,31 @@ document.addEventListener("DOMContentLoaded", async () => {
                   color: "#FFF"
                 },
                 tooltip: {
-                  backgroundColor: "rgba(255, 255, 255, 0.93)",
+                  backgroundColor: "rgba(0, 0, 0, 0.8)", // Fundo levemente preto
                   titleColor: "#FFF",
                   bodyColor: "#FFF"
+                },
+                datalabels: {
+                  formatter: (value) => value.toFixed(0),
+                  color: "#FFF",
+                  anchor: "end",
+                  align: "end",
+                  backgroundColor: "rgba(0, 0, 0, 0.8)",
+                  borderRadius: 3,
+                  padding: 4,
+                  font: { size: 12, weight: "bold" }
                 }
               }
-            }
+            },
+            plugins: [ChartDataLabels]
           });
       
           console.log("✅ Gráfico de barras criado com sucesso!");
         } catch (error) {
           console.error("❌ Erro ao carregar dados para o gráfico de barras:", error);
         }
-      }      
-
+      }
+      
     async function carregarDadosBarrasPercentual() {
         try {
             console.log("📡 Carregando dados para o gráfico de percentual por disciplina...");

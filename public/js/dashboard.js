@@ -159,23 +159,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function carregarDadosGraficos() {
         try {
-            const usuarioId = localStorage.getItem("usuario_id");
-            if (!usuarioId) {
-                console.error("❌ Usuário não autenticado.");
-                return;
-            }
-            const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/graficos?usuario_id=${usuarioId}`);
-            if (!response.ok) throw new Error("Erro ao buscar dados de estudo");
-            const dados = await response.json();
-            console.log("✅ Dados carregados:", dados);
-
-            const lineCanvas = document.getElementById("lineChart");
-            if (!lineCanvas) {
-                console.error("❌ O elemento #lineChart não foi encontrado no DOM.");
-                return;
-            }
-
-            // Prepara os dados para o gráfico de linhas
             const questoesData = dados.questoes.map(item => ({
                 data: new Date(item.data_estudo).toLocaleDateString(),
                 certas: parseFloat(item.total_certas) || 0,
@@ -372,103 +355,90 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function carregarDadosBarras() {
         try {
-            console.log("📡 Carregando dados para o gráfico de rosca...");
+            console.log("📡 Carregando dados para o gráfico de barras...");
 
-    const usuarioId = localStorage.getItem("usuario_id");
-    if (!usuarioId) {
-      console.error("❌ Usuário não autenticado.");
-      return;
-    }
-
-    const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/graficos?usuario_id=${usuarioId}`);
-    if (!response.ok) throw new Error("Erro ao buscar dados de estudo");
-    const dados = await response.json();
-
-    console.log("✅ Dados carregados para o gráfico de rosca:", dados);
-    console.log("📌 Estrutura dos dados recebidos:", JSON.stringify(dados, null, 2));
-
-    if (!dados.tipoEstudo || !Array.isArray(dados.tipoEstudo) || dados.tipoEstudo.length === 0) {
-      console.warn("⚠️ Nenhum dado válido recebido para o gráfico de rosca.");
-      return;
-    }
-
-    // Extraindo os rótulos e os valores
-    const categorias = dados.tipoEstudo.map(item => item.tipo_estudo || "Desconhecido");
-    const horasPorTipo = dados.tipoEstudo.map(item => parseFloat(item.total_horas) || 0);
-
-    console.log("📊 Processando os dados do gráfico de rosca...");
-    console.log("📌 Categorias (labels):", categorias);
-    console.log("📌 Valores (data):", horasPorTipo);
-
-    const doughnutCanvas = document.getElementById("doughnutChart");
-    if (!doughnutCanvas) {
-      console.error("❌ O elemento #doughnutChart não foi encontrado no DOM.");
-      return;
-    }
-    const ctxDoughnut = doughnutCanvas.getContext("2d");
-
-    if (myDoughnutChart) {
-      myDoughnutChart.destroy();
-    }
-
-    myDoughnutChart = new Chart(ctxDoughnut, {
-      type: "doughnut",
-      data: {
-        labels: categorias,
-        datasets: [{
-          data: horasPorTipo,
-          // Cores definidas conforme solicitado:
-          backgroundColor: ["#6a8ce4", "#de3c3c", "#ffc2ba"],
-          borderWidth: 0
-        }]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: "75%",
-        plugins: {
-          title: {
-            display: true,
-            text: "Porcentagem do Tempo de Estudo por Tipo",
-            font: { size: 18 },
-            color: "#FFF"
-          },
-          tooltip: {
-            callbacks: {
-              label: function(context) {
-                return `${context.label}: ${context.parsed.toFixed(1)}h`;
-              }
-            },
-            backgroundColor: "rgba(0, 0, 0, 0.8)",
-            titleColor: "#FFF",
-            bodyColor: "#FFF"
-          },
-          legend: {
-            labels: {
-              font: { size: 14 },
-              color: "#FFF",
-              usePointStyle: true,
-              pointStyle: "circle"
+            const usuarioId = localStorage.getItem("usuario_id");
+            if (!usuarioId) {
+                console.error("❌ Usuário não autenticado.");
+                return;
             }
-          },
-          datalabels: {
-            color: "#FFF",
-            backgroundColor: "rgba(0, 0, 0, 0.1)", // Fundo leve e transparente
-            borderRadius: 3,
-            font: { weight: 'bold', size: 14 },
-            formatter: function(value, context) {
-              return value.toFixed(1) + "h";
-            },
-            padding: 4
-          }
-        }
-      },
-      plugins: [ChartDataLabels]
-    });
 
-    console.log("✅ Gráfico de rosca criado com sucesso!");
-  } catch (error) {
-    console.error("❌ Erro ao carregar dados para o gráfico de rosca:", error)
+            const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/questoesPorDisciplina?usuario_id=${usuarioId}`);
+            if (!response.ok) throw new Error("Erro ao buscar dados de questões por disciplina");
+            const dados = await response.json();
+            console.log("✅ Dados para gráfico de barras carregados:", dados);
+
+            if (!Array.isArray(dados) || dados.length === 0) {
+                console.warn("⚠️ Nenhum dado válido recebido para o gráfico de barras.");
+                return;
+            }
+
+            const disciplinas = dados.map(item => item.disciplina);
+            const totalQuestoes = dados.map(item => parseInt(item.total_questoes) || 0);
+
+            console.log("📊 Dados processados para gráfico de barras:");
+            console.log("📌 Disciplinas:", disciplinas);
+            console.log("📌 Total de Questões:", totalQuestoes);
+
+            const barCanvas = document.getElementById("barChart");
+            if (!barCanvas) {
+                console.error("❌ O elemento #barChart não foi encontrado no DOM.");
+                return;
+            }
+            const ctxBar = barCanvas.getContext("2d");
+
+            if (myBarChart) {
+                myBarChart.destroy();
+            }
+
+            myBarChart = new Chart(ctxBar, {
+                type: "bar",
+                data: {
+                    labels: disciplinas,
+                    datasets: [{
+                        label: "Total de Questões Respondidas",
+                        data: totalQuestoes,
+                        backgroundColor: "#87CEFA",
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            ticks: { color: "#FFF" },
+                            title: { display: true, text: "Matérias", color: "#FFF" }
+                        },
+                        y: {
+                            ticks: { color: "#FFF" },
+                            title: { display: true, text: "Total de Questões", color: "#FFF" },
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: "#FFF" }
+                        },
+                        title: {
+                            display: true,
+                            text: "Questões Respondidas por Disciplina",
+                            font: { size: 18 },
+                            color: "#FFF"
+                        },
+                        tooltip: {
+                            backgroundColor: "rgba(255, 255, 255, 0.93)",
+                            titleColor: "#FFF",
+                            bodyColor: "#FFF"
+                        }
+                    }
+                }
+            });
+
+            console.log("✅ Gráfico de barras criado com sucesso!");
+
+        } catch (error) {
+            console.error("❌ Erro ao carregar dados para o gráfico de barras:", error);
         }
     }
 

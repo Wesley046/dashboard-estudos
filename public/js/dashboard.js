@@ -1,12 +1,17 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    // Define a data atual no formato YYYY-MM-DD para o input hidden
+    const today = new Date().toISOString().split("T")[0];
+    document.getElementById("data_estudo").value = today;
+  
+    // Resto do seu código, como carregar disciplinas, configurar listeners, etc.
     let myChart = null;          // Gráfico de linhas
     let myDoughnutChart = null;  // Gráfico de rosca
     let myBarChart = null;       // Gráfico de barras (total de questões)
     let myPercentBarChart = null;// Gráfico de percentual de estudo por disciplina
-
+  
     console.log("✅ dashboard.js carregado!");
     console.log(typeof Chart);
-
+  
     // Função para carregar as disciplinas
     async function carregarDisciplinas() {
       try {
@@ -22,11 +27,12 @@ document.addEventListener("DOMContentLoaded", async () => {
           option.textContent = item.disciplina;
           selectDisciplina.appendChild(option);
         });
+        console.log("Disciplinas carregadas:", disciplinas);
       } catch (error) {
         console.error("Erro ao carregar disciplinas:", error);
       }
     }
-    
+  
     // Função para carregar os assuntos de uma disciplina específica
     async function carregarAssuntos(disciplinaNome) {
       try {
@@ -39,60 +45,74 @@ document.addEventListener("DOMContentLoaded", async () => {
         selectAssunto.innerHTML = "<option value=''>Selecione o assunto</option>";
         assuntos.forEach(item => {
           const option = document.createElement("option");
-          option.value = item.nome; // Considerando que o backend retorne { nome: "valor" }
+          option.value = item.nome;
           option.textContent = item.nome;
           selectAssunto.appendChild(option);
         });
+        console.log("Assuntos carregados para a disciplina", disciplinaNome, ":", assuntos);
       } catch (error) {
         console.error("Erro ao carregar assuntos:", error);
       }
-    }  
-
+    }
+  
     // Chama a função para carregar as disciplinas ao carregar o DOM
     await carregarDisciplinas();
-
+  
     // Quando a disciplina for alterada, carrega os assuntos
     document.getElementById("disciplina").addEventListener("change", (event) => {
-        carregarAssuntos(event.target.value);
+      carregarAssuntos(event.target.value);
     });
-
+  
+    // Função para atualizar os gráficos (exemplo)
+    async function atualizarGraficos() {
+      try {
+        console.log("Gráficos atualizados com os novos dados.");
+      } catch (error) {
+        console.error("Erro ao atualizar gráficos:", error);
+      }
+    }
+  
+    // Listener para o submit do formulário
     document.getElementById("studyForm").addEventListener("submit", async function(e) {
-        e.preventDefault(); // Impede o comportamento padrão do formulário
-      
-        // Captura os dados do formulário
-        const formData = {
-          data_estudo: document.getElementById("data_estudo").value,
-          disciplina: document.getElementById("disciplina").value,
-          assunto: document.getElementById("assunto").value,
-          horas_estudadas: document.getElementById("horas").value,
-          questoes_erradas: document.getElementById("questoes_erradas").value,
-          questoes_certas: document.getElementById("questoes_certas").value,
-          tipo_estudo: document.getElementById("tipo_estudo").value
-        };
-      
-        try {
-            const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/estudos", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json"
-                },
-                body: JSON.stringify(formData)
-              });              
-      
-          if (!response.ok) {
-            // Exibe o erro retornado pelo servidor, se houver
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Erro ao cadastrar dados");
-          }
-          
-          console.log("Dados cadastrados com sucesso!");
-          // Aqui você pode limpar o formulário ou dar algum feedback ao usuário
-        } catch (error) {
-          console.error("Erro ao cadastrar dados:", error);
-          // Exiba uma mensagem de erro para o usuário, se necessário
+      e.preventDefault();
+      console.log("Submit acionado");
+  
+      // Captura os dados do formulário, incluindo o usuario_id e data_estudo já definida
+      const formData = {
+        usuario_id: document.getElementById("usuario_id").value,
+        data_estudo: document.getElementById("data_estudo").value,
+        disciplina: document.getElementById("disciplina").value,
+        assunto: document.getElementById("assunto").value,
+        horas_estudadas: document.getElementById("horas").value,
+        questoes_erradas: document.getElementById("questoes_erradas").value,
+        questoes_certas: document.getElementById("questoes_certas").value,
+        tipo_estudo: document.getElementById("tipo_estudo").value
+      };
+  
+      console.log("Dados do formulário:", formData);
+  
+      try {
+        const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/estudos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formData)
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Erro ao cadastrar dados");
         }
-      });
-      
+  
+        console.log("Dados cadastrados com sucesso!");
+        await atualizarGraficos();
+        document.getElementById("studyForm").reset();
+      } catch (error) {
+        console.error("Erro ao cadastrar dados:", error);
+      }
+    });
+  
     // Função para o menu lateral
     const sidebar = document.querySelector(".sidebar");
     const toggleButton = document.querySelector("#toggleSidebar");

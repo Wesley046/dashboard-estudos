@@ -1,15 +1,11 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+    // Define a data atual no formato YYYY-MM-DD considerando o fuso horário local
     const today = new Date();
-    const offset = today.getTimezoneOffset() * 60000; // offset em milissegundos
+    const offset = today.getTimezoneOffset() * 60000; // Offset em milissegundos
     const localDate = new Date(today.getTime() - offset);
     const formattedDate = localDate.toISOString().split("T")[0];
     document.getElementById("data_estudo").value = formattedDate;
-  });
-    // Define a data atual no formato YYYY-MM-DD para o input hidden
-    const today = new Date().toISOString().split("T")[0];
-    document.getElementById("data_estudo").value = today;
   
-    // Resto do seu código, como carregar disciplinas, configurar listeners, etc.
     let myChart = null;          // Gráfico de linhas
     let myDoughnutChart = null;  // Gráfico de rosca
     let myBarChart = null;       // Gráfico de barras (total de questões)
@@ -118,6 +114,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Erro ao cadastrar dados:", error);
       }
     });
+
   
     // Função para o menu lateral
     const sidebar = document.querySelector(".sidebar");
@@ -548,4 +545,4 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (error) {
         console.error("Erro ao carregar o total de dias de estudo:", error);
     }
-
+});

@@ -394,6 +394,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
           }
       
+          // Ordena os dados do maior para o menor volume de questões
+          dados.sort((a, b) => parseInt(b.total_questoes) - parseInt(a.total_questoes));
+      
           const disciplinas = dados.map(item => item.disciplina);
           const totalQuestoes = dados.map(item => parseInt(item.total_questoes) || 0);
       
@@ -441,7 +444,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               },
               plugins: {
                 legend: {
-                  position: "bottom", // Legenda abaixo do gráfico
+                  position: "bottom",
                   labels: {
                     color: "#FFF",
                     font: { size: 14 },
@@ -468,17 +471,19 @@ document.addEventListener("DOMContentLoaded", async () => {
                   backgroundColor: "rgba(0, 0, 0, 0.8)",
                   borderRadius: 3,
                   padding: 4,
-                  font: { size: 10, weight: "bold" } // Tamanho reduzido para melhor ajuste
+                  font: { size: 10, weight: "bold" }
                 }
               }
-            }
+            },
+            plugins: [ChartDataLabels]
           });
       
           console.log("✅ Gráfico de barras criado com sucesso!");
         } catch (error) {
           console.error("❌ Erro ao carregar dados para o gráfico de barras:", error);
         }
-      }      
+      }
+            
     async function carregarDadosBarrasPercentual() {
         try {
             console.log("📡 Carregando dados para o gráfico de percentual por disciplina...");

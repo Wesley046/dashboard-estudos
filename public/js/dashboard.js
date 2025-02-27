@@ -159,97 +159,118 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     async function carregarDadosGraficos() {
         try {
-            const questoesData = dados.questoes.map(item => ({
-                data: new Date(item.data_estudo).toLocaleDateString(),
-                certas: parseFloat(item.total_certas) || 0,
-                erradas: parseFloat(item.total_erradas) || 0
-              }));
-            
-              const datasQuestao = questoesData.map(item => item.data);
-              const qtdCertas = questoesData.map(item => item.certas);
-              const qtdErradas = questoesData.map(item => item.erradas);
-              const ctxLine = lineCanvas.getContext("2d");
-            
-              if (myChart) {
-                myChart.destroy();
-              }
-            
-              myChart = new Chart(ctxLine, {
-                type: "line",
-                data: {
-                  labels: datasQuestao,
-                  datasets: [
-                    {
-                      label: "Questões Certas",
-                      data: qtdCertas,
-                      borderColor: "#ffe0dc", // Linha em cor #ffe0dc
-                      backgroundColor: "rgba(255, 224, 220, 0.2)",
-                      borderWidth: 2,
-                      pointBackgroundColor: "#ffe0dc",
-                      pointRadius: 5,
-                      pointHoverRadius: 7,
-                      tension: 0.3,
-                      fill: true
-                    },
-                    {
-                      label: "Questões Erradas",
-                      data: qtdErradas,
-                      borderColor: "#de3c3c", // Linha em cor #de3c3c
-                      backgroundColor: "rgba(222, 60, 60, 0.2)",
-                      borderWidth: 2,
-                      pointBackgroundColor: "#de3c3c",
-                      pointRadius: 5,
-                      pointHoverRadius: 7,
-                      tension: 0.3,
-                      fill: true
-                    }
-                  ]
+          // Obtém o id do usuário e busca os dados da API para os gráficos
+          const usuarioId = localStorage.getItem("usuario_id");
+          if (!usuarioId) {
+            console.error("❌ Usuário não autenticado.");
+            return;
+          }
+          const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/graficos?usuario_id=${usuarioId}`);
+          if (!response.ok) throw new Error("Erro ao buscar dados de gráficos");
+          const dados = await response.json();
+      
+          // Processa os dados para o gráfico de linhas (questões por dia)
+          const questoesData = dados.questoes.map(item => ({
+            data: new Date(item.data_estudo).toLocaleDateString(),
+            certas: parseFloat(item.total_certas) || 0,
+            erradas: parseFloat(item.total_erradas) || 0
+          }));
+      
+          const datasQuestao = questoesData.map(item => item.data);
+          const qtdCertas = questoesData.map(item => item.certas);
+          const qtdErradas = questoesData.map(item => item.erradas);
+      
+          // Certifique-se de que o canvas do gráfico de linhas existe
+          const lineCanvas = document.getElementById("lineChart");
+          if (!lineCanvas) {
+            console.error("❌ O elemento #lineChart não foi encontrado no DOM.");
+            return;
+          }
+          const ctxLine = lineCanvas.getContext("2d");
+      
+          // Se já existir um gráfico, destrói para evitar sobreposição
+          if (myChart) {
+            myChart.destroy();
+          }
+      
+          // Cria o gráfico de linhas com as customizações desejadas
+          myChart = new Chart(ctxLine, {
+            type: "line",
+            data: {
+              labels: datasQuestao,
+              datasets: [
+                {
+                  label: "Questões Certas",
+                  data: qtdCertas,
+                  borderColor: "#ffe0dc", // Linha em cor #ffe0dc
+                  backgroundColor: "rgba(255, 224, 220, 0.2)",
+                  borderWidth: 2,
+                  pointBackgroundColor: "#ffe0dc",
+                  pointRadius: 5,
+                  pointHoverRadius: 7,
+                  tension: 0.3,
+                  fill: true
                 },
-                options: {
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  plugins: {
-                    title: {
-                      display: true,
-                      text: "Total de Questões por Dia",
-                      font: { size: 18, weight: "bold" },
-                      color: "#FFF" // Título em branco
-                    },
-                    legend: {
-                      labels: {
-                        color: "#FFF", // Legenda em branco
-                        font: { size: 14 },
-                        usePointStyle: true,
-                        pointStyle: "circle"
-                      }
-                    }
-                  },
-                  scales: {
-                    x: {
-                      ticks: {
-                        color: "#FFF",
-                        font: { size: 12 }
-                      },
-                      grid: {
-                        display: false // Retira a grade do eixo X
-                      }
-                    },
-                    y: {
-                      ticks: {
-                        color: "#FFF",
-                        font: { size: 12 }
-                      },
-                      grid: {
-                        display: false // Retira a grade do eixo Y
-                      }
-                    }
+                {
+                  label: "Questões Erradas",
+                  data: qtdErradas,
+                  borderColor: "#de3c3c", // Linha em cor #de3c3c
+                  backgroundColor: "rgba(222, 60, 60, 0.2)",
+                  borderWidth: 2,
+                  pointBackgroundColor: "#de3c3c",
+                  pointRadius: 5,
+                  pointHoverRadius: 7,
+                  tension: 0.3,
+                  fill: true
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              plugins: {
+                title: {
+                  display: true,
+                  text: "Total de Questões por Dia",
+                  font: { size: 18, weight: "bold" },
+                  color: "#FFF" // Título em branco
+                },
+                legend: {
+                  labels: {
+                    color: "#FFF", // Legenda em branco
+                    font: { size: 14 },
+                    usePointStyle: true,
+                    pointStyle: "circle"
                   }
                 }
-              });
-            } catch (error) {
-              console.error("❌ Erro ao carregar dados para os gráficos:", error);
+              },
+              scales: {
+                x: {
+                  ticks: {
+                    color: "#FFF",
+                    font: { size: 12 }
+                  },
+                  grid: {
+                    display: false // Retira a grade do eixo X
+                  }
+                },
+                y: {
+                  ticks: {
+                    color: "#FFF",
+                    font: { size: 12 }
+                  },
+                  grid: {
+                    display: false // Retira a grade do eixo Y
+                  }
+                }
+              }
+            }
+          });
+          console.log("✅ Gráfico de linhas criado com sucesso!");
+        } catch (error) {
+          console.error("❌ Erro ao carregar dados para os gráficos:", error);
         }
-    }
+      }      
 
     async function carregarDadosDoughnut() {
         try {

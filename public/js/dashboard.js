@@ -110,12 +110,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("Dados cadastrados com sucesso!");
         await atualizarGraficos();
         document.getElementById("studyForm").reset();
+        location.reload();
       } catch (error) {
         console.error("Erro ao cadastrar dados:", error);
       }
     });
 
-  
+
     // Função para o menu lateral
     const sidebar = document.querySelector(".sidebar");
     const toggleButton = document.querySelector("#toggleSidebar");

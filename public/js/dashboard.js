@@ -180,63 +180,89 @@ document.addEventListener("DOMContentLoaded", async () => {
                 data: new Date(item.data_estudo).toLocaleDateString(),
                 certas: parseFloat(item.total_certas) || 0,
                 erradas: parseFloat(item.total_erradas) || 0
-            }));
-
-            const datasQuestao = questoesData.map(item => item.data);
-            const qtdCertas = questoesData.map(item => item.certas);
-            const qtdErradas = questoesData.map(item => item.erradas);
-            const ctxLine = lineCanvas.getContext("2d");
-
-            if (myChart) {
+              }));
+            
+              const datasQuestao = questoesData.map(item => item.data);
+              const qtdCertas = questoesData.map(item => item.certas);
+              const qtdErradas = questoesData.map(item => item.erradas);
+              const ctxLine = lineCanvas.getContext("2d");
+            
+              if (myChart) {
                 myChart.destroy();
-            }
-
-            myChart = new Chart(ctxLine, {
+              }
+            
+              myChart = new Chart(ctxLine, {
                 type: "line",
                 data: {
-                    labels: datasQuestao,
-                    datasets: [
-                        {
-                            label: "Questões Certas",
-                            data: qtdCertas,
-                            borderColor: "#36A2EB",
-                            backgroundColor: "rgba(54, 162, 235, 0.2)",
-                            borderWidth: 2,
-                            pointBackgroundColor: "#36A2EB",
-                            pointRadius: 5,
-                            pointHoverRadius: 7,
-                            tension: 0.3,
-                            fill: true
-                        },
-                        {
-                            label: "Questões Erradas",
-                            data: qtdErradas,
-                            borderColor: "#FF6384",
-                            backgroundColor: "rgba(255, 99, 132, 0.2)",
-                            borderWidth: 2,
-                            pointBackgroundColor: "#FF6384",
-                            pointRadius: 5,
-                            pointHoverRadius: 7,
-                            tension: 0.3,
-                            fill: true
-                        }
-                    ]
+                  labels: datasQuestao,
+                  datasets: [
+                    {
+                      label: "Questões Certas",
+                      data: qtdCertas,
+                      borderColor: "#ffe0dc", // Cor para questões corretas
+                      backgroundColor: "rgba(255, 224, 220, 0.2)",
+                      borderWidth: 2,
+                      pointBackgroundColor: "#ffe0dc",
+                      pointRadius: 5,
+                      pointHoverRadius: 7,
+                      tension: 0.3,
+                      fill: true
+                    },
+                    {
+                      label: "Questões Erradas",
+                      data: qtdErradas,
+                      borderColor: "#de3c3c", // Cor para questões erradas
+                      backgroundColor: "rgba(222, 60, 60, 0.2)",
+                      borderWidth: 2,
+                      pointBackgroundColor: "#de3c3c",
+                      pointRadius: 5,
+                      pointHoverRadius: 7,
+                      tension: 0.3,
+                      fill: true
+                    }
+                  ]
                 },
                 options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: "Total de Questões por Dia",
-                            font: { size: 18 },
-                            color: "#FFF"
-                        }
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    title: {
+                      display: true,
+                      text: "Total de Questões por Dia",
+                      font: { size: 18, weight: "bold" },
+                      color: "#FFF" // Título em branco
+                    },
+                    legend: {
+                      labels: {
+                        color: "#FFF", // Rótulos da legenda em branco
+                        font: { size: 14 }
+                      }
                     }
+                  },
+                  scales: {
+                    x: {
+                      ticks: {
+                        color: "#FFF", // Datas em branco
+                        font: { size: 12 }
+                      },
+                      grid: {
+                        color: "rgba(255, 255, 255, 0.2)"
+                      }
+                    },
+                    y: {
+                      ticks: {
+                        color: "#FFF", // Rótulos de quantidade em branco
+                        font: { size: 12 }
+                      },
+                      grid: {
+                        color: "rgba(255, 255, 255, 0.2)"
+                      }
+                    }
+                  }
                 }
-            });
-        } catch (error) {
-            console.error("❌ Erro ao carregar dados para os gráficos:", error);
+              });
+            } catch (error) {
+              console.error("❌ Erro ao carregar dados para os gráficos:", error)
         }
     }
 

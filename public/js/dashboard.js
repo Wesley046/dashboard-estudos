@@ -515,9 +515,18 @@ document.addEventListener("DOMContentLoaded", async () => {
             return Number(percentual.toFixed(0));
           });
       
+          // Combina e ordena os dados do maior para o menor percentual
+          const combinados = disciplinas.map((disc, index) => ({
+            disciplina: disc,
+            percentual: percentuais[index]
+          }));
+          combinados.sort((a, b) => b.percentual - a.percentual);
+          const sortedDisciplinas = combinados.map(item => item.disciplina);
+          const sortedPercentuais = combinados.map(item => item.percentual);
+      
           console.log("📊 Dados processados para gráfico de percentual:");
-          console.log("📌 Disciplinas:", disciplinas);
-          console.log("📌 Percentuais:", percentuais);
+          console.log("📌 Disciplinas:", sortedDisciplinas);
+          console.log("📌 Percentuais:", sortedPercentuais);
       
           const percentBarCanvas = document.getElementById("percentBarChart");
           if (!percentBarCanvas) {
@@ -533,10 +542,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           myPercentBarChart = new Chart(ctxPercentBar, {
             type: "bar", // Gráfico vertical
             data: {
-              labels: disciplinas,
+              labels: sortedDisciplinas,
               datasets: [{
                 label: "% de Estudo por Disciplina",
-                data: percentuais,
+                data: sortedPercentuais,
                 backgroundColor: "#ffc2ba", // Cor definida conforme solicitado
                 borderWidth: 0
               }]
@@ -561,7 +570,12 @@ document.addEventListener("DOMContentLoaded", async () => {
               plugins: {
                 legend: {
                   position: "bottom",
-                  labels: { color: "#FFF", font: { size: 14 } }
+                  labels: {
+                    color: "#FFF",
+                    font: { size: 14 },
+                    usePointStyle: true,
+                    pointStyle: "circle"
+                  }
                 },
                 title: {
                   display: true,
@@ -599,6 +613,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           console.error("❌ Erro ao carregar dados para o gráfico de percentual por disciplina:", error);
         }
       }
+      
       
 
     // Chamada para carregar os gráficos

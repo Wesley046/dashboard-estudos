@@ -1,4 +1,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
+    // Define o usuário logado (obtido do localStorage, por exemplo)
+    const usuarioId = localStorage.getItem("usuario_id"); // Certifique-se de que o ID foi armazenado durante o login
+    if (usuarioId) {
+      document.getElementById("usuario_id").value = usuarioId;
+    }
+  
     // Obtém a data atual, adiciona 1 dia e formata no padrão YYYY-MM-DD
     const today = new Date();
     today.setDate(today.getDate() + 1);

@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 
 // Senha em texto plano
-const senha = 'senha123';
+const senha = 'Objetivo47!'
 
 // Número de rounds para gerar o salt
 const saltRounds = 10;

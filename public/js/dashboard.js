@@ -1,11 +1,11 @@
-document.addEventListener("DOMContentLoaded", async () => {
-    // Define a data atual no formato YYYY-MM-DD considerando o fuso horário local
+ocument.addEventListener("DOMContentLoaded", async () => {
+    // Obtém a data atual, adiciona 1 dia e formata no padrão YYYY-MM-DD
     const today = new Date();
-    const offset = today.getTimezoneOffset() * 60000; // Offset em milissegundos
-    const localDate = new Date(today.getTime() - offset);
-    const formattedDate = localDate.toISOString().split("T")[0];
+    today.setDate(today.getDate() + 1);
+    const formattedDate = today.toISOString().split("T")[0];
     document.getElementById("data_estudo").value = formattedDate;
   
+    // Resto do seu código, como carregar disciplinas, configurar listeners, etc.
     let myChart = null;          // Gráfico de linhas
     let myDoughnutChart = null;  // Gráfico de rosca
     let myBarChart = null;       // Gráfico de barras (total de questões)

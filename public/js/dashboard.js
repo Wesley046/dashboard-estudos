@@ -55,6 +55,44 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("disciplina").addEventListener("change", (event) => {
         carregarAssuntos(event.target.value);
     });
+
+    document.getElementById("studyForm").addEventListener("submit", async function(e) {
+        e.preventDefault(); // Impede o comportamento padrão do formulário
+      
+        // Captura os dados do formulário
+        const formData = {
+          data_estudo: document.getElementById("data_estudo").value,
+          disciplina: document.getElementById("disciplina").value,
+          assunto: document.getElementById("assunto").value,
+          horas_estudadas: document.getElementById("horas").value,
+          questoes_erradas: document.getElementById("questoes_erradas").value,
+          questoes_certas: document.getElementById("questoes_certas").value,
+          tipo_estudo: document.getElementById("tipo_estudo").value
+        };
+      
+        try {
+          const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/cadastrar", {
+            method: "POST", // ou o método que o seu backend utiliza para inserir os dados
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+          });
+      
+          if (!response.ok) {
+            // Exibe o erro retornado pelo servidor, se houver
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Erro ao cadastrar dados");
+          }
+          
+          console.log("Dados cadastrados com sucesso!");
+          // Aqui você pode limpar o formulário ou dar algum feedback ao usuário
+        } catch (error) {
+          console.error("Erro ao cadastrar dados:", error);
+          // Exiba uma mensagem de erro para o usuário, se necessário
+        }
+      });
+      
     // Função para o menu lateral
     const sidebar = document.querySelector(".sidebar");
     const toggleButton = document.querySelector("#toggleSidebar");

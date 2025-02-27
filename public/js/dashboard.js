@@ -1,128 +1,98 @@
-let myChart = null;          // Gráfico de linhas
-let myDoughnutChart = null;  // Gráfico de rosca
-let myBarChart = null;       // Gráfico de barras (total de questões)
-let myPercentBarChart = null;// Gráfico de percentual de estudo por disciplina
+document.addEventListener("DOMContentLoaded", async () => {
+    let myChart = null;          // Gráfico de linhas
+    let myDoughnutChart = null;  // Gráfico de rosca
+    let myBarChart = null;       // Gráfico de barras (total de questões)
+    let myPercentBarChart = null;// Gráfico de percentual de estudo por disciplina
 
-console.log("✅ dashboard.js carregado!");
-console.log(typeof Chart);
+    console.log("✅ dashboard.js carregado!");
+    console.log(typeof Chart);
 
-// Função para carregar as disciplinas
-async function carregarDisciplinas() {
-  try {
-    const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/disciplinas");
-    if (!response.ok) throw new Error("Erro ao buscar disciplinas");
-    const disciplinas = await response.json();
-    const selectDisciplina = document.getElementById("disciplina");
-    // Limpa e preenche o select
-    selectDisciplina.innerHTML = "<option value=''>Selecione a disciplina</option>";
-    disciplinas.forEach(item => {
-      const option = document.createElement("option");
-      option.value = item.disciplina;
-      option.textContent = item.disciplina;
-      selectDisciplina.appendChild(option);
-    });
-    console.log("Disciplinas carregadas:", disciplinas);
-  } catch (error) {
-    console.error("Erro ao carregar disciplinas:", error);
-  }
-}
-
-// Função para carregar os assuntos de uma disciplina específica
-async function carregarAssuntos(disciplinaNome) {
-  try {
-    if (!disciplinaNome) return;
-    const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/disciplinas/assuntos?disciplina=${encodeURIComponent(disciplinaNome)}`);
-    if (!response.ok) throw new Error("Erro ao buscar assuntos");
-    const assuntos = await response.json();
-    const selectAssunto = document.getElementById("assunto");
-    // Limpa e preenche o select
-    selectAssunto.innerHTML = "<option value=''>Selecione o assunto</option>";
-    assuntos.forEach(item => {
-      const option = document.createElement("option");
-      option.value = item.nome; // Considerando que o backend retorne { nome: "valor" }
-      option.textContent = item.nome;
-      selectAssunto.appendChild(option);
-    });
-    console.log("Assuntos carregados para a disciplina", disciplinaNome, ":", assuntos);
-  } catch (error) {
-    console.error("Erro ao carregar assuntos:", error);
-  }
-}
-
-// Aguarda o carregamento das disciplinas
-carregarDisciplinas();
-
-// Quando a disciplina for alterada, carrega os assuntos
-document.getElementById("disciplina").addEventListener("change", (event) => {
-  carregarAssuntos(event.target.value);
-});
-
-// Função para atualizar os gráficos (exemplo)
-async function atualizarGraficos() {
-  try {
-    // Aqui você deve buscar os dados atualizados para os gráficos, por exemplo:
-    // const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/dashboard-data");
-    // const dashboardData = await response.json();
-    
-    // Atualize os gráficos com os novos dados:
-    // if (myChart) {
-    //   myChart.data.labels = dashboardData.labels;
-    //   myChart.data.datasets[0].data = dashboardData.lineData;
-    //   myChart.update();
-    // }
-    console.log("Gráficos atualizados com os novos dados.");
-  } catch (error) {
-    console.error("Erro ao atualizar gráficos:", error);
-  }
-}
-
-// Listener para o submit do formulário
-document.getElementById("studyForm").addEventListener("submit", async function(e) {
-  e.preventDefault();
-  console.log("Submit acionado");
-
-  // Se data_estudo estiver vazio, define a data atual
-  if (!document.getElementById("data_estudo").value) {
-    document.getElementById("data_estudo").value = new Date().toISOString().split("T")[0];
-  }
-
-  // Captura os dados do formulário, incluindo o usuario_id
-  const formData = {
-    usuario_id: document.getElementById("usuario_id").value,
-    data_estudo: document.getElementById("data_estudo").value,
-    disciplina: document.getElementById("disciplina").value,
-    assunto: document.getElementById("assunto").value,
-    horas_estudadas: document.getElementById("horas").value,
-    questoes_erradas: document.getElementById("questoes_erradas").value,
-    questoes_certas: document.getElementById("questoes_certas").value,
-    tipo_estudo: document.getElementById("tipo_estudo").value
-  };
-
-  console.log("Dados do formulário:", formData);
-
-  try {
-    const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/cadastrar", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(formData)
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Erro ao cadastrar dados");
+    // Função para carregar as disciplinas
+    async function carregarDisciplinas() {
+      try {
+        const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/disciplinas");
+        if (!response.ok) throw new Error("Erro ao buscar disciplinas");
+        const disciplinas = await response.json();
+        const selectDisciplina = document.getElementById("disciplina");
+        // Limpa e preenche o select
+        selectDisciplina.innerHTML = "<option value=''>Selecione a disciplina</option>";
+        disciplinas.forEach(item => {
+          const option = document.createElement("option");
+          option.value = item.disciplina;
+          option.textContent = item.disciplina;
+          selectDisciplina.appendChild(option);
+        });
+      } catch (error) {
+        console.error("Erro ao carregar disciplinas:", error);
+      }
     }
+    
+    // Função para carregar os assuntos de uma disciplina específica
+    async function carregarAssuntos(disciplinaNome) {
+      try {
+        if (!disciplinaNome) return;
+        const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/disciplinas/assuntos?disciplina=${encodeURIComponent(disciplinaNome)}`);
+        if (!response.ok) throw new Error("Erro ao buscar assuntos");
+        const assuntos = await response.json();
+        const selectAssunto = document.getElementById("assunto");
+        // Limpa e preenche o select
+        selectAssunto.innerHTML = "<option value=''>Selecione o assunto</option>";
+        assuntos.forEach(item => {
+          const option = document.createElement("option");
+          option.value = item.nome; // Considerando que o backend retorne { nome: "valor" }
+          option.textContent = item.nome;
+          selectAssunto.appendChild(option);
+        });
+      } catch (error) {
+        console.error("Erro ao carregar assuntos:", error);
+      }
+    }  
 
-    console.log("Dados cadastrados com sucesso!");
-    // Atualiza os gráficos após o cadastro
-    await atualizarGraficos();
-    // Limpa o formulário
-    document.getElementById("studyForm").reset();
-  } catch (error) {
-    console.error("Erro ao cadastrar dados:", error);
-  }
+    // Chama a função para carregar as disciplinas ao carregar o DOM
+    await carregarDisciplinas();
 
+    // Quando a disciplina for alterada, carrega os assuntos
+    document.getElementById("disciplina").addEventListener("change", (event) => {
+        carregarAssuntos(event.target.value);
+    });
+
+    document.getElementById("studyForm").addEventListener("submit", async function(e) {
+        e.preventDefault(); // Impede o comportamento padrão do formulário
+      
+        // Captura os dados do formulário
+        const formData = {
+          data_estudo: document.getElementById("data_estudo").value,
+          disciplina: document.getElementById("disciplina").value,
+          assunto: document.getElementById("assunto").value,
+          horas_estudadas: document.getElementById("horas").value,
+          questoes_erradas: document.getElementById("questoes_erradas").value,
+          questoes_certas: document.getElementById("questoes_certas").value,
+          tipo_estudo: document.getElementById("tipo_estudo").value
+        };
+      
+        try {
+          const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/cadastrar", {
+            method: "POST", // ou o método que o seu backend utiliza para inserir os dados
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(formData)
+          });
+      
+          if (!response.ok) {
+            // Exibe o erro retornado pelo servidor, se houver
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Erro ao cadastrar dados");
+          }
+          
+          console.log("Dados cadastrados com sucesso!");
+          // Aqui você pode limpar o formulário ou dar algum feedback ao usuário
+        } catch (error) {
+          console.error("Erro ao cadastrar dados:", error);
+          // Exiba uma mensagem de erro para o usuário, se necessário
+        }
+      });
+      
     // Função para o menu lateral
     const sidebar = document.querySelector(".sidebar");
     const toggleButton = document.querySelector("#toggleSidebar");

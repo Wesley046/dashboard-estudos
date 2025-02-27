@@ -8,49 +8,53 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log(typeof Chart);
 
     // Função para carregar as disciplinas
-async function carregarDisciplinas() {
-    try {
-      const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/disciplinas");
-      if (!response.ok) throw new Error("Erro ao buscar disciplinas");
-      const disciplinas = await response.json();
-      const selectDisciplina = document.getElementById("disciplina");
-      // Limpa e preenche o select
-      selectDisciplina.innerHTML = "<option value=''>Selecione a disciplina</option>";
-      disciplinas.forEach(item => {
-        const option = document.createElement("option");
-        option.value = item.disciplina;
-        option.textContent = item.disciplina;
-        selectDisciplina.appendChild(option);
-      });
-    } catch (error) {
-      console.error("Erro ao carregar disciplinas:", error);
+    async function carregarDisciplinas() {
+      try {
+        const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/disciplinas");
+        if (!response.ok) throw new Error("Erro ao buscar disciplinas");
+        const disciplinas = await response.json();
+        const selectDisciplina = document.getElementById("disciplina");
+        // Limpa e preenche o select
+        selectDisciplina.innerHTML = "<option value=''>Selecione a disciplina</option>";
+        disciplinas.forEach(item => {
+          const option = document.createElement("option");
+          option.value = item.disciplina;
+          option.textContent = item.disciplina;
+          selectDisciplina.appendChild(option);
+        });
+      } catch (error) {
+        console.error("Erro ao carregar disciplinas:", error);
+      }
     }
-  }
-  
-  // Função para carregar os assuntos de uma disciplina específica
-  async function carregarAssuntos(disciplinaNome) {
-    try {
-      if (!disciplinaNome) return;
-      const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/disciplinas/assuntos?disciplina=${encodeURIComponent(disciplinaNome)}`);
-      if (!response.ok) throw new Error("Erro ao buscar assuntos");
-      const assuntos = await response.json();
-      const selectAssunto = document.getElementById("assunto");
-      // Limpa e preenche o select
-      selectAssunto.innerHTML = "<option value=''>Selecione o assunto</option>";
-      assuntos.forEach(item => {
-        const option = document.createElement("option");
-        option.value = item.nome; // Considerando que o backend retorne { nome: "valor" }
-        option.textContent = item.nome;
-        selectAssunto.appendChild(option);
-      });
-    } catch (error) {
-      console.error("Erro ao carregar assuntos:", error);
-    }
-  }  
-  // Quando a disciplina for alterada, carrega os assuntos
-document.getElementById("disciplina").addEventListener("change", (event) => {
-    carregarAssuntos(event.target.value);
-  });  
+    
+    // Função para carregar os assuntos de uma disciplina específica
+    async function carregarAssuntos(disciplinaNome) {
+      try {
+        if (!disciplinaNome) return;
+        const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/disciplinas/assuntos?disciplina=${encodeURIComponent(disciplinaNome)}`);
+        if (!response.ok) throw new Error("Erro ao buscar assuntos");
+        const assuntos = await response.json();
+        const selectAssunto = document.getElementById("assunto");
+        // Limpa e preenche o select
+        selectAssunto.innerHTML = "<option value=''>Selecione o assunto</option>";
+        assuntos.forEach(item => {
+          const option = document.createElement("option");
+          option.value = item.nome; // Considerando que o backend retorne { nome: "valor" }
+          option.textContent = item.nome;
+          selectAssunto.appendChild(option);
+        });
+      } catch (error) {
+        console.error("Erro ao carregar assuntos:", error);
+      }
+    }  
+
+    // Chama a função para carregar as disciplinas ao carregar o DOM
+    await carregarDisciplinas();
+
+    // Quando a disciplina for alterada, carrega os assuntos
+    document.getElementById("disciplina").addEventListener("change", (event) => {
+        carregarAssuntos(event.target.value);
+    });
     // Função para o menu lateral
     const sidebar = document.querySelector(".sidebar");
     const toggleButton = document.querySelector("#toggleSidebar");

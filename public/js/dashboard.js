@@ -199,7 +199,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     {
                       label: "Questões Certas",
                       data: qtdCertas,
-                      borderColor: "#ffe0dc", // Cor para questões corretas
+                      borderColor: "#ffe0dc", // Linha em cor #ffe0dc
                       backgroundColor: "rgba(255, 224, 220, 0.2)",
                       borderWidth: 2,
                       pointBackgroundColor: "#ffe0dc",
@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     {
                       label: "Questões Erradas",
                       data: qtdErradas,
-                      borderColor: "#de3c3c", // Cor para questões erradas
+                      borderColor: "#de3c3c", // Linha em cor #de3c3c
                       backgroundColor: "rgba(222, 60, 60, 0.2)",
                       borderWidth: 2,
                       pointBackgroundColor: "#de3c3c",
@@ -234,35 +234,37 @@ document.addEventListener("DOMContentLoaded", async () => {
                     },
                     legend: {
                       labels: {
-                        color: "#FFF", // Rótulos da legenda em branco
-                        font: { size: 14 }
+                        color: "#FFF", // Legenda em branco
+                        font: { size: 14 },
+                        usePointStyle: true,
+                        pointStyle: "circle"
                       }
                     }
                   },
                   scales: {
                     x: {
                       ticks: {
-                        color: "#FFF", // Datas em branco
+                        color: "#FFF",
                         font: { size: 12 }
                       },
                       grid: {
-                        color: "rgba(255, 255, 255, 0.2)"
+                        display: false // Retira a grade do eixo X
                       }
                     },
                     y: {
                       ticks: {
-                        color: "#FFF", // Rótulos de quantidade em branco
+                        color: "#FFF",
                         font: { size: 12 }
                       },
                       grid: {
-                        color: "rgba(255, 255, 255, 0.2)"
+                        display: false // Retira a grade do eixo Y
                       }
                     }
                   }
                 }
               });
             } catch (error) {
-              console.error("❌ Erro ao carregar dados para os gráficos:", error)
+              console.error("❌ Erro ao carregar dados para os gráficos:", error);
         }
     }
 

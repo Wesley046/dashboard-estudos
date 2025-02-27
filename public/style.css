@@ -655,3 +655,10 @@ body {
         height: 300px !important;
     }
 }
+.total-dias {
+    margin: 10px auto;
+    font-size: 1.4rem;
+    color: #ffffff;
+    position: relative;
+    text-align: center;
+  }

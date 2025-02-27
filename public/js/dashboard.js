@@ -71,13 +71,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         };
       
         try {
-          const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/cadastrar", {
-            method: "POST", // ou o método que o seu backend utiliza para inserir os dados
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(formData)
-          });
+            const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/estudos", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+              });              
       
           if (!response.ok) {
             // Exibe o erro retornado pelo servidor, se houver

@@ -56,43 +56,77 @@ document.addEventListener("DOMContentLoaded", async () => {
         carregarAssuntos(event.target.value);
     });
 
+    // Função para atualizar os gráficos
+    async function atualizarGraficos() {
+      try {
+        // Exemplo: buscar dados atualizados do dashboard
+        // const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/dashboard-data");
+        // const dashboardData = await response.json();
+        
+        // Atualize os gráficos com os novos dados:
+        // if (myChart) {
+        //   myChart.data.labels = dashboardData.labels;
+        //   myChart.data.datasets[0].data = dashboardData.lineData;
+        //   myChart.update();
+        // }
+        // if (myDoughnutChart) {
+        //   myDoughnutChart.data.datasets[0].data = dashboardData.doughnutData;
+        //   myDoughnutChart.update();
+        // }
+        // if (myBarChart) {
+        //   myBarChart.data.datasets[0].data = dashboardData.barData;
+        //   myBarChart.update();
+        // }
+        // if (myPercentBarChart) {
+        //   myPercentBarChart.data.datasets[0].data = dashboardData.percentData;
+        //   myPercentBarChart.update();
+        // }
+        console.log("Gráficos atualizados com os novos dados.");
+      } catch (error) {
+        console.error("Erro ao atualizar gráficos:", error);
+      }
+    }
+
+    // Listener para o submit do formulário
     document.getElementById("studyForm").addEventListener("submit", async function(e) {
-        e.preventDefault(); // Impede o comportamento padrão do formulário
-      
-        // Captura os dados do formulário
-        const formData = {
-          data_estudo: document.getElementById("data_estudo").value,
-          disciplina: document.getElementById("disciplina").value,
-          assunto: document.getElementById("assunto").value,
-          horas_estudadas: document.getElementById("horas").value,
-          questoes_erradas: document.getElementById("questoes_erradas").value,
-          questoes_certas: document.getElementById("questoes_certas").value,
-          tipo_estudo: document.getElementById("tipo_estudo").value
-        };
-      
-        try {
-          const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/cadastrar", {
-            method: "POST", // ou o método que o seu backend utiliza para inserir os dados
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(formData)
-          });
-      
-          if (!response.ok) {
-            // Exibe o erro retornado pelo servidor, se houver
-            const errorData = await response.json();
-            throw new Error(errorData.message || "Erro ao cadastrar dados");
-          }
-          
-          console.log("Dados cadastrados com sucesso!");
-          // Aqui você pode limpar o formulário ou dar algum feedback ao usuário
-        } catch (error) {
-          console.error("Erro ao cadastrar dados:", error);
-          // Exiba uma mensagem de erro para o usuário, se necessário
+      e.preventDefault(); // Impede o comportamento padrão do formulário
+  
+      // Captura os dados do formulário, incluindo o usuario_id
+      const formData = {
+        usuario_id: document.getElementById("usuario_id").value,
+        data_estudo: document.getElementById("data_estudo").value,
+        disciplina: document.getElementById("disciplina").value,
+        assunto: document.getElementById("assunto").value,
+        horas_estudadas: document.getElementById("horas").value,
+        questoes_erradas: document.getElementById("questoes_erradas").value,
+        questoes_certas: document.getElementById("questoes_certas").value,
+        tipo_estudo: document.getElementById("tipo_estudo").value
+      };
+  
+      try {
+        const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/cadastrar", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formData)
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Erro ao cadastrar dados");
         }
-      });
-      
+        
+        console.log("Dados cadastrados com sucesso!");
+        // Atualiza os gráficos após o cadastro
+        await atualizarGraficos();
+        // Opcional: limpar o formulário após envio
+        document.getElementById("studyForm").reset();
+      } catch (error) {
+        console.error("Erro ao cadastrar dados:", error);
+      }
+    });
+
     // Função para o menu lateral
     const sidebar = document.querySelector(".sidebar");
     const toggleButton = document.querySelector("#toggleSidebar");

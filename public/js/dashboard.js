@@ -1,4 +1,10 @@
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
+    const today = new Date();
+    const offset = today.getTimezoneOffset() * 60000; // offset em milissegundos
+    const localDate = new Date(today.getTime() - offset);
+    const formattedDate = localDate.toISOString().split("T")[0];
+    document.getElementById("data_estudo").value = formattedDate;
+  });
     // Define a data atual no formato YYYY-MM-DD para o input hidden
     const today = new Date().toISOString().split("T")[0];
     document.getElementById("data_estudo").value = today;
@@ -542,4 +548,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     } catch (error) {
         console.error("Erro ao carregar o total de dias de estudo:", error);
     }
-});
+

@@ -663,21 +663,322 @@ body {
     position: relative;
     text-align: center;
   }
-  /* ====================== */
-/* AJUSTES PARA DISPOSITIVOS MOBILE */
-/* ====================== */
+ /* ========================== */
+/* ESTILOS BASE */
+/* ========================== */
 
-/* Login Container: adaptando a largura */
-@media (max-width: 768px) {
-    .login-container {
-        width: 90%;
-        padding: 20px;
-    }
+body {
+    font-family: Stencil, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    background-image: url('https://i.ibb.co/prZYZ5cG/Banner-Site-01-1920-x-1080-px-1.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 0;
+    color: #ffffff;
 }
-/* Base: estilos já definidos para desktop */
-/* ... (seu código base dos gráficos permanece) ... */
 
-/* Responsividade para Tablets e pequenos laptops (max-width: 1024px) */
+/* ========================== */
+/* ESTILOS DA TELA DE LOGIN */
+/* ========================== */
+
+.login-container {
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    text-align: center;
+    width: 450px;
+}
+
+.logo img {
+    width: 250px;
+    margin-bottom: 40px;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+
+.input-group input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    color: #ffffff;
+    outline: none;
+    padding-left: 25px;
+}
+
+.input-group .icon {
+    color: #000000;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #dd1212;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.5s;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #ff5d5d;
+}
+
+.footer {
+    position: absolute;
+    bottom: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.footer span {
+    color: #ff1a1a;
+}
+
+/* ========================== */
+/* ESTILOS DA DASHBOARD */
+/* ========================== */
+
+.dashboard-container {
+    margin-left: 70px;
+    padding: 20px;
+    width: calc(100% - 70px);
+    transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 70px;
+    height: 100vh;
+    background-color: black;
+    opacity: 0.9;
+    color: white;
+    padding: 10px;
+    transition: width 0.3s ease;
+    overflow: hidden;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebar.expanded {
+    width: 200px;
+}
+
+.sidebar .toggle-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.sidebar .toggle-btn img {
+    width: 50px;
+    transition: transform 0.3s ease;
+}
+
+.sidebar .menu-item {
+    display: none;
+    width: 90%;
+    padding: 12px;
+    background: #ff2a2a;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin: 10px 0;
+    border-radius: 21px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar.expanded .menu-item {
+    display: block;
+}
+
+.sidebar .menu-item:hover {
+    background-color: #ff1a1a;
+}
+
+/* ========================== */
+/* ESTILOS DO FORMULÁRIO */
+/* ========================== */
+
+.form-container {
+    display: none; /* Oculto por padrão */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 340px;
+    background: rgba(53, 53, 53, 0.9);
+    padding: 25px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    z-index: 1001;
+    text-align: center;
+    font-family: "OCR A Std", monospace;
+}
+
+.form-container h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.form-container label {
+    display: block;
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #ffffff;
+    text-align: center;
+    font-weight: bold;
+}
+
+.form-container input,
+.form-container select {
+    width: 55%;
+    padding: 11px;
+    margin-top: 8px;
+    border: 0px solid #ccc;
+    border-radius: 21px;
+    font-size: 0.7rem;
+    background: #ffffff;
+    color: #333;
+    text-align: center;
+    font-family: "OCR A Std", monospace;
+}
+
+.form-container input:focus, 
+.form-container select:focus {
+    border-color: #000000;
+    outline: none;
+}
+
+.form-container button {
+    margin-top: 25px;
+    padding: 12px;
+    width: 60%;
+    background-color: #ff2a2a;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 45px;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.5s ease;
+}
+
+.form-container button:hover {
+    background-color: #ff1a1a;
+}
+
+/* ========================== */
+/* ESTILOS DOS GRÁFICOS */
+/* ========================== */
+
+/* Contêiner principal dos gráficos */
+.charts-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding-top: 30px;
+    gap: 30px;
+}
+
+/* Contêiner para o gráfico de linhas (acima) */
+.line-chart-container {
+    width: 100%;
+    height: 250px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Contêiner para agrupar os gráficos em linha */
+.row-charts {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    margin-top: 40px;
+}
+
+/* Contêiner genérico para cada gráfico */
+.chart-container {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* Contêiner do gráfico de rosca */
+.doughnut-chart-container {
+    width: 320px;
+    height: 320px;
+}
+
+/* Contêiner do gráfico de barras (total de questões) */
+.bar-chart-container {
+    width: 320px;
+    height: 320px;
+}
+
+/* Contêiner do gráfico de percentual (vertical) */
+.percent-bar-chart-container {
+    width: 320px;
+    height: 320px;
+}
+
+/* Garante que o canvas ocupe todo o contêiner */
+.chart-container canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Contêiner para o contador de dias de estudo, abaixo dos gráficos */
+.below-charts-container {
+    display: block;
+    width: 90%;
+    max-width: 1100px;
+    margin: 20px auto 0 auto;
+    text-align: left;
+}
+
+.total-dias {
+    font-size: 1.5rem;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+/* ========================== */
+/* RESPONSIVIDADE */
+/* ========================== */
+
+/* Para telas menores (tablets e pequenos laptops) */
 @media (max-width: 1024px) {
     .row-charts {
         flex-direction: column;
@@ -692,8 +993,12 @@ body {
     }
 }
 
-/* Responsividade para dispositivos móveis (max-width: 768px) */
+/* Para dispositivos móveis */
 @media (max-width: 768px) {
+    body {
+        background-image: none;
+        background-color: #000; /* Fundo preto para dispositivos móveis */
+    }
     .charts-wrapper {
         width: 100%;
         padding: 10px;
@@ -701,11 +1006,11 @@ body {
     .line-chart-container {
         height: 200px;
         padding: 15px;
-        margin-bottom: 20px;
+        margin-bottom: 40px;
     }
     .row-charts {
-        gap: 15px;
         margin-top: 20px;
+        gap: 15px;
     }
     .doughnut-chart-container,
     .bar-chart-container,
@@ -713,18 +1018,25 @@ body {
         width: 95% !important;
         height: 250px !important;
     }
+    .sidebar {
+        width: 60px;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        padding: 5px;
+    }
 }
 
-/* Responsividade para dispositivos muito pequenos (max-width: 480px) */
+/* Para dispositivos muito pequenos */
 @media (max-width: 480px) {
     .charts-wrapper {
-        width: 100%;
         padding: 5px;
     }
     .line-chart-container {
         height: 180px;
         padding: 10px;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
     }
     .row-charts {
         gap: 10px;
@@ -736,83 +1048,4 @@ body {
         width: 100% !important;
         height: 220px !important;
     }
-}
-
-/* Sidebar: reposiciona e reduz para dispositivos mobile */
-@media (max-width: 768px) {
-    .sidebar {
-        width: 60px; /* largura reduzida para visualização compacta */
-        height: 60px;
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        top: auto;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
-        padding: 5px;
-    }
-    
-    /* Ao expandir, pode ocupar toda a largura se necessário */
-    .sidebar.expanded {
-        width: 100%;
-        height: auto;
-        flex-direction: row;
-    }
-    
-    /* Ajusta o conteúdo da dashboard para não ficar oculto atrás da nova posição da sidebar */
-    .dashboard-container {
-        margin: 0;
-        padding-bottom: 70px; /* Espaço para a barra de navegação inferior */
-        width: 100%;
-    }
-}
-
-/* Gráficos e outros conteúdos gerais */
-@media (max-width: 768px) {
-    .charts-wrapper {
-        width: 100%;
-        padding: 10px;
-    }
-    
-    /* Se desejar aumentar a legibilidade dos textos */
-    body {
-        font-size: 14px;
-    }
-}
-
-/* Formulário: se houver necessidade de ajustar além da largura */
-@media (max-width: 768px) {
-    .form-container {
-        width: 90%;
-        padding: 20px;
-    }
-}
-/* Responsividade dos gráficos: empilha os gráficos verticalmente em telas menores */
-@media (max-width: 1024px) {
-    .row-charts {
-        flex-direction: column;
-        gap: 20px;
-    }
-    
-    /* Define dimensões consistentes para os contêineres dos gráficos */
-    .doughnut-chart-container,
-    .bar-chart-container,
-    .percent-bar-chart-container {
-        width: 90% !important;
-        height: 300px !important;
-        margin: 0 auto;
-    }
-}
-.charts-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 90%;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding-top: 30px;
-    gap: 30px; /* Corrigido: '30px' em vez de '30x' */
 }

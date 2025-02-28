@@ -21,6 +21,9 @@ const authRoutes = require("./src/routes/authRoutes");
 const dashboardRoutes = require("./src/routes/dashboardRoutes");
 const disciplinasRoutes = require("./src/routes/disciplinasRoutes");
 const estudosRoutes = require("./src/routes/estudosRoutes");
+const usuariosRoutes = require("./src/routes/usuariosRoutes");
+app.use("/api/usuarios", usuariosRoutes);
+
 
 // ✅ Registrar Rotas
 app.use("/api/auth", authRoutes);

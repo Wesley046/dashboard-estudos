@@ -1593,55 +1593,61 @@ button:hover {
 }
 
 /* ========================== */
-/* RESPONSIVIDADE */
+/* RESPONSIVIDADE - BREAKPOINTS */
 /* ========================== */
 
 /* Para telas menores (tablets e pequenos laptops) */
 @media (max-width: 1024px) {
+    /* Se necessário, ajuste o contêiner dos gráficos */
+    .charts-wrapper {
+      width: 95%;
+      margin: 0 auto;
+    }
+    /* Para garantir que os gráficos individuais se encaixem bem */
     .chart-container {
-        width: 90% !important;
-        margin: 0 auto;
+      width: 90% !important;
+      margin: 0 auto;
     }
-}
-
-/* Para dispositivos móveis */
-@media (max-width: 768px) {
+  }
+  
+  /* Para dispositivos móveis (max-width: 768px) */
+  @media (max-width: 768px) {
     body {
-        background-image: none;
-        background-color: #000;
+      background-image: none;
+      background-color: #000; /* Fundo preto para mobile */
     }
+    /* Oculta o menu lateral para evitar sobreposição */
+    .sidebar {
+      display: none;
+    }
+    /* Ajusta o contêiner dos gráficos para ocupar toda a largura */
     .charts-wrapper {
-        width: 100%;
-        padding: 10px;
+      width: 100%;
+      padding: 10px;
+      margin: 0 auto;
     }
-    /* Mantenha os tamanhos "normais" */
+    /* Mantenha o gráfico de linhas com a mesma posição base, mas se precisar de um pequeno ajuste: */
     .line-chart-container {
-        height: 250px;
-        padding: 20px;
-        margin-bottom: 80px;
+      /* Se estiver fora da tela, ajuste apenas o margin-top */
+      margin-top: 20px;
     }
-    .doughnut-chart-container,
-    .bar-chart-container,
-    .percent-bar-chart-container {
-        width: 320px !important;
-        height: 320px !important;
-    }
-}
-
-/* Para dispositivos muito pequenos */
-@media (max-width: 480px) {
+  }
+  
+  /* Para dispositivos muito pequenos (max-width: 480px) */
+  @media (max-width: 480px) {
     .charts-wrapper {
-        padding: 5px;
+      padding: 5px;
+      margin: 0 auto;
     }
     .line-chart-container {
-        height: 220px;
-        padding: 15px;
-        margin-bottom: 60px;
+      /* Ajuste leve para telas muito pequenas */
+      height: 220px;  /* Se precisar reduzir um pouco a altura */
+      padding: 15px;
+      margin-top: 15px;
+      margin-bottom: 60px;
     }
-    .doughnut-chart-container,
-    .bar-chart-container,
-    .percent-bar-chart-container {
-        width: 100% !important;
-        height: 250px !important;
+    .chart-container {
+      width: 100% !important;
     }
-}
+  }
+  

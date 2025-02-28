@@ -674,6 +674,69 @@ body {
         padding: 20px;
     }
 }
+/* Base: estilos já definidos para desktop */
+/* ... (seu código base dos gráficos permanece) ... */
+
+/* Responsividade para Tablets e pequenos laptops (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .row-charts {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .doughnut-chart-container,
+    .bar-chart-container,
+    .percent-bar-chart-container {
+        width: 90% !important;
+        height: 300px !important;
+        margin: 0 auto;
+    }
+}
+
+/* Responsividade para dispositivos móveis (max-width: 768px) */
+@media (max-width: 768px) {
+    .charts-wrapper {
+        width: 100%;
+        padding: 10px;
+    }
+    .line-chart-container {
+        height: 200px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    .row-charts {
+        gap: 15px;
+        margin-top: 20px;
+    }
+    .doughnut-chart-container,
+    .bar-chart-container,
+    .percent-bar-chart-container {
+        width: 95% !important;
+        height: 250px !important;
+    }
+}
+
+/* Responsividade para dispositivos muito pequenos (max-width: 480px) */
+@media (max-width: 480px) {
+    .charts-wrapper {
+        width: 100%;
+        padding: 5px;
+    }
+    .line-chart-container {
+        height: 180px;
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+    .row-charts {
+        gap: 10px;
+        margin-top: 15px;
+    }
+    .doughnut-chart-container,
+    .bar-chart-container,
+    .percent-bar-chart-container {
+        width: 100% !important;
+        height: 220px !important;
+    }
+}
 
 /* Sidebar: reposiciona e reduz para dispositivos mobile */
 @media (max-width: 768px) {

@@ -1114,7 +1114,7 @@ button:hover {
 }
 
 /* ========================== */
-/* ESTILOS DOS GRÁFICOS */
+/* ESTILOS DOS GRÁFICOS (BASE) */
 /* ========================== */
 
 /* Contêiner principal dos gráficos */
@@ -1129,20 +1129,20 @@ button:hover {
     gap: 30px;
 }
 
-/* Contêiner para o gráfico de linhas (acima) */
+/* Contêiner para o gráfico de linhas (desktop) */
 .line-chart-container {
     width: 100%;
-    height: 180px;           /* Reduzido para 180px */
+    height: 250px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
-    padding: 15px;           /* Padding reduzido */
-    margin: 20px auto 40px auto;  /* 20px de margem superior, 40px inferior */
+    padding: 20px;
+    margin-bottom: 80px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* Contêiner para agrupar os gráficos em linha */
+/* Contêiner para agrupar os gráficos em linha (desktop) */
 .row-charts {
     display: flex;
     flex-direction: row;
@@ -1161,19 +1161,19 @@ button:hover {
     margin: 0 auto;
 }
 
-/* Contêiner do gráfico de rosca */
+/* Contêiner do gráfico de rosca (desktop) */
 .doughnut-chart-container {
     width: 320px;
     height: 320px;
 }
 
-/* Contêiner do gráfico de barras (total de questões) */
+/* Contêiner do gráfico de barras (total de questões) (desktop) */
 .bar-chart-container {
     width: 320px;
     height: 320px;
 }
 
-/* Contêiner do gráfico de percentual (vertical) */
+/* Contêiner do gráfico de percentual (desktop) */
 .percent-bar-chart-container {
     width: 320px;
     height: 320px;
@@ -1185,7 +1185,7 @@ button:hover {
     height: 100% !important;
 }
 
-/* Contêiner para o contador de dias de estudo, abaixo dos gráficos */
+/* Contêiner para o contador de dias de estudo */
 .below-charts-container {
     display: block;
     width: 90%;
@@ -1204,7 +1204,7 @@ button:hover {
 /* RESPONSIVIDADE */
 /* ========================== */
 
-/* Para telas menores (tablets e pequenos laptops) */
+/* Para telas menores (tablets e pequenos laptops, max-width: 1024px) */
 @media (max-width: 1024px) {
     .row-charts {
         flex-direction: column;
@@ -1219,19 +1219,22 @@ button:hover {
     }
 }
 
-/* Para dispositivos móveis */
+/* Para dispositivos móveis (max-width: 768px) - redução de 35% */
 @media (max-width: 768px) {
     body {
         background-image: none;
-        background-color: #000; /* Fundo preto */
+        background-color: #000;
     }
     .charts-wrapper {
         width: 100%;
         padding: 10px;
     }
+    /* Reduzindo 35% em relação aos valores desktop */
     .line-chart-container {
-        height: 160px;
-        padding: 10px;
+        height: 250px * 0.65; /* Aproximadamente 163px */
+        /* Ou defina manualmente */
+        height: 160px;  /* Valor arredondado */
+        padding: 15px;
         margin: 20px auto 30px auto;
     }
     .row-charts {
@@ -1242,7 +1245,8 @@ button:hover {
     .bar-chart-container,
     .percent-bar-chart-container {
         width: 95% !important;
-        height: 250px !important;
+        height: 250px * 0.65; /* Aproximadamente 163px */
+        height: 160px !important;
     }
     .sidebar {
         width: 60px;
@@ -1254,13 +1258,14 @@ button:hover {
     }
 }
 
-/* Para dispositivos muito pequenos */
+/* Para dispositivos muito pequenos (max-width: 480px) - redução de 35% */
 @media (max-width: 480px) {
     .charts-wrapper {
         padding: 5px;
     }
     .line-chart-container {
-        height: 140px;
+        height: 250px * 0.65; /* Aproximadamente 163px */
+        height: 140px;  /* Valor arredondado para muito pequenos */
         padding: 8px;
         margin: 15px auto 20px auto;
     }
@@ -1272,6 +1277,7 @@ button:hover {
     .bar-chart-container,
     .percent-bar-chart-container {
         width: 100% !important;
-        height: 220px !important;
+        height: 250px * 0.65; /* Aproximadamente 163px */
+        height: 130px !important;
     }
 }

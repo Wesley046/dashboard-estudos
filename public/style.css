@@ -1597,15 +1597,15 @@ button:hover {
 /* ========================== */
 
 /* Para telas menores (tablets e pequenos laptops) */
-@media (max-width: 1024px) {
+/* @media (max-width: 1024px) {
     .chart-container {
         width: 90% !important;
         margin: 0 auto;
     }
-}
+} */
 
 /* Para dispositivos móveis */
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     body {
         background-image: none;
         background-color: #000;
@@ -1613,9 +1613,9 @@ button:hover {
     .charts-wrapper {
         width: 100%;
         padding: 10px;
-    }
+    } */
     /* Mantenha os tamanhos "normais" */
-    .line-chart-container {
+    /* .line-chart-container {
         height: 250px;
         padding: 20px;
         margin-bottom: 80px;
@@ -1626,10 +1626,10 @@ button:hover {
         width: 320px !important;
         height: 320px !important;
     }
-}
+} */
 
 /* Para dispositivos muito pequenos */
-@media (max-width: 480px) {
+/* @media (max-width: 480px) {
     .charts-wrapper {
         padding: 5px;
     }
@@ -1643,5 +1643,66 @@ button:hover {
     .percent-bar-chart-container {
         width: 100% !important;
         height: 250px !important;
+    }
+} */
+
+
+/* Para telas menores (375px e 768px) - Gráficos um abaixo do outro */
+@media (max-width: 768px) {
+    body {
+        background-image: none;
+        background-color: #000;
+    }
+    .row-charts {
+        flex-direction: column; /* Coloca os gráficos em uma coluna */
+        gap: 20px; /* Adiciona espaço entre os gráficos */
+        width: 100%;
+        align-items: center;
+    }
+
+    .line-chart-container {
+        width: 100% !important;  /* Ocupar toda a largura disponível */
+        max-width: 350px; /* Define um limite máximo */
+        height: auto; /* Mantém a altura ajustável */
+        padding: 15px; /* Adiciona espaço interno */
+        margin: 300px auto 0 auto !important; /* Adiciona margem no topo */
+    }
+
+    .chart-container, 
+    .doughnut-chart-container, 
+    .bar-chart-container, 
+    .percent-bar-chart-container {
+        width: 90% !important; /* Ajusta a largura para 90% */
+        max-width: 350px; /* Define um tamanho máximo */
+        height: auto; /* Mantém altura ajustável */
+        margin: 0 auto; /* Centraliza */
+    }
+}
+
+/* Para telas muito pequenas (até 375px) */
+@media (max-width: 375px) {
+    .row-charts {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+        align-items: center;
+    }
+
+    .line-chart-container {
+        width: 95% !important;
+        max-width: 320px;
+        height: auto;
+        padding: 10px;
+        margin: 40px auto 0 auto !important; /* Aumenta a margem no topo */
+    }
+
+    .chart-container, 
+    .doughnut-chart-container, 
+    .bar-chart-container, 
+    .percent-bar-chart-container {
+        width: 95% !important;
+        max-width: 320px;
+        height: auto;
+        margin: 0 auto;
     }
 }

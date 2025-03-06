@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
     // Define o usuário logado (obtido do localStorage, por exemplo)
-    const usuarioId = localStorage.getItem("usuario_id"); // Certifique-se de que o ID foi armazenado durante o login
+    const usuarioId = localStorage.getItem("usuario_id"); 
     if (usuarioId) {
       document.getElementById("usuario_id").value = usuarioId;
     }
@@ -11,13 +11,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const formattedDate = today.toISOString().split("T")[0];
     document.getElementById("data_estudo").value = formattedDate;
   
-    // Resto do seu código, como carregar disciplinas, configurar listeners, etc.
+  
     let myChart = null;          // Gráfico de linhas
     let myDoughnutChart = null;  // Gráfico de rosca
     let myBarChart = null;       // Gráfico de barras (total de questões)
     let myPercentBarChart = null;// Gráfico de percentual de estudo por disciplina
   
-    console.log("✅ dashboard.js carregado!");
+    console.log(" dashboard.js carregado!");
     console.log(typeof Chart);
   
     // Função para carregar as disciplinas
@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           const qtdCertas = questoesData.map(item => item.certas);
           const qtdErradas = questoesData.map(item => item.erradas);
       
-          // Certifique-se de que o canvas do gráfico de linhas existe
+
           const lineCanvas = document.getElementById("lineChart");
           if (!lineCanvas) {
             console.error("❌ O elemento #lineChart não foi encontrado no DOM.");
@@ -188,12 +188,12 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
           const ctxLine = lineCanvas.getContext("2d");
       
-          // Se já existir um gráfico, destrói para evitar sobreposição
+          //  evitar sobreposição
           if (myChart) {
             myChart.destroy();
           }
       
-          // Cria o gráfico de linhas com as customizações desejadas
+          // gráfico de linhas com as customizações
           myChart = new Chart(ctxLine, {
             type: "line",
             data: {
@@ -202,7 +202,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 {
                   label: "Questões Certas",
                   data: qtdCertas,
-                  borderColor: "#ffe0dc", // Linha em cor #ffe0dc
+                  borderColor: "#ffe0dc",
                   backgroundColor: "rgba(255, 224, 220, 0.2)",
                   borderWidth: 2,
                   pointBackgroundColor: "#ffe0dc",
@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 {
                   label: "Questões Erradas",
                   data: qtdErradas,
-                  borderColor: "#de3c3c", // Linha em cor #de3c3c
+                  borderColor: "#de3c3c", 
                   backgroundColor: "rgba(222, 60, 60, 0.2)",
                   borderWidth: 2,
                   pointBackgroundColor: "#de3c3c",
@@ -233,11 +233,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                   display: true,
                   text: "Total de Questões por Dia",
                   font: { size: 18, weight: "bold" },
-                  color: "#FFF" // Título em branco
+                  color: "#FFF" 
                 },
                 legend: {
                   labels: {
-                    color: "#FFF", // Legenda em branco
+                    color: "#FFF", 
                     font: { size: 14 },
                     usePointStyle: true,
                     pointStyle: "circle"
@@ -251,7 +251,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     font: { size: 12 }
                   },
                   grid: {
-                    display: false // Retira a grade do eixo X
+                    display: false 
                   }
                 },
                 y: {
@@ -260,25 +260,25 @@ document.addEventListener("DOMContentLoaded", async () => {
                     font: { size: 12 }
                   },
                   grid: {
-                    display: false // Retira a grade do eixo Y
+                    display: false 
                   }
                 }
               }
             }
           });
-          console.log("✅ Gráfico de linhas criado com sucesso!");
+          console.log(" Gráfico de linhas criado com sucesso!");
         } catch (error) {
-          console.error("❌ Erro ao carregar dados para os gráficos:", error);
+          console.error(" Erro ao carregar dados para os gráficos:", error);
         }
       }      
 
     async function carregarDadosDoughnut() {
         try {
-            console.log("📡 Carregando dados para o gráfico de rosca...");
+            console.log(" Carregando dados para o gráfico de rosca...");
 
     const usuarioId = localStorage.getItem("usuario_id");
     if (!usuarioId) {
-      console.error("❌ Usuário não autenticado.");
+      console.error(" Usuário não autenticado.");
       return;
     }
 
@@ -298,13 +298,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     const categorias = dados.tipoEstudo.map(item => item.tipo_estudo || "Desconhecido");
     const horasPorTipo = dados.tipoEstudo.map(item => parseFloat(item.total_horas) || 0);
 
-    console.log("📊 Processando os dados do gráfico de rosca...");
-    console.log("📌 Categorias (labels):", categorias);
-    console.log("📌 Valores (data):", horasPorTipo);
+    console.log(" Processando os dados do gráfico de rosca...");
+    console.log(" Categorias (labels):", categorias);
+    console.log(" Valores (data):", horasPorTipo);
 
     const doughnutCanvas = document.getElementById("doughnutChart");
     if (!doughnutCanvas) {
-      console.error("❌ O elemento #doughnutChart não foi encontrado no DOM.");
+      console.error(" O elemento #doughnutChart não foi encontrado no DOM.");
       return;
     }
     const ctxDoughnut = doughnutCanvas.getContext("2d");
@@ -319,7 +319,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         labels: categorias,
         datasets: [{
           data: horasPorTipo,
-          // Cores definidas conforme solicitado:
+          
           backgroundColor: ["#6a8ce4", "#de3c3c", "#ffc2ba"],
           borderWidth: 0
         }]
@@ -355,7 +355,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           },
           datalabels: {
             color: "#FFF",
-            backgroundColor: "rgba(0, 0, 0, 0.1)", // Fundo leve e transparente
+            backgroundColor: "rgba(0, 0, 0, 0.1)", 
             borderRadius: 3,
             font: { weight: 'bold', size: 14 },
             formatter: function(value, context) {
@@ -368,9 +368,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       plugins: [ChartDataLabels]
     });
 
-    console.log("✅ Gráfico de rosca criado com sucesso!");
+    console.log(" Gráfico de rosca criado com sucesso!");
   } catch (error) {
-    console.error("❌ Erro ao carregar dados para o gráfico de rosca:", error);
+    console.error(" Erro ao carregar dados para o gráfico de rosca:", error);
         }
     }
 
@@ -380,17 +380,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       
           const usuarioId = localStorage.getItem("usuario_id");
           if (!usuarioId) {
-            console.error("❌ Usuário não autenticado.");
+            console.error(" Usuário não autenticado.");
             return;
           }
       
           const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/questoesPorDisciplina?usuario_id=${usuarioId}`);
           if (!response.ok) throw new Error("Erro ao buscar dados de questões por disciplina");
           const dados = await response.json();
-          console.log("✅ Dados para gráfico de barras carregados:", dados);
+          console.log(" Dados para gráfico de barras carregados:", dados);
       
           if (!Array.isArray(dados) || dados.length === 0) {
-            console.warn("⚠️ Nenhum dado válido recebido para o gráfico de barras.");
+            console.warn(" Nenhum dado válido recebido para o gráfico de barras.");
             return;
           }
       
@@ -400,13 +400,13 @@ document.addEventListener("DOMContentLoaded", async () => {
           const disciplinas = dados.map(item => item.disciplina);
           const totalQuestoes = dados.map(item => parseInt(item.total_questoes) || 0);
       
-          console.log("📊 Dados processados para gráfico de barras:");
-          console.log("📌 Disciplinas:", disciplinas);
-          console.log("📌 Total de Questões:", totalQuestoes);
+          console.log(" Dados processados para gráfico de barras:");
+          console.log(" Disciplinas:", disciplinas);
+          console.log(" Total de Questões:", totalQuestoes);
       
           const barCanvas = document.getElementById("barChart");
           if (!barCanvas) {
-            console.error("❌ O elemento #barChart não foi encontrado no DOM.");
+            console.error(" O elemento #barChart não foi encontrado no DOM.");
             return;
           }
           const ctxBar = barCanvas.getContext("2d");
@@ -459,7 +459,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                   color: "#FFF"
                 },
                 tooltip: {
-                  backgroundColor: "rgba(0, 0, 0, 0.8)", // Fundo levemente preto
+                  backgroundColor: "rgba(0, 0, 0, 0.8)", 
                   titleColor: "#FFF",
                   bodyColor: "#FFF"
                 },
@@ -478,9 +478,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             plugins: [ChartDataLabels]
           });
       
-          console.log("✅ Gráfico de barras criado com sucesso!");
+          console.log(" Gráfico de barras criado com sucesso!");
         } catch (error) {
-          console.error("❌ Erro ao carregar dados para o gráfico de barras:", error);
+          console.error("Erro ao carregar dados para o gráfico de barras:", error);
         }
       }
 
@@ -490,17 +490,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       
           const usuarioId = localStorage.getItem("usuario_id");
           if (!usuarioId) {
-            console.error("❌ Usuário não autenticado.");
+            console.error(" Usuário não autenticado.");
             return;
           }
       
           const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/graficos?usuario_id=${usuarioId}`);
           if (!response.ok) throw new Error("Erro ao buscar dados de estudo");
           const dados = await response.json();
-          console.log("✅ Dados carregados para o gráfico de percentual:", dados);
+          console.log(" Dados carregados para o gráfico de percentual:", dados);
       
           if (!dados.disciplina || !Array.isArray(dados.disciplina) || dados.disciplina.length === 0) {
-            console.warn("⚠️ Nenhum dado válido recebido para o gráfico de percentual.");
+            console.warn(" Nenhum dado válido recebido para o gráfico de percentual.");
             return;
           }
       
@@ -524,13 +524,13 @@ document.addEventListener("DOMContentLoaded", async () => {
           const sortedDisciplinas = combinados.map(item => item.disciplina);
           const sortedPercentuais = combinados.map(item => item.percentual);
       
-          console.log("📊 Dados processados para gráfico de percentual:");
-          console.log("📌 Disciplinas:", sortedDisciplinas);
-          console.log("📌 Percentuais:", sortedPercentuais);
+          console.log(" Dados processados para gráfico de percentual:");
+          console.log(" Disciplinas:", sortedDisciplinas);
+          console.log(" Percentuais:", sortedPercentuais);
       
           const percentBarCanvas = document.getElementById("percentBarChart");
           if (!percentBarCanvas) {
-            console.error("❌ O elemento #percentBarChart não foi encontrado no DOM.");
+            console.error(" O elemento #percentBarChart não foi encontrado no DOM.");
             return;
           }
           const ctxPercentBar = percentBarCanvas.getContext("2d");
@@ -540,13 +540,13 @@ document.addEventListener("DOMContentLoaded", async () => {
           }
       
           myPercentBarChart = new Chart(ctxPercentBar, {
-            type: "bar", // Gráfico vertical
+            type: "bar", 
             data: {
               labels: sortedDisciplinas,
               datasets: [{
                 label: "% de Estudo por Disciplina",
                 data: sortedPercentuais,
-                backgroundColor: "#ffc2ba", // Cor definida conforme solicitado
+                backgroundColor: "#ffc2ba", 
                 borderWidth: 0
               }]
             },
@@ -608,9 +608,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             plugins: [ChartDataLabels]
           });
       
-          console.log("✅ Gráfico de percentual por disciplina criado com sucesso!");
+          console.log(" Gráfico de percentual por disciplina criado com sucesso!");
         } catch (error) {
-          console.error("❌ Erro ao carregar dados para o gráfico de percentual por disciplina:", error);
+          console.error(" Erro ao carregar dados para o gráfico de percentual por disciplina:", error);
         }
       }
       

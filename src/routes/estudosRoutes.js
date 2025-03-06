@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 
-// ✅ Rota para inserir um novo estudo
+// Rota para inserir um novo estudo
 router.post('/', async (req, res) => {
     const { usuario_id, disciplina, assunto, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo } = req.body;
 
@@ -16,8 +16,8 @@ router.post('/', async (req, res) => {
             [usuario_id, disciplina, assunto, horas_estudadas, data_estudo, questoes_erradas, questoes_certas, tipo_estudo]
         );
 
-        console.log("✅ Estudo cadastrado com sucesso!");
-        res.status(201).json({ message: "✅ Estudo cadastrado com sucesso!" });
+        console.log("Estudo cadastrado com sucesso!");
+        res.status(201).json({ message: "Estudo cadastrado com sucesso!" });
 
     } catch (err) {
         console.error("❌ Erro ao cadastrar estudo:", err);
@@ -25,14 +25,14 @@ router.post('/', async (req, res) => {
     }
 });
 
-// ✅ Rota para obter dados dos gráficos
+// Rota para obter dados dos gráficos
 router.get('/graficos', async (req, res) => {
     const usuario_id = req.query.usuario_id;
 
-    console.log("🟢 Requisição recebida para gráficos. Usuário ID:", usuario_id);
+    console.log(" Requisição recebida para gráficos. Usuário ID:", usuario_id);
 
     if (!usuario_id || isNaN(parseInt(usuario_id))) {
-        console.error("❌ Usuário ID inválido:", usuario_id);
+        console.error("Usuário ID inválido:", usuario_id);
         return res.status(400).json({ error: "Usuário não autenticado ou ID inválido!" });
     }
 
@@ -47,7 +47,7 @@ router.get('/graficos', async (req, res) => {
             ORDER BY data_estudo;
         `, [parseInt(usuario_id)]);  
 
-        // ✅ Horas por tipo de estudo
+        //  Horas por tipo de estudo
         const tipoEstudoQuery = await db.query(`
           SELECT tipo_estudo, 
                  COALESCE(SUM(EXTRACT(HOUR FROM horas_estudadas) + EXTRACT(MINUTE FROM horas_estudadas)/60.0), 0) AS total_horas
@@ -56,7 +56,7 @@ router.get('/graficos', async (req, res) => {
           GROUP BY tipo_estudo;
         `, [usuario_id]);
 
-        // ✅ Horas por disciplina
+        // Horas por disciplina
         const disciplinaQuery = await db.query(`
           SELECT disciplina, 
                  COALESCE(SUM(EXTRACT(HOUR FROM horas_estudadas) + EXTRACT(MINUTE FROM horas_estudadas)/60.0), 0) AS total_horas
@@ -65,7 +65,7 @@ router.get('/graficos', async (req, res) => {
           GROUP BY disciplina;
         `, [usuario_id]);
 
-        // ✅ Horas estudadas por dia
+        // Horas estudadas por dia
         const horasDataQuery = await db.query(`
           SELECT data_estudo, 
                  COALESCE(SUM(EXTRACT(HOUR FROM horas_estudadas) + EXTRACT(MINUTE FROM horas_estudadas)/60.0), 0) AS total_horas
@@ -75,14 +75,14 @@ router.get('/graficos', async (req, res) => {
           ORDER BY data_estudo;
         `, [usuario_id]);
 
-        // ✅ Total de dias estudados
+        // Total de dias estudados
         const diasEstudadosQuery = await db.query(`
           SELECT COUNT(DISTINCT data_estudo) AS total_dias 
           FROM estudos 
           WHERE usuario_id = $1;
         `, [usuario_id]);
 
-        // ✅ Processamento dos dados
+        // Processamento dos dados
         const totalDias = diasEstudadosQuery.rows[0] ? diasEstudadosQuery.rows[0].total_dias : 0;
         const questoes = questoesQuery.rows.map(row => ({
             data_estudo: row.data_estudo,
@@ -119,7 +119,7 @@ router.get('/graficos', async (req, res) => {
     }
 });
 
-// ✅ Rota para obter os assuntos de uma disciplina específica
+// Rota para obter os assuntos de uma disciplina específica
 router.get("/assuntos", async (req, res) => {
     const disciplina = req.query.disciplina;
 
@@ -151,7 +151,7 @@ router.get("/assuntos", async (req, res) => {
     }
 });
 
-// ✅ NOVA ROTA: Obter total de questões respondidas por disciplina
+//  NOVA ROTA: Obter total de questões respondidas por disciplina
 router.get('/questoesPorDisciplina', async (req, res) => {
     const usuario_id = req.query.usuario_id;
     if (!usuario_id || isNaN(parseInt(usuario_id))) {
@@ -173,7 +173,7 @@ router.get('/questoesPorDisciplina', async (req, res) => {
     }
 });
 
-// ✅ NOVA ROTA: Obter percentual de estudo por disciplina
+// NOVA ROTA: Obter percentual de estudo por disciplina
 router.get('/percentualPorDisciplina', async (req, res) => {
     const usuario_id = req.query.usuario_id;
     if (!usuario_id || isNaN(parseInt(usuario_id))) {

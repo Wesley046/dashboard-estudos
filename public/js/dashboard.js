@@ -349,349 +349,394 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }      
 
-  async function carregarDadosDoughnut() {
+    async function carregarDadosDoughnut() {
       try {
-          console.log(" Carregando dados para o gráfico de rosca...");
-
-  const usuarioId = localStorage.getItem("usuario_id");
-  if (!usuarioId) {
-    console.error(" Usuário não autenticado.");
-    return;
+          console.log("Carregando dados para o gráfico de rosca...");
+  
+          const usuarioId = localStorage.getItem("usuario_id");
+          if (!usuarioId) {
+              console.error("Usuário não autenticado.");
+              return;
+          }
+  
+          const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/graficos?usuario_id=${usuarioId}`);
+          if (!response.ok) throw new Error("Erro ao buscar dados de estudo");
+          const dados = await response.json();
+  
+          console.log("Dados carregados para o gráfico de rosca:", dados);
+          
+          if (!dados.tipoEstudo || !Array.isArray(dados.tipoEstudo) || dados.tipoEstudo.length === 0) {
+              console.warn("Nenhum dado válido recebido para o gráfico de rosca.");
+              return;
+          }
+  
+          // Extraindo os rótulos e os valores
+          const categorias = dados.tipoEstudo.map(item => item.tipo_estudo || "Desconhecido");
+          const horasPorTipo = dados.tipoEstudo.map(item => parseFloat(item.total_horas) || 0);
+          const totalHoras = horasPorTipo.reduce((a, b) => a + b, 0);
+  
+          console.log("Processando os dados do gráfico de rosca...");
+          console.log("Categorias (labels):", categorias);
+          console.log("Valores (data):", horasPorTipo);
+  
+          const doughnutCanvas = document.getElementById("doughnutChart");
+          if (!doughnutCanvas) {
+              console.error("Elemento #doughnutChart não encontrado no DOM.");
+              return;
+          }
+          const ctxDoughnut = doughnutCanvas.getContext("2d");
+  
+          if (myDoughnutChart) {
+              myDoughnutChart.destroy();
+          }
+  
+          // Configuração específica apenas para este gráfico
+          myDoughnutChart = new Chart(ctxDoughnut, {
+              type: "doughnut",
+              data: {
+                  labels: categorias,
+                  datasets: [{
+                      data: horasPorTipo,
+                      backgroundColor: ["#6a8ce4", "#de3c3c", "#ffc2ba"],
+                      borderWidth: 0,
+                      hoverOffset: 15
+                  }]
+              },
+              options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  cutout: "75%",
+                  plugins: {
+                      legend: {
+                          display: true,
+                          position: 'right',
+                          labels: {
+                              color: "#FFF",
+                              usePointStyle: true,
+                              pointStyle: "circle",
+                              padding: 20,
+                              font: {
+                                  size: 14
+                              }
+                          }
+                      },
+                      tooltip: {
+                          callbacks: {
+                              label: function(context) {
+                                  const percentage = ((context.raw / totalHoras) * 100).toFixed(1);
+                                  return `${context.label}: ${context.raw.toFixed(1)}h (${percentage}%)`;
+                              }
+                          },
+                          backgroundColor: "rgba(0, 0, 0, 0.8)",
+                          titleColor: "#FFF",
+                          bodyColor: "#FFF",
+                          borderColor: "#B92C2C",
+                          borderWidth: 1
+                      },
+                      title: {
+                          display: false // Removemos o título para ficar mais limpo
+                      },
+                      datalabels: {
+                          display: false // Desativamos os datalabels padrão
+                      }
+                  },
+                  animation: {
+                      animateScale: true,
+                      animateRotate: true,
+                      duration: 1000
+                  }
+              },
+              plugins: [
+                  // Plugin personalizado para texto central
+                  {
+                      id: 'doughnutCenterText',
+                      beforeDraw(chart) {
+                          const { ctx, chartArea: { width, height } } = chart;
+                          
+                          ctx.save();
+                          ctx.textAlign = 'center';
+                          ctx.textBaseline = 'middle';
+                          
+                          // Texto "TOTAL"
+                          ctx.font = 'bold 16px "Bebas Neue", sans-serif';
+                          ctx.fillStyle = '#FFF';
+                          ctx.fillText('TOTAL:', width / 2, height / 2 - 15);
+                          
+                          // Valor total
+                          ctx.font = 'bold 24px "Bebas Neue", sans-serif';
+                          ctx.fillStyle = '#FFF';
+                          ctx.fillText(totalHoras.toFixed(1) + 'h', width / 2, height / 2 + 15);
+                          ctx.restore();
+                      }
+                  },
+                  // Plugin personalizado para porcentagens
+                  {
+                      id: 'doughnutPercentages',
+                      afterDraw(chart) {
+                          const { ctx, chartArea: { width, height }, data } = chart;
+                          const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                          
+                          chart.getDatasetMeta(0).data.forEach((arc, i) => {
+                              const angle = arc.endAngle - arc.startAngle;
+                              const percentage = ((data.datasets[0].data[i] / total) * 100).toFixed(1);
+                              
+                              // Mostra porcentagem apenas para fatias significativas
+                              if (angle > 0.3 && percentage > 5) {
+                                  const x = arc.tooltipPosition().x;
+                                  const y = arc.tooltipPosition().y;
+                                  
+                                  ctx.save();
+                                  ctx.textAlign = 'center';
+                                  ctx.textBaseline = 'middle';
+                                  ctx.font = 'bold 12px Montserrat';
+                                  ctx.fillStyle = '#FFF';
+                                  ctx.fillText(`${percentage}%`, x, y);
+                                  ctx.restore();
+                              }
+                          });
+                      }
+                  }
+              ]
+          });
+  
+          console.log("Gráfico de rosca criado com sucesso!");
+      } catch (error) {
+          console.error("Erro ao carregar dados para o gráfico de rosca:", error);
+      }
   }
-
-  const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/graficos?usuario_id=${usuarioId}`);
-  if (!response.ok) throw new Error("Erro ao buscar dados de estudo");
-  const dados = await response.json();
-
-  console.log("✅ Dados carregados para o gráfico de rosca:", dados);
-  console.log("📌 Estrutura dos dados recebidos:", JSON.stringify(dados, null, 2));
-
-  if (!dados.tipoEstudo || !Array.isArray(dados.tipoEstudo) || dados.tipoEstudo.length === 0) {
-    console.warn("⚠️ Nenhum dado válido recebido para o gráfico de rosca.");
-    return;
-  }
-
-  // Extraindo os rótulos e os valores
-  const categorias = dados.tipoEstudo.map(item => item.tipo_estudo || "Desconhecido");
-  const horasPorTipo = dados.tipoEstudo.map(item => parseFloat(item.total_horas) || 0);
-
-  console.log(" Processando os dados do gráfico de rosca...");
-  console.log(" Categorias (labels):", categorias);
-  console.log(" Valores (data):", horasPorTipo);
-
-  const doughnutCanvas = document.getElementById("doughnutChart");
-  if (!doughnutCanvas) {
-    console.error(" O elemento #doughnutChart não foi encontrado no DOM.");
-    return;
-  }
-  const ctxDoughnut = doughnutCanvas.getContext("2d");
-
-  if (myDoughnutChart) {
-    myDoughnutChart.destroy();
-  }
-
-  myDoughnutChart = new Chart(ctxDoughnut, {
-    type: "doughnut",
-    data: {
-      labels: categorias,
-      datasets: [{
-        data: horasPorTipo,
-        
-        backgroundColor: ["#6a8ce4", "#de3c3c", "#ffc2ba"],
-        borderWidth: 0
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      cutout: "75%",
-      plugins: {
-        title: {
-          display: true,
-          text: "Porcentagem do Tempo de Estudo por Tipo",
-          // font: { size: 18 },
-          color: "#FFF"
+  async function carregarDadosBarras() {
+    try {
+      console.log("📡 Carregando dados para o gráfico de barras...");
+  
+      const usuarioId = localStorage.getItem("usuario_id");
+      if (!usuarioId) {
+        console.error(" Usuário não autenticado.");
+        return;
+      }
+  
+      const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/questoesPorDisciplina?usuario_id=${usuarioId}`);
+      if (!response.ok) throw new Error("Erro ao buscar dados de questões por disciplina");
+      const dados = await response.json();
+      console.log(" Dados para gráfico de barras carregados:", dados);
+  
+      if (!Array.isArray(dados) || dados.length === 0) {
+        console.warn(" Nenhum dado válido recebido para o gráfico de barras.");
+        return;
+      }
+  
+      // Ordena os dados do maior para o menor volume de questões
+      dados.sort((a, b) => parseInt(b.total_questoes) - parseInt(a.total_questoes));
+  
+      const disciplinas = dados.map(item => item.disciplina);
+      const totalQuestoes = dados.map(item => parseInt(item.total_questoes) || 0);
+  
+      console.log(" Dados processados para gráfico de barras:");
+      console.log(" Disciplinas:", disciplinas);
+      console.log(" Total de Questões:", totalQuestoes);
+  
+      const barCanvas = document.getElementById("barChart");
+      if (!barCanvas) {
+        console.error(" O elemento #barChart não foi encontrado no DOM.");
+        return;
+      }
+      const ctxBar = barCanvas.getContext("2d");
+  
+      if (myBarChart) {
+        myBarChart.destroy();
+      }
+  
+      myBarChart = new Chart(ctxBar, {
+        type: "bar",
+        data: {
+          labels: disciplinas,
+          datasets: [{
+            label: "Total de Questões Respondidas",
+            data: totalQuestoes,
+            backgroundColor: "#de3c3c",
+            borderWidth: 0
+          }]
         },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              return `${context.label}: ${context.parsed.toFixed(1)}h`;
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              ticks: { color: "#FFF" },
+              title: { display: true, text: "Matérias", color: "#FFF" },
+              grid: { display: false }
+            },
+            y: {
+              ticks: { color: "#FFF" },
+              title: { display: true, text: "Total de Questões", color: "#FFF" },
+              beginAtZero: true,
+              grid: { display: false }
             }
           },
-          backgroundColor: "rgba(0, 0, 0, 0.8)",
-          titleColor: "#FFF",
-          bodyColor: "#FFF"
-        },
-        legend: {
-          labels: {
-            // font: { size: 14 },
-            color: "#FFF",
-            usePointStyle: true,
-            pointStyle: "circle"
+          plugins: {
+            legend: {
+              position: "bottom",
+              labels: {
+                color: "#FFF",
+                // font: { size: 14 },
+                usePointStyle: true,
+                pointStyle: "circle"
+              }
+            },
+            title: {
+              display: true,
+              text: "Questões Respondidas por Disciplina",
+              // font: { size: 18 },
+              color: "#FFF"
+            },
+            tooltip: {
+              backgroundColor: "rgba(0, 0, 0, 0.8)", 
+              titleColor: "#FFF",
+              bodyColor: "#FFF"
+            },
+            datalabels: {
+              formatter: (value) => value.toFixed(0),
+              color: "#FFF",
+              anchor: "end",
+              align: "end",
+              backgroundColor: "rgba(0, 0, 0, 0.8)",
+              borderRadius: 3,
+              padding: 4,
+              font: { weight: "bold" }
+            }
           }
         },
-        datalabels: {
-          color: "#FFF",
-          backgroundColor: "rgba(0, 0, 0, 0.1)", 
-          borderRadius: 3,
-          font: { weight: 'bold' },
-          formatter: function(value, context) {
-            return value.toFixed(1) + "h";
-          },
-          padding: 4
-        }
-      }
-    },
-    plugins: [ChartDataLabels]
-  });
-
-  console.log(" Gráfico de rosca criado com sucesso!");
-} catch (error) {
-  console.error(" Erro ao carregar dados para o gráfico de rosca:", error);
-      }
-  }
-
-  async function carregarDadosBarras() {
-      try {
-        console.log("📡 Carregando dados para o gráfico de barras...");
-    
-        const usuarioId = localStorage.getItem("usuario_id");
-        if (!usuarioId) {
-          console.error(" Usuário não autenticado.");
-          return;
-        }
-    
-        const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/questoesPorDisciplina?usuario_id=${usuarioId}`);
-        if (!response.ok) throw new Error("Erro ao buscar dados de questões por disciplina");
-        const dados = await response.json();
-        console.log(" Dados para gráfico de barras carregados:", dados);
-    
-        if (!Array.isArray(dados) || dados.length === 0) {
-          console.warn(" Nenhum dado válido recebido para o gráfico de barras.");
-          return;
-        }
-    
-        // Ordena os dados do maior para o menor volume de questões
-        dados.sort((a, b) => parseInt(b.total_questoes) - parseInt(a.total_questoes));
-    
-        const disciplinas = dados.map(item => item.disciplina);
-        const totalQuestoes = dados.map(item => parseInt(item.total_questoes) || 0);
-    
-        console.log(" Dados processados para gráfico de barras:");
-        console.log(" Disciplinas:", disciplinas);
-        console.log(" Total de Questões:", totalQuestoes);
-    
-        const barCanvas = document.getElementById("barChart");
-        if (!barCanvas) {
-          console.error(" O elemento #barChart não foi encontrado no DOM.");
-          return;
-        }
-        const ctxBar = barCanvas.getContext("2d");
-    
-        if (myBarChart) {
-          myBarChart.destroy();
-        }
-    
-        myBarChart = new Chart(ctxBar, {
-          type: "bar",
-          data: {
-            labels: disciplinas,
-            datasets: [{
-              label: "Total de Questões Respondidas",
-              data: totalQuestoes,
-              backgroundColor: "#de3c3c",
-              borderWidth: 0
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              x: {
-                ticks: { color: "#FFF" },
-                title: { display: true, text: "Matérias", color: "#FFF" },
-                grid: { display: false }
-              },
-              y: {
-                ticks: { color: "#FFF" },
-                title: { display: true, text: "Total de Questões", color: "#FFF" },
-                beginAtZero: true,
-                grid: { display: false }
-              }
-            },
-            plugins: {
-              legend: {
-                position: "bottom",
-                labels: {
-                  color: "#FFF",
-                  // font: { size: 14 },
-                  usePointStyle: true,
-                  pointStyle: "circle"
-                }
-              },
-              title: {
-                display: true,
-                text: "Questões Respondidas por Disciplina",
-                // font: { size: 18 },
-                color: "#FFF"
-              },
-              tooltip: {
-                backgroundColor: "rgba(0, 0, 0, 0.8)", 
-                titleColor: "#FFF",
-                bodyColor: "#FFF"
-              },
-              datalabels: {
-                formatter: (value) => value.toFixed(0),
-                color: "#FFF",
-                anchor: "end",
-                align: "end",
-                backgroundColor: "rgba(0, 0, 0, 0.8)",
-                borderRadius: 3,
-                padding: 4,
-                font: { weight: "bold" }
-              }
-            }
-          },
-          plugins: [ChartDataLabels]
-        });
-    
-        console.log(" Gráfico de barras criado com sucesso!");
-      } catch (error) {
-        console.error("Erro ao carregar dados para o gráfico de barras:", error);
-      }
+        plugins: [ChartDataLabels]
+      });
+  
+      console.log(" Gráfico de barras criado com sucesso!");
+    } catch (error) {
+      console.error("Erro ao carregar dados para o gráfico de barras:", error);
     }
-
+  }
     async function carregarDadosBarrasPercentual() {
       try {
-        console.log("📡 Carregando dados para o gráfico de percentual por disciplina...");
-    
-        const usuarioId = localStorage.getItem("usuario_id");
-        if (!usuarioId) {
-          console.error(" Usuário não autenticado.");
-          return;
-        }
-    
-        const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/graficos?usuario_id=${usuarioId}`);
-        if (!response.ok) throw new Error("Erro ao buscar dados de estudo");
-        const dados = await response.json();
-        console.log(" Dados carregados para o gráfico de percentual:", dados);
-    
-        if (!dados.disciplina || !Array.isArray(dados.disciplina) || dados.disciplina.length === 0) {
-          console.warn(" Nenhum dado válido recebido para o gráfico de percentual.");
-          return;
-        }
-    
-        // Calcula o total de horas estudadas em todas as disciplinas
-        const totalHorasEstudo = dados.disciplina.reduce((sum, item) => sum + Number(item.total_horas), 0);
-        // Calcula o percentual para cada disciplina, arredondando para 0 casas decimais
-        const disciplinas = dados.disciplina.map(item => item.disciplina);
-        const percentuais = dados.disciplina.map(item => {
-          const percentual = totalHorasEstudo
-            ? ((Number(item.total_horas) / totalHorasEstudo) * 100)
-            : 0;
-          return Number(percentual.toFixed(0));
-        });
-    
-        // Combina e ordena os dados do maior para o menor percentual
-        const combinados = disciplinas.map((disc, index) => ({
-          disciplina: disc,
-          percentual: percentuais[index]
-        }));
-        combinados.sort((a, b) => b.percentual - a.percentual);
-        const sortedDisciplinas = combinados.map(item => item.disciplina);
-        const sortedPercentuais = combinados.map(item => item.percentual);
-    
-        console.log(" Dados processados para gráfico de percentual:");
-        console.log(" Disciplinas:", sortedDisciplinas);
-        console.log(" Percentuais:", sortedPercentuais);
-    
-        const percentBarCanvas = document.getElementById("percentBarChart");
-        if (!percentBarCanvas) {
-          console.error(" O elemento #percentBarChart não foi encontrado no DOM.");
-          return;
-        }
-        const ctxPercentBar = percentBarCanvas.getContext("2d");
-    
-        if (myPercentBarChart) {
-          myPercentBarChart.destroy();
-        }
-    
-        myPercentBarChart = new Chart(ctxPercentBar, {
-          type: "bar", 
-          data: {
-            labels: sortedDisciplinas,
-            datasets: [{
-              label: "% de Estudo por Disciplina",
-              data: sortedPercentuais,
-              backgroundColor: "#ffc2ba", 
-              borderWidth: 0
-            }]
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              x: {
-                ticks: { color: "#FFF"},
-                title: { display: true, text: "Disciplinas", color: "#FFF" },
-                grid: { display: false }
+          console.log("Carregando dados para o gráfico horizontal de percentual...");
+  
+          const usuarioId = localStorage.getItem("usuario_id");
+          if (!usuarioId) {
+              console.error("Usuário não autenticado.");
+              return;
+          }
+  
+          const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/estudos/graficos?usuario_id=${usuarioId}`);
+          if (!response.ok) throw new Error("Erro ao buscar dados de estudo");
+          const dados = await response.json();
+  
+          if (!dados.disciplina || !Array.isArray(dados.disciplina) || dados.disciplina.length === 0) {
+              console.warn("Nenhum dado válido recebido.");
+              return;
+          }
+  
+          // Processa os dados
+          const totalHorasEstudo = dados.disciplina.reduce((sum, item) => sum + Number(item.total_horas), 0);
+          const combinados = dados.disciplina.map(item => ({
+              disciplina: item.disciplina,
+              percentual: totalHorasEstudo ? Math.round((Number(item.total_horas) / totalHorasEstudo) * 100) : 0
+          })).sort((a, b) => b.percentual - a.percentual);
+  
+          const percentBarCanvas = document.getElementById("percentBarChart");
+          if (!percentBarCanvas) {
+              console.error("Elemento #percentBarChart não encontrado.");
+              return;
+          }
+  
+          if (myPercentBarChart) {
+              myPercentBarChart.destroy();
+          }
+  
+          // Cores
+          const cores = ["#6a8ce4", "#de3c3c", "#ffc2ba", "#B92C2C", "#3aa693", "#285dab"];
+          const coresHover = ["#8aacff", "#ff5c5c", "#ffd4cc", "#d93434", "#4cc6b3", "#3a7bcc"];
+  
+          myPercentBarChart = new Chart(percentBarCanvas.getContext("2d"), {
+              type: 'bar',
+              data: {
+                  labels: combinados.map(item => item.disciplina),
+                  datasets: [
+                      {
+                          label: 'Percentual',
+                          data: combinados.map(item => item.percentual),
+                          backgroundColor: combinados.map((_, i) => cores[i % cores.length]),
+                          hoverBackgroundColor: combinados.map((_, i) => coresHover[i % coresHover.length]),
+                          borderWidth: 0,
+                          borderRadius: 4,
+                          borderSkipped: false
+                      }
+                  ]
               },
-              y: {
-                ticks: { color: "#FFF"},
-                title: { display: true, text: "% de Estudo", color: "#FFF" },
-                beginAtZero: true,
-                max: 100,
-                grid: { display: false }
-              }
-            },
-            plugins: {
-              legend: {
-                position: "bottom",
-                labels: {
-                  color: "#FFF",
-                  // font: { size: 14 },
-                  usePointStyle: true,
-                  pointStyle: "circle"
-                }
-              },
-              title: {
-                display: true,
-                text: "% de Estudo por Disciplina",
-                // font: { size: 18 },
-                color: "#FFF"
-              },
-              tooltip: {
-                backgroundColor: "rgba(0, 0, 0, 0.8)",
-                titleColor: "#FFF",
-                bodyColor: "#FFF",
-                callbacks: {
-                  label: function(context) {
-                    return `${context.label}: ${context.parsed}%`;
+              options: {
+                  indexAxis: 'y', // Faz as barras ficarem horizontais
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  scales: {
+                      x: {
+                          min: 0,
+                          max: 100,
+                          ticks: {
+                              callback: function(value) {
+                                  return value + '%';
+                              },
+                              color: '#FFF'
+                          },
+                          grid: {
+                              display: false,
+                              drawBorder: false
+                          }
+                      },
+                      y: {
+                          ticks: {
+                              color: '#FFF'
+                          },
+                          grid: {
+                              display: false,
+                              drawBorder: false
+                          }
+                      }
+                  },
+                  plugins: {
+                      legend: {
+                          display: false
+                      },
+                      tooltip: {
+                          backgroundColor: 'rgba(0, 0, 0, 0.9)',
+                          bodyColor: '#FFF',
+                          displayColors: false,
+                          callbacks: {
+                              label: function(context) {
+                                  return `${context.parsed.x}%`;
+                              }
+                          }
+                      },
+                      datalabels: {
+                          color: '#FFF',
+                          anchor: 'end',
+                          align: 'end',
+                          formatter: function(value) {
+                              return value + '%';
+                          },
+                          font: {
+                              weight: 'bold'
+                          }
+                      }
+                  },
+                  animation: {
+                      duration: 1500,
+                      easing: 'easeOutQuart'
                   }
-                }
               },
-              datalabels: {
-                formatter: (value) => `${value}%`,
-                color: "#FFF",
-                anchor: "end",
-                align: "end",
-                backgroundColor: "rgba(0, 0, 0, 0.8)",
-                borderRadius: 3,
-                padding: 4,
-                font: { weight: "bold" }
-              }
-            }
-          },
-          plugins: [ChartDataLabels]
-        });
-    
-        console.log(" Gráfico de percentual por disciplina criado com sucesso!");
+              plugins: [ChartDataLabels]
+          });
+  
+          console.log("Gráfico horizontal de percentual criado com sucesso!");
       } catch (error) {
-        console.error(" Erro ao carregar dados para o gráfico de percentual por disciplina:", error);
+          console.error("Erro ao carregar dados:", error);
       }
-    }
-    
-    
+  }
 
   // Chamada para carregar os gráficos
   await carregarDadosGraficos();

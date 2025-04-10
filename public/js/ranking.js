@@ -111,21 +111,33 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para carregar os dados do ranking
     async function carregarRankingData() {
         try {
+            console.log('Iniciando carregamento do ranking...'); // Debug 3
+            
             const disciplina = document.getElementById('disciplinaFilter')?.value || '';
             const assunto = document.getElementById('assuntoFilter')?.value || '';
             
-            let url = '/api/ranking';
+            // ATENÇÃO: Substitua pela URL correta da sua API
+            let url = 'https://dashboard-objetivo-policial.onrender.com/api/ranking';
             const params = new URLSearchParams();
             
             if (disciplina) params.append('disciplina', disciplina);
             if (assunto) params.append('assunto', assunto);
             
-            params.append('_', Date.now()); // Evitar cache
+            // Cache busting
+            params.append('timestamp', Date.now());
+            
+            console.log('URL completa:', `${url}?${params.toString()}`); // Debug 4
             
             const response = await fetch(`${url}?${params.toString()}`);
-            if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+            console.log('Resposta da API:', response); // Debug 5
             
+            if (!response.ok) {
+                throw new Error(`Erro HTTP: ${response.status}`);
+            }
+                
             const rankingData = await response.json();
+            console.log('Dados recebidos:', rankingData); // Debug 6
+            
             renderRanking(rankingData);
             
         } catch (error) {
@@ -133,7 +145,6 @@ document.addEventListener('DOMContentLoaded', function() {
             showErrorMessage('Erro ao carregar dados. Tente novamente.');
         }
     }
-    
     // Função para renderizar o ranking
     function renderRanking(rankingData) {
         const rankingList = document.getElementById('rankingList');
@@ -245,3 +256,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+if (filterButton) {
+    filterButton.addEventListener('click', async function(e) {
+        e.preventDefault();
+        console.log('Botão de filtro clicado'); // Debug 1
+        
+        const disciplina = document.getElementById('disciplinaFilter')?.value;
+        const assunto = document.getElementById('assuntoFilter')?.value;
+        console.log('Valores dos filtros:', { disciplina, assunto }); // Debug 2
+        
+        await carregarRankingData();
+    });
+}

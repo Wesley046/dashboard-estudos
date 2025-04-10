@@ -4,7 +4,7 @@
 
 body {
     font-family: 'OCR A Std', monospace, 'Arial Narrow Bold', sans-serif;
-    background-image: url('https://i.ibb.co/prZYZ5cG/Banner-Site-01-1920-x-1080-px-1.png');
+    background-image: url('https://i.ibb.co/sv5FKWn5/Banner-Site-01-1920-x-1080-px-2.png');
     background-size:cover;
     background-attachment:fixed;
     background-position: center center;
@@ -25,7 +25,7 @@ body {
     min-height: 100vh;
     position: relative;
     /* Novo: Fundo com desfoque */
-    background-image: url('https://i.ibb.co/prZYZ5cG/Banner-Site-01-1920-x-1080-px-1.png');
+    background-image: url('https://i.ibb.co/sv5FKWn5/Banner-Site-01-1920-x-1080-px-2.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -209,6 +209,27 @@ button:hover {
     font-weight: bold;
     text-align: left;
     margin: 20px 0;
+    color: #FFF;
+    font-family: "Bebas Neue";
+font-size: 40px;
+font-style: normal;
+font-weight: 400;
+line-height: normal;
+
+}
+
+#doughnutChart-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+}
+
+#doughnutChart {
+    transition: transform 0.3s ease;
+}
+
+#doughnutChart:hover {
+    transform: scale(1.02);
 }
 
 /* ====================== */
@@ -652,13 +673,13 @@ body.overlay-active {
 
 }
 
-.form-control{
+/* PRIMEIRO SELECT (.form-control) - Mantendo suas medidas exatas */
+.form-control {
     width: 350px;
     height: 52px;
     flex-shrink: 0;
     border-radius: 5px;
     border: 1px solid #B92C2C;
-    opacity: 1;
     background: rgba(71, 0, 13, 0.18);
     color: #ffffff;
     font-family: Inter;
@@ -666,17 +687,18 @@ body.overlay-active {
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    margin-left:10% ;
-
-}
-
-.form-control2{
-    width: 290px;
+    margin-left: 10%;
+    padding: 0 15px;
+    appearance: none;
+  }
+  
+  /* SEGUNDO SELECT (.form-control2) - Mantendo suas medidas exatas */
+  .form-control2 {
+    width: 950px; /* Primeira medida de width */
     height: 52px;
     flex-shrink: 0;
     border-radius: 5px;
     border: 1px solid #B92C2C;
-    opacity: 1;
     background: rgba(71, 0, 13, 0.18);
     color: #ffffff;
     font-family: Inter;
@@ -684,30 +706,56 @@ body.overlay-active {
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    width: 877px;
-    height: 52px;
-    flex-shrink: 0;
-
-}
-
-.filter-buttons-container {
-    display: flex;
-    justify-content: flex-end; /* Alinha os botões à direita */
-    gap: 10px; /* Espaçamento entre os botões (ajuste conforme necessário) */
+    /* Removi a segunda declaração width: 877px para manter o valor original */
+    padding: 0 15px;
+    appearance: none;
   }
   
-  .filter-btn {
-    width: 145px;
-    height: 41px;
-    border-radius: 5px;
-    font-family: "Bebas Neue";
-    font-size: 20px;
-    text-align: center;
-    font-weight: 200;
-    border: none;
-    cursor: pointer;
-    gap:5%
+  /* ESTILO COMPARTILHADO PARA AS OPÇÕES (BACKGROUND PRETO) */
+  .form-control option,
+  .form-control2 option {
+    background: #b92c2c85; /* Preto sólido */
+    color: #FFFFFF; /* Texto branco */
+    padding: 8px 12px; /* Espaçamento interno ajustado */
   }
+  
+  /* MELHORIA: Seta personalizada para ambos (opcional) */
+  .form-control,
+  .form-control2 {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23B92C2C'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    background-size: 16px;
+    cursor: pointer;
+  }
+  
+  /* Estado de foco */
+  .form-control:focus,
+  .form-control2:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(185, 44, 44, 0.3);
+  }
+  .filter-buttons-container {
+    display: flex;
+    justify-content: flex-end; /* Alinha os itens à direita */
+    gap: 10px; /* Espaçamento entre os botões */
+    margin-top: 15px; /* Ajuste conforme necessário */
+    width: 100%; /* Ocupa toda a largura disponível */
+  }
+
+ .filter-btn {
+  width: 145px;
+  height: 41px;
+  border-radius: 5px;
+  font-family: "Bebas Neue";
+  font-size: 20px;
+  text-align: center;
+  font-weight: 200;
+  border: none;
+  cursor: pointer;
+  /* Removi o gap pois agora está no container */
+  transition: all 0.3s ease; /* Adiciona transição suave */
+}
   
   .filter-btn-primary {
     background: #B92C2C;
@@ -717,6 +765,7 @@ body.overlay-active {
   .filter-btn-secondary {
     background: #B92C2C;
     color: #FFF;
+    opacity: 0.8; /* Diferencia visualmente o botão secundário */
   }
 
   .ranking-list-header {

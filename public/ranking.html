@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ranking de Alunos</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="ranking-page">
+  <!-- Menu Lateral -->
+  <div class="sidebar">
+    <button class="toggle-btn" id="toggleSidebar">
+      <img src="https://i.ibb.co/xtFND3Rp/SERGIPE-29-7-x-42-cm.png" alt="Menu">
+    </button>
+    <button class="menu-item" id="openForm"> Dashboard</button>
+    <button class="menu-item" id="openForm">Registro de Estudos</button>
+    <button class="menu-item active" id="btnRanking">Ranking</button>
+    <!-- <button class="menu-item" id="openCronograma">Cronograma </button> -->
+
+  </div>
+
+  <!-- Conteúdo Principal -->
+  <main class="ranking-main">
+    <div class="ranking-header">
+      <h1 class="ranking-title">RANKING DE </h1>
+      <h1 class="ranking-title1">DESEMPENHO </h1>
+    </div>
+
+    <!-- Filtros -->
+    <div class="ranking-filters">
+      <div class="filter-group">
+        <select id="disciplinaFilter" class="form-control">
+          <option value="">Disciplina</option>
+          <!-- Opções serão carregadas via JavaScript -->
+        </select>
+      </div>
+
+      <div class="filter-group2">
+        <select id="assuntoFilter" class="form-control2" disabled>
+          <option id="Valorfiltro" value="">Assunto</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="filter-buttons-container">
+      <button class="filter-btn filter-btn-primary">Filtrar</button>
+      <button class="filter-btn filter-btn-secondary">Limpar</button>
+    </div>
+
+    <!-- Lista de Ranking -->
+
+    <div class="ranking-list-container">
+      <div class="ranking-list-header">
+        <div>Posição</div>
+        <div>Aluno</div>
+        <div>Questões (C/E)</div>
+        <div>Total</div>
+        <div>Aproveitamento</div>
+      </div>
+      
+    <div class="ranking-list" id="rankingList">
+      <div class="loading-message">
+        <i class="fas fa-spinner fa-spin"></i> Carregando ranking...
+      </div>
+    </div>
+    </div>
+  </main>
+
+  <!-- Scripts -->
+  <script src="/js/ranking.js"></script>
+</body>
+
+</html>

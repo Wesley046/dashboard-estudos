@@ -3,27 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
   <title>Plataforma | Objetivo Policial</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Adicione o Font Awesome para ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-  <div class="overlay">
-    <div class="login-container">
-      <div class="logo">
-        <img src="https://i.ibb.co/xtFND3Rp/SERGIPE-29-7-x-42-cm.png" alt="Logo Objetivo Policial">
-      </div>
-      <form id="loginForm">
-        <div class="input-group">
-          <input type="email" id="email" name="email" placeholder="Email" required>
-        </div>
-        <div class="input-group">
-          <input type="password" id="senha" name="senha" placeholder="Senha" required>
-        </div>
-        <button type="submit">ENTRAR</button>
-      </form>
-      <p class="erro" id="mensagemErro"></p>
+
+<body class="login-page">
+  <!-- Fundo desfocado -->
+  <div class="background-blur"></div>
+  
+  <!-- Container do login (em foco) -->
+  <div class="login-container">
+    <div class="logo">
+      <img src="https://i.ibb.co/27JQK8RV/Design-sem-nome-1.png" alt="Logo Objetivo Policial">
     </div>
+    <form id="loginForm">
+      <div class="input-group">
+        <input type="email" id="email" name="Email" placeholder="Usuário" required><i class="fas fa-user"></i>
+      </div>
+      <div class="input-group">
+        
+        <input type="password" id="senha" name="senha" placeholder="Senha" required><i class="fas fa-lock"></i>
+      </div>
+      <button type="submit">ENTRAR</button>
+    </form>
+    <p class="erro" id="mensagemErro"></p>
   </div>
+
   <script src="./js/login.js"></script>
 </body>
 </html>

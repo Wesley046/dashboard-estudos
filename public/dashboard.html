@@ -5,47 +5,58 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
   <link rel="stylesheet" href="style.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
 </head>
 <body class="dashboard-page">
+
+  <!-- Overlay de fundo (inicialmente escondido) -->
+  <div id="overlay" class="overlay"></div>
 
   <div class="sidebar">
     <button class="toggle-btn" id="toggleSidebar">
       <img src="https://i.ibb.co/xtFND3Rp/SERGIPE-29-7-x-42-cm.png" alt="Expandir/Recolher">
     </button>
-    <button class="menu-item" id="openForm">Abrir Formulário</button>
+    <button class="menu-item" id="openForm"> Dashboard</button>
+    <button class="menu-item" id="openForm"> Registro de Estudos</button>
+    <button class="menu-item" id="btnRanking"> Ranking </button>
+    <!-- <button class="menu-item" id="openForm">Cronograma</button> -->
   </div>
 
-<!-- Formulário Popup -->
-<div id="formPopup" class="form-container">
-  <form id="studyForm">
-    <h2>REGISTRE SEUS ESTUDOS</h2>
-    
-    <input type="hidden" id="usuario_id" name="usuario_id">
-    <input type="hidden" id="data_estudo" name="data_estudo">
-    <label for="disciplina">Disciplina:</label>
-    <select id="disciplina" name="disciplina" required>
-      <option value="">Selecione a disciplina</option>
-    </select>
-    <label for="assunto">Assunto:</label>
-    <select id="assunto" name="assunto" required>
-      <option value="">Selecione o assunto</option>
-    </select>
-    <label for="horas">Horas Estudadas:</label>
-    <input type="time" id="horas" name="horas_estudadas" required>
-    <label for="questoes_erradas">Questões Erradas:</label>
-    <input type="number" id="questoes_erradas" name="questoes_erradas" required>
-    <label for="questoes_certas">Questões Certas:</label>
-    <input type="number" id="questoes_certas" name="questoes_certas" required>
-    <label for="tipo_estudo">Tipo de Estudo:</label>
-    <select id="tipo_estudo" name="tipo_estudo">
-      <option value="teoria">Teoria</option>
-      <option value="prática">Prática</option>
-      <option value="revisão">Revisão</option>
-    </select>
-    <button type="submit">Enviar</button>
-    <button type="button" id="closeForm">Fechar</button>
-  </form>
-</div>
+  <!-- Formulário Popup -->
+  <div id="formPopup" class="form-container">
+    <form id="studyForm">
+      <div class="containerform">
+        <h2>Registe Seus Estudos</h2>
+        
+        <input type="hidden" class="InputRegister" id="usuario_id" name="usuario_id">
+        <input type="hidden" class="InputRegister"id="data_estudo" name="data_estudo">
+        <label for="disciplina">Disciplina:</label>
+        <select class="InputRegister" id="disciplina" name="disciplina" required>
+          <option value="">Selecione a disciplina</option>
+        </select>
+        <label for="assunto">Assunto:</label>
+        <select class="InputRegister" id="assunto" name="assunto" required>
+          <option value="">Selecione o assunto</option>
+        </select>
+        <label for="horas">Horas Estudadas:</label>
+        <input class="InputRegister2" type="time" id="horas" name="horas_estudadas" required>
+        <label for="questoes_erradas">Questões Erradas:</label>
+        <input class="InputRegister2" type="number" id="questoes_erradas" name="questoes_erradas" required>
+        <label for="questoes_certas">Questões Certas:</label>
+        <input class="InputRegister2" type="number" id="questoes_certas" name="questoes_certas" required>
+        <label for="tipo_estudo">Tipo de Estudo:</label>
+        <select class="InputRegister"id="tipo_estudo" name="tipo_estudo">
+          <option value="teoria">Teoria</option>
+          <option value="prática">Prática</option>
+          <option value="revisão">Revisão</option>
+        </select>
+      </div>
+      <div class="buttons">
+        <button type="submit">Enviar</button>
+        <button type="button" id="closeForm">Fechar</button>
+      </div>
+    </form>
+  </div>
 
   <!-- Gráficos -->
   <div class="charts-wrapper">
@@ -54,7 +65,6 @@
       <canvas id="lineChart"></canvas>
     </div>
 
-  
     <div class="row-charts">
       <div class="chart-container doughnut-chart-container">
         <canvas id="doughnutChart"></canvas>
@@ -71,11 +81,26 @@
     </div>
   </div>
 
- 
-
   <!-- Chart.js-->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
   <script src="./js/dashboard.js"></script>
+
+  <script>
+    // Controle do overlay e formulário
+    document.querySelectorAll('#openForm').forEach(button => {
+      button.addEventListener('click', function() {
+        document.getElementById('overlay').style.display = 'block';
+        document.getElementById('formPopup').style.display = 'block';
+        document.body.classList.add('overlay-active');
+      });
+    });
+
+    document.getElementById('closeForm').addEventListener('click', function() {
+      document.getElementById('overlay').style.display = 'none';
+      document.getElementById('formPopup').style.display = 'none';
+      document.body.classList.remove('overlay-active');
+    });
+  </script>
 </body>
 </html>

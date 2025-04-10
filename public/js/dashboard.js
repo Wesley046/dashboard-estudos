@@ -1,47 +1,158 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  // Define o usuário logado (obtido do localStorage, por exemplo)
-  const usuarioId = localStorage.getItem("usuario_id"); 
+  // 1. Configuração inicial
+  const usuarioId = localStorage.getItem("usuario_id");
   if (usuarioId) {
-    document.getElementById("usuario_id").value = usuarioId;
+    const usuarioIdElement = document.getElementById("usuario_id");
+    if (usuarioIdElement) {
+      usuarioIdElement.value = usuarioId;
+    }
   }
 
-  // Obtém a data atual, adiciona 1 dia e formata no padrão YYYY-MM-DD
+  // Configura data padrão (amanhã)
   const today = new Date();
   today.setDate(today.getDate() + 1);
   const formattedDate = today.toISOString().split("T")[0];
-  document.getElementById("data_estudo").value = formattedDate;
+  const dataEstudoElement = document.getElementById("data_estudo");
+  if (dataEstudoElement) {
+    dataEstudoElement.value = formattedDate;
+  }
 
+  // Variáveis para gráficos
+  let myChart = null;
+  let myDoughnutChart = null;
+  let myBarChart = null;
+  let myPercentBarChart = null;
 
-  let myChart = null;          // Gráfico de linhas
-  let myDoughnutChart = null;  // Gráfico de rosca
-  let myBarChart = null;       // Gráfico de barras (total de questões)
-  let myPercentBarChart = null;// Gráfico de percentual de estudo por disciplina
+  console.log("dashboard.js carregado com sucesso!");
 
-  console.log(" dashboard.js carregado!");
-  console.log(typeof Chart);
+  // 2. Controle do Menu Lateral
+  const sidebar = document.querySelector(".sidebar");
+  const toggleButton = document.querySelector("#toggleSidebar");
 
-  // Função para carregar as disciplinas
+  if (toggleButton && sidebar) {
+    toggleButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      sidebar.classList.toggle("expanded");
+      
+      // Fechar automaticamente em mobile após 3 segundos
+      if (window.innerWidth <= 768) {
+        setTimeout(() => {
+          if (sidebar.classList.contains("expanded")) {
+            sidebar.classList.remove("expanded");
+          }
+        }, 3000);
+      }
+    });
+    
+    // Fechar menu ao clicar em um item (para mobile)
+    sidebar.addEventListener("click", (e) => {
+      if (window.innerWidth <= 768 && e.target.closest(".menu-item")) {
+        setTimeout(() => sidebar.classList.remove("expanded"), 300);
+      }
+    });
+  }
+
+  // 3. Controle do Formulário Popup - VERSÃO CORRIGIDA
+  const formPopup = document.getElementById("formPopup");
+  const openFormButton = document.getElementById("openForm"); // Corrigido para usar ID
+  const closeFormButton = document.getElementById("closeForm");
+  const overlay = document.getElementById("overlay");
+
+  // Garantir que o formulário comece fechado
+  if (formPopup && overlay) {
+    formPopup.style.display = "none";
+    overlay.style.display = "none";
+  }
+
+  function openForm() {
+    if (!formPopup || !overlay) return;
+    
+    overlay.style.display = "block";
+    formPopup.style.display = "flex";
+    document.body.classList.add("overlay-active");
+    
+    setTimeout(() => {
+      overlay.style.opacity = "1";
+      formPopup.style.opacity = "1";
+    }, 10);
+    
+    // Carrega disciplinas ao abrir o formulário
+    carregarDisciplinas();
+  }
+
+  function closeForm() {
+    if (!formPopup || !overlay) return;
+    
+    overlay.style.opacity = "0";
+    formPopup.style.opacity = "0";
+    
+    setTimeout(() => {
+      overlay.style.display = "none";
+      formPopup.style.display = "none";
+      document.body.classList.remove("overlay-active");
+    }, 300);
+  }
+
+  if (openFormButton) {
+    openFormButton.addEventListener("click", function(e) {
+      e.preventDefault();
+      openForm();
+    });
+  }
+
+  if (closeFormButton) {
+    closeFormButton.addEventListener("click", closeForm);
+  }
+
+  if (overlay) {
+    overlay.addEventListener("click", closeForm);
+  }
+
+  // 4. Controle do Ranking
+  document.addEventListener("click", function(e) {
+    const btnRanking = e.target.closest("#btnRanking");
+    
+    if (btnRanking) {
+      e.preventDefault();
+      console.log("Redirecionando para ranking...");
+      
+      // Fecha o menu se estiver aberto (mobile)
+      if (sidebar && window.innerWidth <= 768) {
+        sidebar.classList.remove("expanded");
+      }
+      
+      // Redirecionamento robusto
+      try {
+        window.location.href = "/ranking";
+      } catch (error) {
+        console.error("Erro no redirecionamento:", error);
+        window.location.assign("/ranking");
+      }
+    }
+  });
+
+  // 5. Funções para carregar disciplinas e assuntos
   async function carregarDisciplinas() {
     try {
       const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/disciplinas");
       if (!response.ok) throw new Error("Erro ao buscar disciplinas");
       const disciplinas = await response.json();
       const selectDisciplina = document.getElementById("disciplina");
-      // Limpa e preenche o select
-      selectDisciplina.innerHTML = "<option value=''>Selecione a disciplina</option>";
-      disciplinas.forEach(item => {
-        const option = document.createElement("option");
-        option.value = item.disciplina;
-        option.textContent = item.disciplina;
-        selectDisciplina.appendChild(option);
-      });
-      console.log("Disciplinas carregadas:", disciplinas);
+      
+      if (selectDisciplina) {
+        selectDisciplina.innerHTML = "<option value=''>Selecione a disciplina</option>";
+        disciplinas.forEach(item => {
+          const option = document.createElement("option");
+          option.value = item.disciplina;
+          option.textContent = item.disciplina;
+          selectDisciplina.appendChild(option);
+        });
+      }
     } catch (error) {
       console.error("Erro ao carregar disciplinas:", error);
     }
   }
 
-  // Função para carregar os assuntos de uma disciplina específica
   async function carregarAssuntos(disciplinaNome) {
     try {
       if (!disciplinaNome) return;
@@ -49,118 +160,79 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (!response.ok) throw new Error("Erro ao buscar assuntos");
       const assuntos = await response.json();
       const selectAssunto = document.getElementById("assunto");
-      // Limpa e preenche o select
-      selectAssunto.innerHTML = "<option value=''>Selecione o assunto</option>";
-      assuntos.forEach(item => {
-        const option = document.createElement("option");
-        option.value = item.nome;
-        option.textContent = item.nome;
-        selectAssunto.appendChild(option);
-      });
-      console.log("Assuntos carregados para a disciplina", disciplinaNome, ":", assuntos);
+      
+      if (selectAssunto) {
+        selectAssunto.innerHTML = "<option value=''>Selecione o assunto</option>";
+        assuntos.forEach(item => {
+          const option = document.createElement("option");
+          option.value = item.nome;
+          option.textContent = item.nome;
+          selectAssunto.appendChild(option);
+        });
+      }
     } catch (error) {
       console.error("Erro ao carregar assuntos:", error);
     }
   }
 
-  // Chama a função para carregar as disciplinas ao carregar o DOM
-  await carregarDisciplinas();
+  // 6. Event listeners para disciplinas e assuntos
+  const disciplinaSelect = document.getElementById("disciplina");
+  if (disciplinaSelect) {
+    disciplinaSelect.addEventListener("change", (event) => {
+      carregarAssuntos(event.target.value);
+    });
+  }
 
-  // Quando a disciplina for alterada, carrega os assuntos
-  document.getElementById("disciplina").addEventListener("change", (event) => {
-    carregarAssuntos(event.target.value);
-  });
+  // 7. Submit do formulário
+  const studyForm = document.getElementById("studyForm");
+  if (studyForm) {
+    studyForm.addEventListener("submit", async function(e) {
+      e.preventDefault();
+      console.log("Submit acionado");
 
-  // Função para atualizar os gráficos (exemplo)
+      const formData = {
+        usuario_id: document.getElementById("usuario_id").value,
+        data_estudo: document.getElementById("data_estudo").value,
+        disciplina: document.getElementById("disciplina").value,
+        assunto: document.getElementById("assunto").value,
+        horas_estudadas: document.getElementById("horas").value,
+        questoes_erradas: document.getElementById("questoes_erradas").value,
+        questoes_certas: document.getElementById("questoes_certas").value,
+        tipo_estudo: document.getElementById("tipo_estudo").value
+      };
+
+      try {
+        const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/estudos", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Erro ao cadastrar dados");
+        }
+
+        console.log("Dados cadastrados com sucesso!");
+        closeForm();
+        location.reload();
+      } catch (error) {
+        console.error("Erro ao cadastrar dados:", error);
+      }
+    });
+  }
+
+  // 8. Função para atualizar gráficos
   async function atualizarGraficos() {
     try {
       console.log("Gráficos atualizados com os novos dados.");
+      // Implementação real da atualização dos gráficos
     } catch (error) {
       console.error("Erro ao atualizar gráficos:", error);
     }
   }
-
-  // Listener para o submit do formulário
-  document.getElementById("studyForm").addEventListener("submit", async function(e) {
-    e.preventDefault();
-    console.log("Submit acionado");
-
-    // Captura os dados do formulário, incluindo o usuario_id e data_estudo já definida
-    const formData = {
-      usuario_id: document.getElementById("usuario_id").value,
-      data_estudo: document.getElementById("data_estudo").value,
-      disciplina: document.getElementById("disciplina").value,
-      assunto: document.getElementById("assunto").value,
-      horas_estudadas: document.getElementById("horas").value,
-      questoes_erradas: document.getElementById("questoes_erradas").value,
-      questoes_certas: document.getElementById("questoes_certas").value,
-      tipo_estudo: document.getElementById("tipo_estudo").value
-    };
-
-    console.log("Dados do formulário:", formData);
-
-    try {
-      const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/estudos", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Erro ao cadastrar dados");
-      }
-
-      console.log("Dados cadastrados com sucesso!");
-      await atualizarGraficos();
-      document.getElementById("studyForm").reset();
-      location.reload();
-    } catch (error) {
-      console.error("Erro ao cadastrar dados:", error);
-    }
-  });
-
-
-  // Função para o menu lateral
-  const sidebar = document.querySelector(".sidebar");
-  const toggleButton = document.querySelector("#toggleSidebar");
-
-  if (toggleButton && sidebar) {
-    toggleButton.addEventListener("click", () => {
-      sidebar.classList.toggle("expanded");
-
-      // Se estiver em tela pequena, fecha o menu ao clicar em um item
-      if (window.innerWidth <= 768) {
-        setTimeout(() => sidebar.classList.remove("expanded"), 3000);
-      }
-    });
-  }
-
-  // Funções para o formulário popup
-  const formPopup = document.getElementById("formPopup");
-  const openFormButton = document.getElementById("openForm");
-  const closeFormButton = document.getElementById("closeForm");
-
-  if (openFormButton && formPopup) {
-    openFormButton.addEventListener("click", () => {
-      formPopup.style.display = "flex";
-    });
-  }
-
-  if (closeFormButton && formPopup) {
-    closeFormButton.addEventListener("click", () => {
-      formPopup.style.display = "none";
-    });
-  }
-
-  // Fechar o formulário quando clicar fora dele
-  window.addEventListener("click", (event) => {
-    if (event.target === formPopup) {
-      formPopup.style.display = "none";
-    }
-  });
 
   async function carregarDadosGraficos() {
       try {
@@ -644,3 +716,33 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("Erro ao carregar o total de dias de estudo:", error);
   }
 });
+
+// Fallback garantido para o botão de ranking
+function initRankingButton() {
+  const btnRanking = document.getElementById("btnRanking");
+  
+  if (!btnRanking) {
+    console.error("Botão de ranking não encontrado!");
+    return;
+  }
+
+  btnRanking.addEventListener("click", function(e) {
+    e.preventDefault();
+    console.log("Botão de ranking clicado - redirecionando...");
+    
+    // Fecha o menu lateral se existir
+    const sidebar = document.querySelector(".sidebar");
+    if (sidebar && window.innerWidth <= 768) {
+      sidebar.classList.remove("expanded");
+    }
+    
+    // Força o redirecionamento
+    window.location.href = "/ranking";
+  });
+}
+
+// Inicializa quando o DOM estiver pronto
+document.addEventListener("DOMContentLoaded", initRankingButton);
+
+// Tenta novamente após 3 segundos (fallback)
+setTimeout(initRankingButton, 3000);

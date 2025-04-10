@@ -1,355 +1,63 @@
-/* ====================== */
-/* ESTILOS DA TELA DE LOGIN */
-/* ====================== */
+/* IMPORTAÇÕES DE FONTES UNIFICADAS */
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+/* ESTILOS GERAIS */
 
 body {
-    font-family: Stencil, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-family: 'OCR A Std', monospace, 'Arial Narrow Bold', sans-serif;
     background-image: url('https://i.ibb.co/prZYZ5cG/Banner-Site-01-1920-x-1080-px-1.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background-size:cover;
+    background-attachment:fixed;
+    background-position: center center;
+    background-repeat:no-repeat;
+    margin: 5%;
+    color: #000000;
+    min-height: 100vh;
+    
+}
+
+/* TELA DE LOGIN */
+
+/* TELA DE LOGIN */
+.login-page {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 90vh;
-    margin: 0;
-    color: #ffffff;
-}
-
-.login-container {
-    background-color: rgba(255, 255, 255,0);
-  padding: 15px;
-  border-radius: 15px;
-  box-shadow: 0 0 10px rgba(255, 255, 255,0);
-  text-align: center;
-  width: 450px;
-}
-
-.logo img {
-    width: 250px;
-    margin-bottom: 40px;
-}
-
-.input-group {
+    min-height: 100vh;
     position: relative;
-    display: flex;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0);
-    border-radius: 5px;
-    margin-bottom: 15px;
-    padding: 10px;
-}
-
-.input-group input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    color: #ffffff;
-    outline: none;
-    padding-left: 25px;
-}
-
-.input-group .icon {
-    color: #000000;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #dd1212;
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.5s;
-    margin-top: 10px;
-}
-
-button:hover {
-    background-color: #ff5d5d;
-}
-
-.footer {
-    position: absolute;
-    bottom: 20px;
-    font-size: 18px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.footer span {
-    color: #ff1a1a;
-}
-
-
-/* ====================== */
-/* ESTILOS DA DASHBOARD */
-/* ====================== */
-
-body {
-    font-family: Stencil, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    /* Novo: Fundo com desfoque */
     background-image: url('https://i.ibb.co/prZYZ5cG/Banner-Site-01-1920-x-1080-px-1.png');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     margin: 0;
-    color: #ffffff;
 }
 
-/* MENU LATERAL */
-.sidebar {
-    position: fixed;
+/* Novo: Pseudoelemento para o efeito de desfoque */
+.login-page::before {
+    content: '';
+    position: absolute;
     top: 0;
     left: 0;
-    width: 70px; /* Largura inicial */
-    height: 100vh;
-    background-color: black;
-    opacity: 0.9;
-    color: white;
-    padding: 10px;
-    transition: width 0.3s ease;
-    overflow: hidden;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.sidebar.expanded {
-    width: 200px; /* Largura expandida */
-}
-
-/* Botão de expandir/recolher */
-.sidebar .toggle-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-
-.sidebar .toggle-btn img {
-    width: 50px; /* Ajuste do tamanho do botão */
-    transition: transform 0.3s ease;
-}
-
-.sidebar .menu-item {
-    display: none;
-    width: 90%;
-    padding: 12px;
-    background: #ff2a2a;
-    color: white;
-    border: none;
-    cursor: pointer;
-    margin: 10px 0;
-    border-radius: 21px;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-.sidebar.expanded .menu-item {
-    display: block;
-}
-
-.sidebar .menu-item:hover {
-    background-color: #ff1a1a;
-}
-
-/* CONTEÚDO DA DASHBOARD */
-.dashboard-container {
-    margin-left: 70px;
-    padding: 20px;
-    width: calc(100% - 70px);
-    transition: margin-left 0.3s ease, width 0.3s ease;
-}
-
-.sidebar.expanded ~ .dashboard-container {
-    margin-left: 250px;
-    width: calc(100% - 250px);
-}
-
-/* TOTAL DE DIAS ESTUDADOS */
-.total-dias {
-    text-align: left;
-    margin: 10px auto;
-    font-size: 1.2rem;
-    color: #ffffff;
-}
-
-/* AJUSTE DO FORMULÁRIO */
-.form-container {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 340px;
-    background: rgba(53, 53, 53, 0.9);
-    padding: 25px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-    z-index: 1001;
-    text-align: center;
-    font-family: "OCR A Std", monospace;
-}
-
-.form-container h2 {
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-    color: #ffffff;
-    font-weight: bold;
-}
-
-.form-container label {
-    display: block;
-    margin-top: 10px;
-    font-size: 1rem;
-    color: #ffffff;
-    text-align: center;
-    font-weight: bold;
-}
-
-.form-container input,
-.form-container select {
-    width: 55%;
-    padding: 11px;
-    margin-top: 8px;
-    border: 0px solid #ccc;
-    border-radius: 21px;
-    font-size: 0.7rem;
-    background: #ffffff;
-    color: #333;
-    text-align: center;
-    font-family: "OCR A Std", monospace;
-}
-
-.form-container input:focus, 
-.form-container select:focus {
-    border-color: #000000;
-    outline: none;
-}
-
-.form-container button {
-    margin-top: 25px;
-    padding: 12px;
-    width: 60%;
-    background-color: #ff2a2a;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 45px;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: background-color 0.5s ease;
-}
-
-.form-container button:hover {
-    background-color: #ff1a1a;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-    .form-container {
-        width: 90%;
-    }
-}
-
-/* Estilo do formulário */
-.form-container {
-    display: none; /* Oculto por padrão */
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 340px;
-    background: rgba(53, 53, 53, 0.9);
-    padding: 25px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-    z-index: 1001;
-    text-align: center;
-    font-family: "OCR A Std", monospace;
-}
-
-.form-container h2 {
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-    color: #ffffff;
-    font-weight: bold;
-}
-
-.form-container label {
-    display: block;
-    margin-top: 10px;
-    font-size: 1rem;
-    color: #ffffff;
-    text-align: center;
-    font-weight: bold;
-}
-
-.form-container input,
-.form-container select {
-    width: 80%;
-    padding: 8px;
-    margin-top: 8px;
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    background: #ffffff;
-    color: #333;
-    text-align: center;
-    font-family: "OCR A Std", monospace;
-}
-
-.form-container button {
-    margin-top: 20px;
-    padding: 10px;
-    width: 90%;
-    background-color: #ff2a2a;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: background-color 0.3s ease;
-}
-
-.form-container button:hover {
-    background-color: #ff1a1a;
-}
-
-/* Exibição quando ativo */
-.form-container.active {
-    display: block;
-}
-
-
-/* ========================== */
-/* ESTILOS DA TELA DE LOGIN */
-/* ========================== */
-
-body {
-    font-family: Stencil, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    background-image: url('https://i.ibb.co/prZYZ5cG/Banner-Site-01-1920-x-1080-px-1.png');
+    right: 0;
+    bottom: 0;
+    background-image: inherit;
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
+    filter: blur(8px);
+    z-index: -1;
+}
+
+.telalogin {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 90vh;
-    margin: 0;
-    color: #ffffff;
 }
 
 .login-container {
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    
     text-align: center;
-    width: 450px;
+   
 }
 
 .logo img {
@@ -361,29 +69,36 @@ body {
     position: relative;
     display: flex;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.5);
+    width: 290px;
+    height: 12px;
+    background-color: #EBEBEB;
+    border: 2px solid #FFF;
     border-radius: 5px;
-    margin-bottom: 15px;
+    margin: 0 auto 15px;
     padding: 10px;
+    flex-shrink: 0;
 }
 
 .input-group input {
     flex: 1;
+    font-family: Raleway;
+    font-weight: 400;
+    font-size: 14px;
     border: none;
     background: transparent;
-    color: #ffffff;
+    color: #575757;
     outline: none;
     padding-left: 25px;
 }
 
 .input-group .icon {
-    color: #000000;
+    color: #fc0000;
 }
 
 button {
     width: 100%;
     padding: 10px;
-    background-color: #dd1212;
+    background-color: #181313;
     color: #ffffff;
     border: none;
     border-radius: 5px;
@@ -403,27 +118,15 @@ button:hover {
     font-size: 18px;
     font-weight: bold;
     text-transform: uppercase;
+    color: white; /* Garantindo que o texto seja visível */
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Melhor contraste */
 }
 
 .footer span {
     color: #ff1a1a;
 }
+/* DASHBOARD */
 
-/* ====================== */
-/* ESTILOS DA DASHBOARD */
-/* ====================== */
-
-body {
-    font-family: OCR A Std, monospace,'Arial Narrow Bold', sans-serif;
-    background-image: url('https://i.ibb.co/prZYZ5cG/Banner-Site-01-1920-x-1080-px-1.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    margin: 0;
-    color: #ffffff;
-}
-
-/* MENU LATERAL */
 .sidebar {
     position: fixed;
     top: 0;
@@ -442,6 +145,17 @@ body {
     align-items: center;
 }
 
+.sidebar .menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Espaço entre o ícone e o texto */
+    justify-content: flex-start;
+    padding-left: 15px; /* Ajuste conforme necessário */
+}
+
+.sidebar .menu-item i {
+    font-size: 1rem; /* Tamanho do ícone */
+}
 .sidebar.expanded {
     width: 200px;
 }
@@ -462,7 +176,6 @@ body {
     display: none;
     width: 90%;
     padding: 12px;
-    background: #ff2a2a;
     color: white;
     border: none;
     cursor: pointer;
@@ -476,11 +189,8 @@ body {
     display: block;
 }
 
-.sidebar .menu-item:hover {
-    background-color: #ff1a1a;
-}
 
-/* CONTEÚDO DA DASHBOARD */
+
 .dashboard-container {
     margin-left: 70px;
     padding: 20px;
@@ -489,93 +199,144 @@ body {
 }
 
 .sidebar.expanded ~ .dashboard-container {
-    margin-left: 250px;
-    width: calc(100% - 250px);
+    margin-left: 200px;
+    width: calc(100% - 200px);
 }
 
-/* AJUSTE DO FORMULÁRIO */
+.total-dias {
+    font-size: 1.5rem;
+    color: #ffffff;
+    font-weight: bold;
+    text-align: left;
+    margin: 20px 0;
+}
+
+/* ====================== */
+/* FORMULÁRIOS */
+/* ====================== */
+
+
 .form-container {
-    display: none;
+    display: block; 
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 340px;
-    background: rgba(53, 53, 53, 0.9);
-    padding: 25px;
+    width: 400px;
+    background-image: linear-gradient(to right, #0000007a, #72001571);
+    padding: 45px;
     box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     z-index: 1001;
-    text-align: center;
+    text-align: left; /* Garante que todo o texto fique alinhado à esquerda por padrão */
     font-family: "OCR A Std", monospace;
 }
 
-.form-container h2 {
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-    color: #ffffff;
-    font-weight: bold;
+.containerform {
+    display: block; /* Alterado de flex para block */
+    width: 100%;
 }
 
 .form-container label {
     display: block;
-    margin-top: 10px;
-    font-size: 1rem;
+    text-align: left;
+    font-family: Inter;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 15px; /* Aumentado para melhor espaçamento */
     color: #ffffff;
-    text-align: center;
     font-weight: bold;
+    width: 100%;
 }
 
-.form-container input,
-.form-container select {
-    width: 55%;
+.form-container h2 {
+    margin-bottom: 20px;
+    font-size: 32px;
+    color: #F2F2F2;
+    font-weight: 500;
+    text-transform: capitalize;
+    font-family: Roboto;
+}
+
+
+
+.InputRegister{
+    width: 350px;
     padding: 11px;
     margin-top: 8px;
-    border: 0px solid #ccc;
-    border-radius: 21px;
-    font-size: 0.7rem;
-    background: #ffffff;
-    color: #333;
-    text-align: center;
-    font-family: "OCR A Std", monospace;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    background: #F2F2F2;
+    color: #5C5C5C;
+    font-family: Raleway;
+    font-weight: 400;
+    text-align: left;
 }
 
+.InputRegister2{
+    width: 330px;
+    padding: 11px;
+    margin-top: 8px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    background: #F2F2F2;
+    color: #5C5C5C;
+    font-family: Raleway;
+    font-weight: 500;
+    text-align: center;
+}
+
+.containerform{
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+
+}
+.buttons{
+    display: flex;
+    margin-left: 5%;
+    align-items: center;
+    justify-content: center;
+    width: 315px;
+    border-radius: 270px;
+    gap: 35px;
+    margin-top: 5%;
+}
+button[type="submit"] {
+    background-color: #E53935;
+}
+
+button[type="submit"]:hover {
+    background-color: #e53835a8;
+}
+
+button[type="button"] {
+    background-color: #616161;
+}
+
+button[type="submit"]:hover {
+    background-color: #61616185;
+}
 .form-container input:focus, 
 .form-container select:focus {
-    border-color: #000000;
     outline: none;
 }
 
-.form-container button {
-    margin-top: 25px;
-    padding: 12px;
-    width: 60%;
-    background-color: #ff2a2a;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 45px;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: background-color 0.5s ease;
-}
-
 .form-container button:hover {
-    background-color: #ff1a1a;
+    background-color: #fd6c6c;
+}
+.buttonforms {
+
+display: flex;
+gap: 25px;
 }
 
-/* Responsividade para o formulário */
-@media (max-width: 768px) {
-    .form-container {
-        width: 90%;
-    }
-}
-
-/* ========================== */
-/* ESTILOS PARA OS GRÁFICOS */
-/* ========================== */
-
-/* Contêiner principal dos gráficos */
+/* ====================== */
+/* GRÁFICOS */
+/* ====================== */
 .charts-wrapper {
     display: flex;
     flex-direction: column;
@@ -584,554 +345,9 @@ body {
     max-width: 1100px;
     margin: 0 auto;
     padding-top: 30px;
-    gap:30x; /* Garante espaçamento entre os itens */
-}
-
-/* Contêiner para o gráfico de linhas (acima) */
-.line-chart-container {
-    width: 100%;
-    height: 250px;        
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 1px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Contêiner para agrupar os gráficos em linha */
-.row-charts {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;         /* Espaço entre os gráficos */
-    width: 100%;
-    margin-top: 40px;  /* Espaço extra acima dos gráficos em linha */
-}
-
-/* Contêiner genérico para cada gráfico */
-.chart-container {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 10px;
-}
-
-/* Contêiner do gráfico de rosca */
-.doughnut-chart-container {
-    width: 320px;
-    height: 320px;
-}
-
-/* Contêiner do gráfico de barras (total de questões) */
-.bar-chart-container {
-    width: 320px;
-    height: 320px;
-}
-
-/* Contêiner do gráfico de percentual (vertical) */
-.percent-bar-chart-container {
-    width: 320px;
-    height: 320px;
-}
-
-/* Garante que o canvas ocupe todo o contêiner */
-.chart-container canvas {
-    width: 100% !important;
-    height: 100% !important;
-}
-
-/* Responsividade: em telas menores, os gráficos se empilham */
-@media (max-width: 1024px) {
-    .row-charts {
-        flex-direction: column;
-        gap: 20px;
-    }
-    .doughnut-chart-container,
-    .bar-chart-container,
-    .percent-bar-chart-container {
-        width: 90% !important;
-        height: 300px !important;
-    }
-}
-.total-dias {
-
-    margin: 10px auto;
-    font-size: 1.2rem;
-    color: #ffffff;
-    position: relative;
-    text-align: center;
-  }
- /* ========================== */
-/* ESTILOS BASE */
-/* ========================== */
-
-body {
-    font-family: Stencil, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    background-image: url('https://i.ibb.co/prZYZ5cG/Banner-Site-01-1920-x-1080-px-1.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    margin: 0;
-    color: #ffffff;
-}
-
-/* ========================== */
-/* ESTILOS DA TELA DE LOGIN */
-/* ========================== */
-
-.login-container {
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-    text-align: center;
-    width: 450px;
-}
-
-.logo img {
-    width: 250px;
-    margin-bottom: 40px;
-}
-
-.input-group {
-    position: relative;
-    display: flex;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 5px;
-    margin-bottom: 15px;
-    padding: 10px;
-}
-
-.input-group input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    color: #ffffff;
-    outline: none;
-    padding-left: 25px;
-}
-
-.input-group .icon {
-    color: #000000;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #dd1212;
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.5s;
-    margin-top: 10px;
-}
-
-button:hover {
-    background-color: #ff5d5d;
-}
-
-.footer {
-    position: absolute;
-    bottom: 20px;
-    font-size: 18px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.footer span {
-    color: #ff1a1a;
-}
-
-/* ========================== */
-/* ESTILOS DA DASHBOARD */
-/* ========================== */
-
-.dashboard-container {
-    margin-left: 70px;
-    padding: 20px;
-    width: calc(100% - 70px);
-    transition: margin-left 0.3s ease, width 0.3s ease;
-}
-
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 70px;
-    height: 100vh;
-    background-color: black;
-    opacity: 0.9;
-    color: white;
-    padding: 10px;
-    transition: width 0.3s ease;
-    overflow: hidden;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.sidebar.expanded {
-    width: 200px;
-}
-
-.sidebar .toggle-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-
-.sidebar .toggle-btn img {
-    width: 50px;
-    transition: transform 0.3s ease;
-}
-
-.sidebar .menu-item {
-    display: none;
-    width: 90%;
-    padding: 12px;
-    background: #ff2a2a;
-    color: white;
-    border: none;
-    cursor: pointer;
-    margin: 10px 0;
-    border-radius: 21px;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-.sidebar.expanded .menu-item {
-    display: block;
-}
-
-.sidebar .menu-item:hover {
-    background-color: #ff1a1a;
-}
-
-/* ========================== */
-/* ESTILOS DO FORMULÁRIO */
-/* ========================== */
-
-.form-container {
-    display: none; /* Oculto por padrão */
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 340px;
-    background: rgba(53, 53, 53, 0.9);
-    padding: 25px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-    z-index: 1001;
-    text-align: center;
-    font-family: "OCR A Std", monospace;
-}
-
-.form-container h2 {
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-    color: #ffffff;
-    font-weight: bold;
-}
-
-.form-container label {
-    display: block;
-    margin-top: 10px;
-    font-size: 1rem;
-    color: #ffffff;
-    text-align: center;
-    font-weight: bold;
-}
-
-.form-container input,
-.form-container select {
-    width: 55%;
-    padding: 11px;
-    margin-top: 8px;
-    border: 0px solid #ccc;
-    border-radius: 21px;
-    font-size: 0.7rem;
-    background: #ffffff;
-    color: #333;
-    text-align: center;
-    font-family: "OCR A Std", monospace;
-}
-
-.form-container input:focus, 
-.form-container select:focus {
-    border-color: #000000;
-    outline: none;
-}
-
-.form-container button {
-    margin-top: 25px;
-    padding: 12px;
-    width: 60%;
-    background-color: #ff2a2a;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 45px;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: background-color 0.5s ease;
-}
-
-.form-container button:hover {
-    background-color: #ff1a1a;
-}
-
-/* ========================== */
-/* ESTILOS BASE E GERAIS */
-/* ========================== */
-
-body {
-    font-family: Stencil, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-    background-image: url('https://i.ibb.co/prZYZ5cG/Banner-Site-01-1920-x-1080-px-1.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    margin: 0;
-    color: #ffffff;
-}
-
-/* ========================== */
-/* ESTILOS DA TELA DE LOGIN */
-/* ========================== */
-
-.login-container {
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-    text-align: center;
-    width: 450px;
-}
-
-.logo img {
-    width: 250px;
-    margin-bottom: 40px;
-}
-
-.input-group {
-    position: relative;
-    display: flex;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 5px;
-    margin-bottom: 15px;
-    padding: 10px;
-}
-
-.input-group input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    color: #ffffff;
-    outline: none;
-    padding-left: 25px;
-}
-
-.input-group .icon {
-    color: #000000;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #dd1212;
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.5s;
-    margin-top: 10px;
-}
-
-button:hover {
-    background-color: #ff5d5d;
-}
-
-.footer {
-    position: absolute;
-    bottom: 20px;
-    font-size: 18px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.footer span {
-    color: #ff1a1a;
-}
-
-/* ========================== */
-/* ESTILOS DA DASHBOARD */
-/* ========================== */
-
-.dashboard-container {
-    margin-left: 70px;
-    padding: 20px;
-    width: calc(100% - 70px);
-    transition: margin-left 0.3s ease, width 0.3s ease;
-}
-
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 70px;
-    height: 100vh;
-    background-color: black;
-    opacity: 0.9;
-    color: white;
-    padding: 10px;
-    transition: width 0.3s ease;
-    overflow: hidden;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.sidebar.expanded {
-    width: 200px;
-}
-
-.sidebar .toggle-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-
-.sidebar .toggle-btn img {
-    width: 50px;
-    transition: transform 0.3s ease;
-}
-
-.sidebar .menu-item {
-    display: none;
-    width: 90%;
-    padding: 12px;
-    background: #ff2a2a;
-    color: white;
-    border: none;
-    cursor: pointer;
-    margin: 10px 0;
-    border-radius: 21px;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-.sidebar.expanded .menu-item {
-    display: block;
-}
-
-.sidebar .menu-item:hover {
-    background-color: #ff1a1a;
-}
-
-/* ========================== */
-/* ESTILOS DO FORMULÁRIO */
-/* ========================== */
-
-.form-container {
-    display: none; /* Oculto por padrão */
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 340px;
-    background: rgba(53, 53, 53, 0.9);
-    padding: 25px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-    z-index: 1001;
-    text-align: center;
-    font-family: "OCR A Std", monospace;
-}
-
-.form-container h2 {
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-    color: #ffffff;
-    font-weight: bold;
-}
-
-.form-container label {
-    display: block;
-    margin-top: 10px;
-    font-size: 1rem;
-    color: #ffffff;
-    text-align: center;
-    font-weight: bold;
-}
-
-.form-container input,
-.form-container select {
-    width: 55%;
-    padding: 11px;
-    margin-top: 8px;
-    border: 0px solid #ccc;
-    border-radius: 21px;
-    font-size: 0.7rem;
-    background: #ffffff;
-    color: #333;
-    text-align: center;
-    font-family: "OCR A Std", monospace;
-}
-
-.form-container input:focus, 
-.form-container select:focus {
-    border-color: #000000;
-    outline: none;
-}
-
-.form-container button {
-    margin-top: 25px;
-    padding: 12px;
-    width: 60%;
-    background-color: #ff2a2a;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 45px;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: background-color 0.5s ease;
-}
-
-.form-container button:hover {
-    background-color: #ff1a1a;
-}
-
-/* ========================== */
-/* ESTILOS DOS GRÁFICOS (BASE) */
-/* ========================== */
-
-/* Contêiner principal dos gráficos */
-.charts-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 90%;
-    max-width: 1100px;
-    margin: 0 auto 0 auto;
-    padding-top: 30px;
     gap: 30px;
-    /* Em telas maiores, desloca para a direita para não ficar atrás do sidebar */
-    margin-left: 80px; 
 }
 
-/* Contêiner para o gráfico de linhas (desktop) */
 .line-chart-container {
     width: 100%;
     height: 250px;
@@ -1144,7 +360,6 @@ button:hover {
     align-items: center;
 }
 
-/* Contêiner para agrupar os gráficos em linha (desktop) */
 .row-charts {
     display: flex;
     flex-direction: row;
@@ -1155,554 +370,434 @@ button:hover {
     margin-top: 40px;
 }
 
-/* Contêiner genérico para cada gráfico */
 .chart-container {
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
     padding: 10px;
-    margin: 0 auto;
-}
-/* Contêiner do gráfico de rosca (desktop) */
-.doughnut-chart-container {
-    width: 320px;
-    height: 320px;
 }
 
-/* Contêiner do gráfico de barras (total de questões) (desktop) */
-.bar-chart-container {
-    width: 320px;
-    height: 320px;
-}
-
-/* Contêiner do gráfico de percentual (desktop) */
+.doughnut-chart-container,
+.bar-chart-container,
 .percent-bar-chart-container {
     width: 320px;
     height: 320px;
 }
 
-/* Garante que o canvas ocupe todo o contêiner */
 .chart-container canvas {
     width: 100% !important;
     height: 100% !important;
 }
 
-/* Contêiner para o contador de dias, abaixo dos gráficos */
-.total-dias-container {
-    display: block;
-    width: 90%;
-    max-width: 1100px;
-    margin: 20px auto 0 auto;
-    text-align: left;
-}
-
-.total-dias {
-    font-size: 1.5rem;
-    color: #ffffff;
-    font-weight: bold;
-}
-
-/* Contêiner para o contador de dias de estudo */
-.below-charts-container {
-    display: block;
-    width: 90%;
-    max-width: 1100px;
-    margin: 20px auto 0 auto;
-    text-align: left;
-}
-/* Para telas menores (tablets e pequenos laptops) */
+/* ====================== */
+/* RESPONSIVIDADE */
+/* ====================== */
 @media (max-width: 1024px) {
-    .charts-wrapper {
-        margin-left: 0; /* Retira o deslocamento se necessário */
-        width: 95%;
+    .row-charts {
+        flex-direction: column;
+        gap: 20px;
     }
+    
     .doughnut-chart-container,
     .bar-chart-container,
     .percent-bar-chart-container {
         width: 90% !important;
         height: 300px !important;
-        margin: 0 auto;
     }
 }
 
-/* Para dispositivos móveis em modo portrait (vertical) */
-@media (max-width: 768px) and (orientation: portrait) {
-    body {
-        background-image: none;
-        background-color: #000;
-    }
-    .charts-wrapper {
-        width: 100%;
-        padding: 10px;
-        margin-left: 0;
-    }
-    .line-chart-container {
-        height: 250px;
-        padding: 20px;
-        margin-bottom: 80px;
-    }
-    .doughnut-chart-container,
-    .bar-chart-container,
-    .percent-bar-chart-container {
-        width: 320px !important;
-        height: 320px !important;
-    }
-}
-
-/* Para dispositivos móveis em modo landscape (horizontal) */
-@media (max-width: 768px) and (orientation: landscape) {
-    body {
-        background-image: none;
-        background-color: #000;
-    }
-    .charts-wrapper {
-        width: 100%;
-        padding: 10px;
-        margin-left: 60px; /* Mantém um deslocamento leve para que o sidebar não sobreponha */
-    }
-    .line-chart-container {
-        height: 250px;
-        padding: 20px;
-        margin-bottom: 80px;
-    }
-    .doughnut-chart-container,
-    .bar-chart-container,
-    .percent-bar-chart-container {
-        width: 320px !important;
-        height: 320px !important;
-    }
-}
-
-/* Para dispositivos muito pequenos */
-@media (max-width: 480px) {
-    .charts-wrapper {
-        padding: 5px;
-        margin-left: 0;
-    }
-    .line-chart-container {
-        height: 220px;
-        padding: 15px;
-        margin-bottom: 60px;
-    }
-    .doughnut-chart-container,
-    .bar-chart-container,
-    .percent-bar-chart-container {
-        width: 100% !important;
-        height: 250px !important;
-    }
-}
-
-/* ========================== */
-/* ESTILOS BASE E GERAIS */
-/* ========================== */
-
-body {
-    font-family: OCR A Std, monospace,'Arial Narrow Bold', sans-serif; 
-    background-image: url('https://i.ibb.co/prZYZ5cG/Banner-Site-01-1920-x-1080-px-1.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    margin: 0;
-    color: #ffffff;
-}
-
-/* ========================== */
-/* ESTILOS DA TELA DE LOGIN */
-/* ========================== */
-
-.login-container {
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-    text-align: center;
-    width: 450px;
-}
-
-.logo img {
-    width: 250px;
-    margin-bottom: 40px;
-}
-
-.input-group {
-    position: relative;
-    display: flex;
-    align-items: center;
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 5px;
-    margin-bottom: 15px;
-    padding: 10px;
-}
-
-.input-group input {
-    flex: 1;
-    border: none;
-    background: transparent;
-    color: #ffffff;
-    outline: none;
-    padding-left: 25px;
-}
-
-.input-group .icon {
-    color: #000000;
-}
-
-button {
-    width: 100%;
-    padding: 10px;
-    background-color: #dd1212;
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.5s;
-    margin-top: 10px;
-}
-
-button:hover {
-    background-color: #ff5d5d;
-}
-
-.footer {
-    position: absolute;
-    bottom: 20px;
-    font-size: 18px;
-    font-weight: bold;
-    text-transform: uppercase;
-}
-
-.footer span {
-    color: #ff1a1a;
-}
-
-/* ========================== */
-/* ESTILOS DA DASHBOARD */
-/* ========================== */
-
-.dashboard-container {
-    margin-left: 70px;
-    padding: 20px;
-    width: calc(100% - 70px);
-    transition: margin-left 0.3s ease, width 0.3s ease;
-}
-
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 70px;
-    height: 100vh;
-    background-color: black;
-    opacity: 0.9;
-    color: white;
-    padding: 10px;
-    transition: width 0.3s ease;
-    overflow: hidden;
-    z-index: 1000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.sidebar.expanded {
-    width: 200px;
-}
-
-.sidebar .toggle-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-
-.sidebar .toggle-btn img {
-    width: 50px;
-    transition: transform 0.3s ease;
-}
-
-.sidebar .menu-item {
-    display: none;
-    width: 90%;
-    padding: 12px;
-    background: #ff2a2a;
-    color: white;
-    border: none;
-    cursor: pointer;
-    margin: 10px 0;
-    border-radius: 21px;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-.sidebar.expanded .menu-item {
-    display: block;
-}
-
-.sidebar .menu-item:hover {
-    background-color: #ff1a1a;
-}
-
-/* ========================== */
-/* ESTILOS DO FORMULÁRIO */
-/* ========================== */
-
-.form-container {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 340px;
-    background: rgba(53, 53, 53, 0.9);
-    padding: 25px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-    z-index: 1001;
-    text-align: center;
-    font-family: "OCR A Std", monospace;
-}
-
-.form-container h2 {
-    margin-bottom: 20px;
-    font-size: 1.8rem;
-    color: #ffffff;
-    font-weight: bold;
-}
-
-.form-container label {
-    display: block;
-    margin-top: 10px;
-    font-size: 1rem;
-    color: #ffffff;
-    text-align: center;
-    font-weight: bold;
-}
-
-.form-container input,
-.form-container select {
-    width: 55%;
-    padding: 11px;
-    margin-top: 8px;
-    border: 0px solid #ccc;
-    border-radius: 21px;
-    font-size: 0.7rem;
-    background: #ffffff;
-    color: #333;
-    text-align: center;
-    font-family: "OCR A Std", monospace;
-}
-
-.form-container input:focus, 
-.form-container select:focus {
-    border-color: #000000;
-    outline: none;
-}
-
-.form-container button {
-    margin-top: 25px;
-    padding: 12px;
-    width: 60%;
-    background-color: #ff2a2a;
-    color: white;
-    border: none;
-    cursor: pointer;
-    border-radius: 45px;
-    font-size: 1rem;
-    font-weight: bold;
-    transition: background-color 0.5s ease;
-}
-
-.form-container button:hover {
-    background-color: #ff1a1a;
-}
-
-/* ========================== */
-/* ESTILOS DOS GRÁFICOS */
-/* ========================== */
-
-/* Contêiner principal dos gráficos */
-.charts-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 90%;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding-top: 30px;
-    gap: 30px;
-}
-
-/* Contêiner para o gráfico de linhas */
-.line-chart-container {
-    width: 100%;
-    height: 250px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 20px;
-    margin-bottom: 80px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-/* Cada gráfico em seu contêiner individual (em ordem vertical) */
-.chart-container {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 10px;
-    margin: 0 auto;
-}
-
-/* Gráfico de Rosca */
-.doughnut-chart-container {
-    width: 320px;
-    height: 320px;
-}
-
-/* Gráfico de Barras (total de questões) */
-.bar-chart-container {
-    width: 320px;
-    height: 320px;
-}
-
-/* Gráfico Percentual */
-.percent-bar-chart-container {
-    width: 320px;
-    height: 320px;
-}
-
-/* Garante que o canvas ocupe todo o contêiner */
-.chart-container canvas {
-    width: 100% !important;
-    height: 100% !important;
-}
-
-/* Contêiner para o contador de dias de estudo, abaixo dos gráficos */
-.total-dias-container {
-    display: block;
-    width: 90%;
-    max-width: 1100px;
-    margin: 20px auto 0 auto;
-    text-align: left;
-}
-
-.total-dias {
-    font-size: 1.5rem;
-    color: #ffffff;
-    font-weight: bold;
-}
-
-/* ========================== */
-/* RESPONSIVIDADE */
-/* ========================== */
-
-/* Para telas menores (tablets e pequenos laptops) */
-/* @media (max-width: 1024px) {
-    .chart-container {
-        width: 90% !important;
-        margin: 0 auto;
-    }
-} */
-
-/* Para dispositivos móveis */
-/* @media (max-width: 768px) {
-    body {
-        background-image: none;
-        background-color: #000;
-    }
-    .charts-wrapper {
-        width: 100%;
-        padding: 10px;
-    } */
-    /* Mantenha os tamanhos "normais" */
-    /* .line-chart-container {
-        height: 250px;
-        padding: 20px;
-        margin-bottom: 80px;
-    }
-    .doughnut-chart-container,
-    .bar-chart-container,
-    .percent-bar-chart-container {
-        width: 320px !important;
-        height: 320px !important;
-    }
-} */
-
-/* Para dispositivos muito pequenos */
-/* @media (max-width: 480px) {
-    .charts-wrapper {
-        padding: 5px;
-    }
-    .line-chart-container {
-        height: 220px;
-        padding: 15px;
-        margin-bottom: 60px;
-    }
-    .doughnut-chart-container,
-    .bar-chart-container,
-    .percent-bar-chart-container {
-        width: 100% !important;
-        height: 250px !important;
-    }
-} */
-
-
-/* Para telas menores (375px e 768px) - Gráficos um abaixo do outro */
 @media (max-width: 768px) {
     body {
         background-image: none;
         background-color: #000;
     }
-    .row-charts {
-        flex-direction: column; /* Coloca os gráficos em uma coluna */
-        gap: 20px; /* Adiciona espaço entre os gráficos */
-        width: 100%;
-        align-items: center;
-    }
-
-    .line-chart-container {
-        width: 100% !important;  /* Ocupar toda a largura disponível */
-        max-width: 350px; /* Define um limite máximo */
-        height: auto; /* Mantém a altura ajustável */
-        padding: 15px; /* Adiciona espaço interno */
-        margin: 300px auto 0 auto !important; /* Adiciona margem no topo */
-    }
-
-    .chart-container, 
-    .doughnut-chart-container, 
-    .bar-chart-container, 
-    .percent-bar-chart-container {
-        width: 90% !important; /* Ajusta a largura para 90% */
-        max-width: 350px; /* Define um tamanho máximo */
-        height: auto; /* Mantém altura ajustável */
-        margin: 0 auto; /* Centraliza */
-    }
-}
-
-/* Para telas muito pequenas (até 375px) */
-@media (max-width: 375px) {
+    
     .row-charts {
         flex-direction: column;
-        gap: 15px;
-        width: 100%;
-        align-items: center;
+        gap: 20px;
     }
-
+    
     .line-chart-container {
-        width: 95% !important;
-        max-width: 320px;
+        width: 100% !important;
+        max-width: 350px;
         height: auto;
-        padding: 10px;
-        margin: 40px auto 0 auto !important; /* Aumenta a margem no topo */
+        padding: 15px;
+        margin: 40px auto 0 auto !important;
     }
-
-    .chart-container, 
-    .doughnut-chart-container, 
-    .bar-chart-container, 
-    .percent-bar-chart-container {
-        width: 95% !important;
-        max-width: 320px;
+    
+    .chart-container {
+        width: 90% !important;
+        max-width: 350px;
         height: auto;
-        margin: 0 auto;
     }
 }
+
+@media (max-width: 480px) {
+    .charts-wrapper {
+        padding: 5px;
+    }
+    
+    .line-chart-container {
+        height: 220px;
+        padding: 15px;
+        margin-bottom: 60px;
+    }
+    
+    .chart-container {
+        width: 100% !important;
+        height: 250px !important;
+    }
+    
+    .form-container {
+        width: 90%;
+        padding: 25px;
+    }
+    
+    .form-container input,
+    .form-container select {
+        width: 100%;
+    }
+}
+/* ====================== */
+/* OverLay */
+/* ====================== */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px); /* Efeito de desfoque */
+    z-index: 1000; /* Abaixo do formulário mas acima de tudo */
+    display: none; /* Inicialmente escondido */
+}
+
+/* Ajuste o z-index do formulário para ficar acima do overlay */
+.form-container {
+    z-index: 1001;
+    /* outros estilos... */
+}
+
+/* Quando o overlay estiver ativo, desfoque o conteúdo principal */
+body.overlay-active {
+    overflow: hidden; /* Impede scroll */
+}
+
+/* Opcional: desfoque no sidebar também */
+.overlay-active .sidebar {
+    backdrop-filter: blur(2px);
+}
+/* ====================== */
+/* Ranking  */
+/* ====================== */
+
+/* Estilos do Ranking */
+  
+  .ranking-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  }
+  
+  .ranking-list {
+    margin-top: 20px;
+  }
+  
+  
+  .rank-position {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .student-name {
+    font-weight: 500;
+  }
+  
+  .performance-badge {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 8px;
+  }
+  
+  .badge-green {
+    background-color: #4CAF50;
+  }
+  
+  .badge-red {
+    background-color: #F44336;
+  }
+  
+  .no-data, .error-message {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+  }
+  /* Estilos para os filtros */
+.ranking-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+    align-items: flex-end;
+}
+
+.filter-group {
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+/* Estilos para o ranking */
+
+.ranking-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.rank-position {
+    font-weight: bold;
+    width: 50px;
+    color: #555;
+    color: #FFF;
+    font-family: "Bebas Neue";
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.student-name {
+    flex: 2;
+    font-weight: 500;
+}
+
+
+.total-questions {
+    flex: 1;
+    text-align: center;
+    font-weight: 500;
+}
+
+.student-performance {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.performance-badge {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.badge-green {
+    background-color: #28a745;
+}
+
+.badge-yellow {
+    background-color: #ffc107;
+}
+
+.badge-red {
+    background-color: #dc3545;
+}
+
+/* Mensagens */
+.no-data, .error-message {
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+}
+
+.error-message {
+    color: #dc3545;
+}
+
+.ranking-title {
+    color: #FFF;
+    font-family: "Bebas Neue";
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-left: 5%;
+}
+
+.ranking-title1 {
+    color: #FFF;
+    font-family: "Bebas Neue";
+    font-size: 64px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-top: -3% ;
+    margin-left: 5%;
+
+}
+
+.form-control{
+    width: 350px;
+    height: 52px;
+    flex-shrink: 0;
+    border-radius: 5px;
+    border: 1px solid #B92C2C;
+    opacity: 1;
+    background: rgba(71, 0, 13, 0.18);
+    color: #ffffff;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    margin-left:10% ;
+
+}
+
+.form-control2{
+    width: 290px;
+    height: 52px;
+    flex-shrink: 0;
+    border-radius: 5px;
+    border: 1px solid #B92C2C;
+    opacity: 1;
+    background: rgba(71, 0, 13, 0.18);
+    color: #ffffff;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    width: 877px;
+    height: 52px;
+    flex-shrink: 0;
+
+}
+
+.filter-buttons-container {
+    display: flex;
+    justify-content: flex-end; /* Alinha os botões à direita */
+    gap: 10px; /* Espaçamento entre os botões (ajuste conforme necessário) */
+  }
+  
+  .filter-btn {
+    width: 145px;
+    height: 41px;
+    border-radius: 5px;
+    font-family: "Bebas Neue";
+    font-size: 20px;
+    text-align: center;
+    font-weight: 200;
+    border: none;
+    cursor: pointer;
+    gap:5%
+  }
+  
+  .filter-btn-primary {
+    background: #B92C2C;
+    color: #FFF;
+  }
+  
+  .filter-btn-secondary {
+    background: #B92C2C;
+    color: #FFF;
+  }
+
+  .ranking-list-header {
+    display: flex;
+    justify-content: space-between; /* Espaço máximo entre os itens */
+    padding: 0 20px; /* Adiciona margem interna nas laterais (opcional) */
+}
+.ranking-list-container {
+    width: 100%;
+    justify-content: center;
+    max-width: 100vw; /* Força ocupar toda a tela */
+    overflow-x: auto; /* Adiciona scroll horizontal se necessário */
+}
+
+/* Container Pai (importante para o alinhamento) */
+.ranking-list-container {
+    width: 98%;
+    margin: 0 auto;
+    padding: 0 1%;
+  }
+  
+  /* Cabeçalho - mantendo proporções */
+  .ranking-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #FFF;
+    font-family: "Bebas Neue";
+    font-size: 25px;
+    font-weight: 400;
+    padding: 10px 0;
+    width: 100%;
+  }
+  
+  /* Itens - alinhados com o cabeçalho */
+  .ranking-item {
+    display: flex;
+    justify-content: space-between; /* Agora igual ao header */
+    align-items: center; /* Alterado para center */
+    padding: 15px 0;
+    background: rgba(121, 121, 121, 0.767);
+    color: #FFF;
+    font-family: Montserrat;
+    font-size: 15px;
+    font-weight: 400;
+    width: 100%;
+  }
+  
+  /* Classes para controle preciso das colunas */
+  .ranking-list-header div,
+  .ranking-item div {
+    flex: 1;
+    text-align: center;
+    padding: 0 5px;
+  }
+  
+  /* Ajustes específicos por coluna */
+  .ranking-list-header div:nth-child(1),
+  .ranking-item div:nth-child(1) {
+    flex: 0 0 10%; /* Posição - largura fixa */
+  }
+  
+  .ranking-list-header div:nth-child(2),
+  .ranking-item div:nth-child(2) {
+    flex: 2; /* Aluno - espaço dobrado */
+    text-align: center; /* Alinhamento ao centro */
+  }
+  
+  .ranking-list-header div:nth-child(3),
+  .ranking-item div:nth-child(3) {
+    flex: 0 0 20%; /* Questões - largura fixa */
+  }
+  
+  .ranking-list-header div:nth-child(4),
+  .ranking-item div:nth-child(4) {
+    flex: 0 0 10%; /* Total - largura fixa */
+  }
+  
+  .ranking-list-header div:nth-child(5),
+  .ranking-item div:nth-child(5) {
+    flex: 0 0 15%; /* Aproveitamento - largura fixa */
+    text-align: right; 
+    align-items: center;
+  }

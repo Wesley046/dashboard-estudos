@@ -613,6 +613,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("Erro ao carregar dados para o gráfico de barras:", error);
     }
   }
+  
     async function carregarDadosBarrasPercentual() {
       try {
           console.log("Carregando dados para o gráfico horizontal de percentual...");

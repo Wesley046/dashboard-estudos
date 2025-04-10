@@ -850,3 +850,81 @@ body.overlay-active {
     text-align: right; 
     align-items: center;
   }
+
+  /* ====================== */
+/* MELHORIAS DE RESPONSIVIDADE */
+/* ====================== */
+
+/* Ajustes Gerais para Telas Pequenas */
+@media (max-width: 768px) {
+    body {
+        margin: 2%;
+        background-attachment: scroll;
+    }
+
+    .dashboard-container {
+        margin-left: 0;
+        width: 100%;
+        padding: 10px;
+    }
+
+    .sidebar {
+        width: 60px;
+    }
+
+    .sidebar.expanded {
+        width: 180px;
+    }
+
+    .sidebar.expanded ~ .dashboard-container {
+        margin-left: 180px;
+        width: calc(100% - 180px);
+    }
+}
+
+/* Ajustes para Telas Médias (Tablets) */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .row-charts {
+        flex-wrap: wrap;
+    }
+
+    .chart-container {
+        width: 48% !important;
+        height: 300px !important;
+    }
+
+    .form-container {
+        width: 80%;
+    }
+}
+
+/* Ajustes Específicos para o Gráfico de Barras */
+.bar-chart-container {
+    overflow-x: auto;
+}
+
+.bar-chart-container canvas {
+    min-width: 300px; /* Largura mínima para garantir legibilidade */
+}
+
+/* Melhorias nos Formulários para Mobile */
+@media (max-width: 480px) {
+    .form-container {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .InputRegister, .InputRegister2 {
+        width: 100%;
+    }
+
+    .buttons {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    button[type="submit"], button[type="button"] {
+        width: 100%;
+    }
+}

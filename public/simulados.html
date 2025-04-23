@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cadastrar Simulado</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="simulado-container">
+    <h1 class="simulado-title">Cadastrar Simulado</h1>
+
+    <form id="simulado-form" class="simulado-form">
+      <label for="numero_simulado" class="simulado-label">Número do Simulado:</label>
+      <input type="number" id="numero_simulado" class="simulado-input" required />
+
+      <label for="tipo_simulado" class="simulado-label">Tipo de Simulado:</label>
+      <select id="tipo_simulado" class="simulado-select" required>
+        <option value="">Selecione</option>
+        <option value="Certo ou Errado">Certo ou Errado</option>
+        <option value="Acertivas A-D">Acertivas (A-D)</option>
+        <option value="Acertivas A-E">Acertivas (A-E)</option>
+        <option value="Discursivo">Discursivo</option>
+      </select>
+      
+
+      <label for="prova" class="simulado-label">Prova:</label>
+      <select id="prova" class="simulado-select" required>
+        <option value="">Selecione a prova</option>
+        <option value="PMSE 2024">PMSE 2024</option>
+        <option value="PMSE 2024">PMAL 2025</option>
+        <option value="PMSE 2024">PMCE 2025</option>
+        <option value="PMSE 2024">GCM ARAPIRACA</option>
+        <!-- você pode adicionar mais provas aqui -->
+      </select>
+
+      <label for="quantidade_questoes" class="simulado-label">Quantidade de Questões:</label>
+      <input type="number" id="quantidade_questoes" class="simulado-input" min="1" max="120" required />
+
+      <button type="button" id="gerar-gabarito" class="simulado-button">Gerar Gabarito</button>
+
+      <div id="gabarito-container" class="simulado-gabarito">
+        <!-- As questões e pesos serão gerados aqui -->
+      </div>
+
+      <button type="submit" class="simulado-submit-button">Cadastrar Simulado</button>
+    </form>
+  </div>
+
+  <script src="/simulados.js"></script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulado - Aluno</title>
+    <link rel="stylesheet" href="/style.css"> <!-- Novo CSS exclusivo -->
+</head>
+<body>
+    <div class="simulado-aluno-container">
+        <h1 class="simulado-aluno-titulo">Simulado - Aluno</h1>
+
+        <!-- Seleção de Simulado e Prova -->
+        <div class="simulado-aluno-select-box">
+            <label for="simulado" class="simulado-aluno-label">Escolha o Simulado:</label>
+            <select id="simulado" class="simulado-aluno-select" required>
+                <option value="">Selecione</option>
+            </select>
+        </div>
+
+        <div class="simulado-aluno-select-box">
+            <label for="prova" class="simulado-aluno-label">Escolha a Prova:</label>
+            <select id="prova" class="simulado-aluno-select" required disabled>
+                <option value="">Selecione uma prova</option>
+            </select>
+        </div>
+
+        <button id="carregarQuestoes" class="simulado-aluno-btn" disabled>Carregar Questões</button>
+
+        <!-- Container para Exibir as Questões -->
+        <div id="questoes-container" class="simulado-aluno-questoes"></div>
+
+        <button id="finalizarSimulado" class="simulado-aluno-btn" disabled>Finalizar Simulado</button>
+    </div>
+
+    <script src="/simuladosAluno.js"></script>
+</body>
+</html>

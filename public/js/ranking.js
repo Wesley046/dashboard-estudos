@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const setupMenuLateral = () => {
             const sidebar = document.querySelector(".sidebar");
             const toggleButton = document.querySelector("#toggleSidebar");
-            
+
             if (!sidebar || !toggleButton) {
                 console.error("Elementos do menu não encontrados");
                 return;
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 e.preventDefault();
                 e.stopPropagation();
                 sidebar.classList.toggle("expanded");
-                
+
                 // Fechar automaticamente em mobile após 3 segundos
                 if (window.innerWidth <= 768) {
                     setTimeout(() => {
@@ -53,21 +53,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             });
         };
-// Função para redirecionar para o Dashboard
-function redirectToDashboard() {
-    window.location.href = "dashboard.html"; // Substitua pelo caminho correto do seu dashboard
-}
-
-// Adiciona o event listener ao botão Dashboard quando o DOM estiver carregado
-document.addEventListener('DOMContentLoaded', function() {
-    const dashboardButton = document.getElementById('dashboardButton'); // Certifique-se que o botão tem este ID
-    
-    if (dashboardButton) {
-        dashboardButton.addEventListener('click', redirectToDashboard);
-    }
-});
-        // Inicializa o menu lateral
-        setupMenuLateral();
 
         // 2. Elementos dos Filtros
         const rankingList = document.getElementById('rankingList');
@@ -75,197 +60,216 @@ document.addEventListener('DOMContentLoaded', function() {
         const assuntoFilter = document.getElementById('assuntoFilter');
         const filterButton = document.getElementById('filterButton');
         const resetButton = document.getElementById('resetButton');
-        
+        const dataInicioInput = document.getElementById('dataInicio'); // Input de data de início
+        const dataFimInput = document.getElementById('dataFim'); // Input de data de fim
+        const dateRangeButton = document.getElementById('dateRangeButton'); // Botão para selecionar intervalo de datas
+
         // 3. Carregar dados iniciais
         await carregarDisciplinas();
         await carregarRankingData();
-        
+
         // 4. Event listeners para os filtros
         if (disciplinaFilter) {
-            disciplinaFilter.addEventListener('change', async function() {
+            disciplinaFilter.addEventListener('change', async function () {
                 await carregarAssuntos(this.value);
             });
         }
 
         if (filterButton) {
-            filterButton.addEventListener('click', async function(e) {
+            filterButton.addEventListener('click', async function (e) {
                 e.preventDefault();
+                
+                // Atualiza a URL com os parâmetros de filtro e datas
+                atualizarURLComFiltros();
+
+                // Recarrega os dados com os novos parâmetros
                 await carregarRankingData();
             });
         }
-        
+
         if (resetButton) {
-            resetButton.addEventListener('click', async function(e) {
+            resetButton.addEventListener('click', async function (e) {
                 e.preventDefault();
                 if (disciplinaFilter) disciplinaFilter.value = '';
                 if (assuntoFilter) assuntoFilter.value = '';
+                if (dataInicioInput) dataInicioInput.value = '';
+                if (dataFimInput) dataFimInput.value = '';
                 await carregarRankingData();
             });
         }
 
-    } catch (error) {
-        console.error('Erro ao carregar ranking:', error);
-        showErrorMessage('Erro ao carregar o ranking. Tente recarregar a página.');
-    }
+        // Função para carregar os dados do ranking
+        async function carregarRankingData() {
+            try {
+                console.log('Iniciando carregamento do ranking...');
 
-    // Função para carregar os dados do ranking
-    async function carregarRankingData() {
-        try {
-            console.log('Iniciando carregamento do ranking...'); // Debug 3
-            
-            const disciplina = document.getElementById('disciplinaFilter')?.value || '';
-            const assunto = document.getElementById('assuntoFilter')?.value || '';
-            
-            // ATENÇÃO: Substitua pela URL correta da sua API
-            let url = 'https://dashboard-objetivo-policial.onrender.com/api/ranking';
-            const params = new URLSearchParams();
-            
-            if (disciplina) params.append('disciplina', disciplina);
-            if (assunto) params.append('assunto', assunto);
-            
-            // Cache busting
-            params.append('timestamp', Date.now());
-            
-            console.log('URL completa:', `${url}?${params.toString()}`); // Debug 4
-            
-            const response = await fetch(`${url}?${params.toString()}`);
-            console.log('Resposta da API:', response); // Debug 5
-            
-            if (!response.ok) {
-                throw new Error(`Erro HTTP: ${response.status}`);
+                const disciplina = document.getElementById('disciplinaFilter')?.value || '';
+                const assunto = document.getElementById('assuntoFilter')?.value || '';
+                const dataInicio = dataInicioInput?.value || '';
+                const dataFim = dataFimInput?.value || '';
+
+                // ATENÇÃO: Substitua pela URL correta da sua API
+                let url = 'http://127.0.0.1:3000/api/ranking';
+                const requestParams = new URLSearchParams();
+
+                if (disciplina) requestParams.append('disciplina', disciplina);
+                if (assunto) requestParams.append('assunto', assunto);
+                if (dataInicio) requestParams.append('data_inicio', dataInicio);
+                if (dataFim) requestParams.append('data_fim', dataFim);
+
+                // Cache busting
+                requestParams.append('timestamp', Date.now());
+
+                console.log('URL completa:', `${url}?${requestParams.toString()}`);
+
+                const response = await fetch(`${url}?${requestParams.toString()}`);
+                console.log('Resposta da API:', response);
+
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+
+                const rankingData = await response.json();
+                console.log('Dados recebidos:', rankingData);
+
+                renderRanking(rankingData);
+
+            } catch (error) {
+                console.error('Erro ao carregar dados do ranking:', error);
+                showErrorMessage('Erro ao carregar dados. Tente novamente.');
             }
-                
-            const rankingData = await response.json();
-            console.log('Dados recebidos:', rankingData); // Debug 6
-            
-            renderRanking(rankingData);
-            
-        } catch (error) {
-            console.error('Erro ao carregar dados do ranking:', error);
-            showErrorMessage('Erro ao carregar dados. Tente novamente.');
         }
-    }
-    // Função para renderizar o ranking
-    function renderRanking(rankingData) {
-        const rankingList = document.getElementById('rankingList');
-        if (!rankingList) return;
-        
-        rankingList.innerHTML = '';
-        
-        if (!rankingData || rankingData.length === 0) {
-            rankingList.innerHTML = '<p class="no-data">Nenhum dado de ranking disponível</p>';
-            return;
-        }
-        
-        rankingData.forEach((aluno, index) => {
-            const certas = aluno.total_certas || 0;
-            const erradas = aluno.total_erradas || 0;
-            const total = aluno.total_questoes || (certas + erradas);
-            const aproveitamento = parseFloat(aluno.aproveitamento || 0).toFixed(1);
-            
-            const alunoElement = document.createElement('div');
-            alunoElement.className = 'ranking-item';
-            alunoElement.innerHTML = `
-                <div class="rank-position">${index + 1}º</div>
-                <div class="student-name">${aluno.nome || 'N/A'}</div>
-                <div class="questions-stats">
-                    <span class="correct-questions">${certas}</span>
-                    <span class="separator">/</span>
-                    <span class="wrong-questions">${erradas}</span>
-                </div>
-                <div class="total-questions">${total}</div>
-                <div class="student-performance">
-                    <span class="performance-badge ${getBadgeClass(aproveitamento)}"></span>
-                    ${aproveitamento}%
-                </div>
-            `;
-            rankingList.appendChild(alunoElement);
-        });
-    }
 
-    // Funções auxiliares
-    function getBadgeClass(aproveitamento) {
-        const perf = parseFloat(aproveitamento);
-        return perf >= 80 ? 'badge-green' : 
-               perf >= 50 ? 'badge-yellow' : 'badge-red';
-    }
+        // Função para renderizar o ranking
+        function renderRanking(rankingData) {
+            if (!rankingList) return;
 
-    async function carregarDisciplinas() {
-        try {
-            const response = await fetch('/api/disciplinas');
-            if (!response.ok) throw new Error('Erro ao buscar disciplinas');
-            
-            const disciplinas = await response.json();
-            const select = document.getElementById('disciplinaFilter');
-            
-            if (select) {
-                select.innerHTML = '<option value="">Todas disciplinas</option>';
-                disciplinas.forEach(item => {
-                    const option = document.createElement('option');
-                    option.value = item.disciplina;
-                    option.textContent = item.disciplina;
-                    select.appendChild(option);
-                });
-            }
-        } catch (error) {
-            console.error('Erro ao carregar disciplinas:', error);
-        }
-    }
-    
-    async function carregarAssuntos(disciplinaNome) {
-        try {
-            const assuntoFilter = document.getElementById('assuntoFilter');
-            if (!assuntoFilter) return;
-            
-            assuntoFilter.innerHTML = '<option value="">Carregando...</option>';
-            assuntoFilter.disabled = true;
-            
-            if (!disciplinaNome) {
-                assuntoFilter.innerHTML = '<option value="">Todos assuntos</option>';
+            rankingList.innerHTML = '';
+
+            if (!rankingData || rankingData.length === 0) {
+                rankingList.innerHTML = '<p class="no-data">Nenhum dado de ranking disponível</p>';
                 return;
             }
-            
-            const response = await fetch(`/api/disciplinas/assuntos?disciplina=${encodeURIComponent(disciplinaNome)}&_=${Date.now()}`);
-            if (!response.ok) throw new Error('Erro ao buscar assuntos');
-            
-            const assuntos = await response.json();
-            
-            assuntoFilter.innerHTML = '<option value="">Todos assuntos</option>';
-            assuntos.forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.nome;
-                option.textContent = item.nome;
-                assuntoFilter.appendChild(option);
+
+            rankingData.forEach((aluno, index) => {
+                const certas = aluno.total_certas || 0;
+                const erradas = aluno.total_erradas || 0;
+                const total = aluno.total_questoes || (certas + erradas);
+                const aproveitamento = parseFloat(aluno.aproveitamento || 0).toFixed(1);
+
+                const alunoElement = document.createElement('div');
+                alunoElement.className = 'ranking-item';
+                alunoElement.innerHTML = `
+                    <div class="rank-position">${index + 1}º</div>
+                    <div class="student-name">${aluno.nome || 'N/A'}</div>
+                    <div class="questions-stats">
+                        <span class="correct-questions">${certas}</span>
+                        <span class="separator">/</span>
+                        <span class="wrong-questions">${erradas}</span>
+                    </div>
+                    <div class="total-questions">${total}</div>
+                    <div class="student-performance">
+                        <span class="performance-badge ${getBadgeClass(aproveitamento)}"></span>
+                        ${aproveitamento}%
+                    </div>
+                `;
+                rankingList.appendChild(alunoElement);
             });
-            
-            assuntoFilter.disabled = false;
-            
-        } catch (error) {
-            console.error('Erro ao carregar assuntos:', error);
-            const assuntoFilter = document.getElementById('assuntoFilter');
-            if (assuntoFilter) {
-                assuntoFilter.innerHTML = '<option value="">Erro ao carregar</option>';
+        }
+
+        // Funções auxiliares
+        function getBadgeClass(aproveitamento) {
+            const perf = parseFloat(aproveitamento);
+            return perf >= 80 ? 'badge-green' :
+                perf >= 50 ? 'badge-yellow' : 'badge-red';
+        }
+
+        async function carregarDisciplinas() {
+            try {
+                const response = await fetch('/api/disciplinas');
+                if (!response.ok) throw new Error('Erro ao buscar disciplinas');
+
+                const disciplinas = await response.json();
+                const select = document.getElementById('disciplinaFilter');
+
+                if (select) {
+                    select.innerHTML = '<option value="">Todas disciplinas</option>';
+                    disciplinas.forEach(item => {
+                        const option = document.createElement('option');
+                        option.value = item.disciplina;
+                        option.textContent = item.disciplina;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Erro ao carregar disciplinas:', error);
             }
         }
-    }
-    
-    function showErrorMessage(message) {
-        const rankingList = document.getElementById('rankingList');
-        if (rankingList) {
-            rankingList.innerHTML = `<p class="error-message">${message}</p>`;
+
+        async function carregarAssuntos(disciplinaNome) {
+            try {
+                const assuntoFilter = document.getElementById('assuntoFilter');
+                if (!assuntoFilter) return;
+
+                assuntoFilter.innerHTML = '<option value="">Carregando...</option>';
+                assuntoFilter.disabled = true;
+
+                if (!disciplinaNome) {
+                    assuntoFilter.innerHTML = '<option value="">Todos assuntos</option>';
+                    return;
+                }
+
+                const response = await fetch(`/api/disciplinas/assuntos?disciplina=${encodeURIComponent(disciplinaNome)}&_=${Date.now()}`);
+                if (!response.ok) throw new Error('Erro ao buscar assuntos');
+
+                const assuntos = await response.json();
+
+                assuntoFilter.innerHTML = '<option value="">Todos assuntos</option>';
+                assuntos.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.nome;
+                    option.textContent = item.nome;
+                    assuntoFilter.appendChild(option);
+                });
+
+                assuntoFilter.disabled = false;
+
+            } catch (error) {
+                console.error('Erro ao carregar assuntos:', error);
+                const assuntoFilter = document.getElementById('assuntoFilter');
+                if (assuntoFilter) {
+                    assuntoFilter.innerHTML = '<option value="">Erro ao carregar</option>';
+                }
+            }
         }
+
+        function showErrorMessage(message) {
+            const rankingList = document.getElementById('rankingList');
+            if (rankingList) {
+                rankingList.innerHTML = `<p class="error-message">${message}</p>`;
+            }
+        }
+
+        // Atualiza a URL com os filtros selecionados
+        function atualizarURLComFiltros() {
+            const disciplina = document.getElementById('disciplinaFilter')?.value || '';
+            const assunto = document.getElementById('assuntoFilter')?.value || '';
+            const dataInicio = dataInicioInput?.value || '';
+            const dataFim = dataFimInput?.value || '';
+
+            const newParams = new URLSearchParams();
+            if (disciplina) newParams.append('disciplina', disciplina);
+            if (assunto) newParams.append('assunto', assunto);
+            if (dataInicio) newParams.append('data_inicio', dataInicio);
+            if (dataFim) newParams.append('data_fim', dataFim);
+
+            history.pushState(null, null, "?" + newParams.toString());
+        }
+
+        // Inicializa o menu lateral
+        setupMenuLateral();
+
+    } catch (error) {
+        console.error('Erro inesperado:', error);
     }
 });
-
-if (filterButton) {
-    filterButton.addEventListener('click', async function(e) {
-        e.preventDefault();
-        console.log('Botão de filtro clicado'); // Debug 1
-        
-        const disciplina = document.getElementById('disciplinaFilter')?.value;
-        const assunto = document.getElementById('assuntoFilter')?.value;
-        console.log('Valores dos filtros:', { disciplina, assunto }); // Debug 2
-        
-        await carregarRankingData();
-    });
-}

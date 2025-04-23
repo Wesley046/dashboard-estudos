@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const dataFim = dataFimInput?.value || '';
 
                 // ATENÇÃO: Substitua pela URL correta da sua API
-                let url = 'http://127.0.0.1:3000/api/ranking';
+                let url = 'https://dashboard-objetivo-policial.onrender.com/api/ranking';
                 const requestParams = new URLSearchParams();
 
                 if (disciplina) requestParams.append('disciplina', disciplina);

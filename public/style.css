@@ -330,6 +330,7 @@ flex-direction: column;
 }
 button[type="submit"] {
     background-color: #E53935;
+    width: 330px
 }
 
 button[type="submit"]:hover {

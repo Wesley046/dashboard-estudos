@@ -32,33 +32,47 @@ const buscarSimuladosDisponiveis = async (req, res) => {
 
 // Função para buscar as provas de um simulado específico
 const buscarProvasPorSimulado = async (req, res) => {
-    try {
-      const { simuladoId } = req.params;
-  
-      if (!simuladoId) {
-        return res.status(400).json({ error: 'Simulado ID não fornecido' });
-      }
-  
-      // Ajuste na consulta SQL com base na estrutura do banco
-      const result = await pool.query(`
-        SELECT id, nome, quantidade_questoes
-        FROM cadastro_provas
-        WHERE simulado_id = $1
-        ORDER BY nome
-      `, [simuladoId]);
-  
-      if (result.rows.length === 0) {
-        return res.status(404).json({ error: 'Nenhuma prova encontrada para este simulado' });
-      }
-  
-      // Retorna as provas para o simulado
-      res.json(result.rows);
-    } catch (err) {
-      console.error('Erro ao buscar provas:', err);
-      res.status(500).json({ error: 'Erro ao buscar provas' });
+  try {
+    const { simuladoId } = req.params;  // Obtendo o simuladoId da URL
+
+    // Verifica se o simuladoId foi fornecido
+    if (!simuladoId) {
+      return res.status(400).json({ error: 'Simulado ID não fornecido' });
     }
-  };
-  
+
+    // Ajuste na consulta SQL com base na estrutura do banco
+    const result = await pool.query(`
+      SELECT 
+        p.id AS prova_id,
+        p.nome_prova,
+        s.id AS simulado_id,
+        s.numero_simulado,
+        s.tipo_simulado,
+        s.prova,
+        s.quantidade_questoes
+      FROM 
+        public.cadastro_provas p
+      INNER JOIN 
+        public.cadastro_simulados s
+      ON 
+        p.simulado_id = s.id
+      WHERE 
+        s.id = $1  -- Usando o simuladoId como parâmetro
+    `, [simuladoId]);
+
+    // Verifica se o resultado retornou alguma prova
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Nenhuma prova encontrada para este simulado' });
+    }
+
+    // Retorna as provas do simulado
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Erro ao buscar provas:', err);
+    res.status(500).json({ error: 'Erro ao buscar provas' });
+  }
+};
+
 // Função para buscar as questões de um simulado e prova específicos
 const buscarQuestoes = async (req, res) => {
   try {
@@ -71,9 +85,9 @@ const buscarQuestoes = async (req, res) => {
     // Busca as questões associadas ao simulado e prova
     const result = await pool.query(`
       SELECT q.id, q.texto, q.tipo, q.peso
-      FROM cadastro_simulados s
-      JOIN cadastro_provas p ON p.simulado_id = s.id
-      JOIN cadastro_questoes q ON q.prova_id = p.id
+      FROM cadastro_questoes q
+      JOIN cadastro_provas p ON p.id = q.prova_id
+      JOIN cadastro_simulados s ON s.id = p.simulado_id
       WHERE s.id = $1 AND p.id = $2
     `, [simuladoId, provaId]);
 

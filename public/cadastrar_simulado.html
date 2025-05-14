@@ -5,15 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Cadastrar Simulado</title>
   <link rel="stylesheet" href="/style.css">
+  <style>
+    .simulado-gabarito-item {
+      display: grid;
+      grid-template-columns: 50px 150px 100px 80px 1fr;
+      gap: 10px;
+      margin-bottom: 15px;
+      align-items: center;
+    }
+    .simulado-gabarito-item textarea {
+      width: 100%;
+    }
+    @media (max-width: 768px) {
+      .simulado-gabarito-item {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="simulado-container">
     <h1 class="simulado-title">Cadastrar Simulado</h1>
 
     <form id="simulado-form" class="simulado-form">
+
+      <!-- Número do Simulado -->
       <label for="numero_simulado" class="simulado-label">Número do Simulado:</label>
       <input type="number" id="numero_simulado" class="simulado-input" required />
 
+      <!-- Tipo de Simulado -->
       <label for="tipo_simulado" class="simulado-label">Tipo de Simulado:</label>
       <select id="tipo_simulado" class="simulado-select" required>
         <option value="">Selecione</option>
@@ -22,31 +42,35 @@
         <option value="Acertivas A-E">Acertivas (A-E)</option>
         <option value="Discursivo">Discursivo</option>
       </select>
-      
 
+      <!-- Prova -->
       <label for="prova" class="simulado-label">Prova:</label>
       <select id="prova" class="simulado-select" required>
         <option value="">Selecione a prova</option>
         <option value="PMSE 2024">PMSE 2024</option>
-        <option value="PMSE 2024">PMAL 2025</option>
-        <option value="PMSE 2024">PMCE 2025</option>
-        <option value="PMSE 2024">GCM ARAPIRACA</option>
-        <!-- você pode adicionar mais provas aqui -->
+        <option value="PMAL 2025">PMAL 2025</option>
+        <option value="PMCE 2025">PMCE 2025</option>
+        <option value="GCM ARAPIRACA">GCM ARAPIRACA</option>
       </select>
 
+      <!-- Quantidade de Questões -->
       <label for="quantidade_questoes" class="simulado-label">Quantidade de Questões:</label>
       <input type="number" id="quantidade_questoes" class="simulado-input" min="1" max="120" required />
 
+      <!-- Botão para gerar gabarito -->
       <button type="button" id="gerar-gabarito" class="simulado-button">Gerar Gabarito</button>
 
+      <!-- Container para as questões -->
       <div id="gabarito-container" class="simulado-gabarito">
-        <!-- As questões e pesos serão gerados aqui -->
+        <!-- Questões, disciplinas, pesos e comentários gerados dinamicamente -->
       </div>
 
+      <!-- Botão de envio -->
       <button type="submit" class="simulado-submit-button">Cadastrar Simulado</button>
     </form>
   </div>
 
+  <!-- JavaScript -->
   <script src="/simulados.js"></script>
 </body>
 </html>

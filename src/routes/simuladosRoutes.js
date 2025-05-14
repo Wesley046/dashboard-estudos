@@ -1,65 +1,83 @@
 const express = require('express');
-const router = express.Router();
-const { Client } = require('pg'); // Importando o pg
+const { Client } = require('pg');
 const { v4: uuidv4 } = require('uuid');
+const path = require('path');
+
+const router = express.Router();
 
 // Configuração do cliente PostgreSQL
 const client = new Client({
-  connectionString: process.env.DATABASE_URL, // URL do banco no .env
+  connectionString: process.env.DATABASE_URL, // A variável de ambiente DATABASE_URL
 });
-client.connect(); // Conecta ao banco de dados
+client.connect();
 
-// POST /simulados/cadastrar
+// Rota GET para carregar o HTML
+router.get('/cadastrar', (req, res) => {
+    // Ajuste o caminho para corresponder à estrutura do Express
+    res.sendFile(path.join(__dirname, '..', 'public', 'cadastrar_simulado.html'));
+});
+
+// Rota POST para cadastrar simulado e questões
 router.post('/cadastrar', async (req, res) => {
-    try {
-        const {
-            numero_simulado,
-            tipo_simulado,
-            prova,
-            quantidade_questoes,
-            gabarito // array com as respostas, ex: ['C', 'E', 'C', ...]
-        } = req.body;
+  try {
+    const {
+      numero_simulado,
+      tipo_simulado,
+      prova,
+      quantidade_questoes,
+      questoes, // Array de objetos: [{ numero_questao: 1, gabarito: 'A', peso: 1, comentario: 'Comentário', disciplina: 'DISCIPLINA' }, ...]
+    } = req.body;
 
-        if (gabarito.length !== quantidade_questoes) {
-            return res.status(400).json({ error: 'Quantidade de questões não bate com o gabarito.' });
-        }
-
-        if (quantidade_questoes > 120) {
-            return res.status(400).json({ error: 'O limite é de 120 questões.' });
-        }
-
-        const id_simulado = uuidv4();
-
-        // Gera os campos q1 até q120, preenchendo com null se não usado
-        const gabaritoFormatado = {};
-        for (let i = 1; i <= 120; i++) {
-            gabaritoFormatado[`q${i}`] = gabarito[i - 1] || null;
-        }
-
-        // Insere o simulado no banco
-        const query = `
-            INSERT INTO cadastro_simulados (numero_simulado, id_simulado, tipo_simulado, prova, quantidade_questoes, 
-            ${Object.keys(gabaritoFormatado).join(', ')})
-            VALUES ($1, $2, $3, $4, $5, ${Object.values(gabaritoFormatado).map((_, i) => `$${i + 6}`).join(', ')})
-            RETURNING *;
-        `;
-        
-        const values = [
-            parseInt(numero_simulado),
-            id_simulado,
-            tipo_simulado,
-            prova,
-            quantidade_questoes,
-            ...Object.values(gabaritoFormatado)
-        ];
-
-        const result = await client.query(query, values);
-
-        return res.status(201).json({ message: 'Simulado cadastrado com sucesso!', simulado: result.rows[0] });
-    } catch (error) {
-        console.error("Erro ao cadastrar simulado:", error); // já ajuda no terminal
-        res.status(500).json({ error: error.message }); // mostra erro exato
+    // Validações básicas
+    if (!questoes || questoes.length !== quantidade_questoes) {
+      return res.status(400).json({ error: 'Quantidade de questões não bate com o preenchido.' });
     }
+
+    const id_simulado = uuidv4();
+
+    // 1. Cadastrar o simulado
+    const insertSimuladoQuery = `
+      INSERT INTO cadastro_simulados (
+        numero_simulado, id_simulado, tipo_simulado, prova, quantidade_questoes
+      ) VALUES ($1, $2, $3, $4, $5)
+      RETURNING id;
+    `;
+
+    const simuladoResult = await client.query(insertSimuladoQuery, [
+      numero_simulado,
+      id_simulado,
+      tipo_simulado,
+      prova,
+      quantidade_questoes,
+    ]);
+
+    const simuladoId = simuladoResult.rows[0].id;
+
+    // 2. Cadastrar as questões com disciplina
+    const insertQuestaoQuery = `
+      INSERT INTO questoes_simulado 
+        (simulado_id, numero_questao, gabarito, peso, comentario, disciplina)
+      VALUES ($1, $2, $3, $4, $5, $6)
+    `;
+
+    for (const questao of questoes) {
+      const { numero_questao, gabarito, peso, comentario, disciplina } = questao;
+      await client.query(insertQuestaoQuery, [
+        simuladoId,
+        numero_questao,
+        gabarito,
+        peso,
+        comentario,
+        disciplina
+      ]);
+    }
+
+    return res.status(201).json({ message: 'Simulado e questões cadastrados com sucesso!' });
+
+  } catch (error) {
+    console.error("Erro ao cadastrar simulado:", error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 module.exports = router;

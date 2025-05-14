@@ -944,4 +944,513 @@ body.overlay-active {
     font-size: 16px;
     font-weight: bold;
   }
+/* Estilo principal do container */
+.simulado-container {
+    display: block;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 700px;
+    background-image: linear-gradient(to right, #0000007a, #72001571);
+    padding: 40px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    z-index: 1001;
+    font-family: "OCR A Std", monospace;
+    color: white;
+  }
   
+  /* Título */
+  .simulado-title {
+    margin-bottom: 25px;
+    font-size: 28px;
+    font-weight: 500;
+    color: #F2F2F2;
+    font-family: Roboto, sans-serif;
+    text-align: center;
+  }
+  
+  /* Rótulos */
+  .simulado-label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-size: 12px;
+    font-weight: bold;
+    font-family: Inter, sans-serif;
+    color: white;
+  }
+  
+  /* Inputs e Selects */
+  .simulado-input,
+  .simulado-select {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #F2F2F2;
+    color: #5C5C5C;
+    font-size: 15px;
+    font-family: Raleway, sans-serif;
+    font-weight: 400;
+    box-sizing: border-box;
+  }
+  
+  /* Botões */
+  .simulado-button {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: Raleway, sans-serif;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .simulado-submit-button {
+    display: block; /* Faz o botão ocupar a largura disponível */
+    margin: 0 auto; /* Centraliza o botão horizontalmente */
+    width: 450px; /* Define a largura do botão (ajuste conforme necessário) */
+    padding: 15px; /* Adiciona padding para tornar o botão mais visível */
+    background-color: #E53935; /* Cor de fundo do botão */
+    color: white; /* Cor do texto */
+    font-family: "Raleway", sans-serif; /* Fonte do texto */
+    font-size: 16px; /* Tamanho da fonte */
+    text-align: center; /* Alinha o texto no centro */
+    border: none; /* Remove a borda do botão */
+    border-radius: 8px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de pointer ao passar o mouse */
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Sombra suave */
+}
+
+  .simulado-button {
+    background-color: #616161;
+  }
+  
+  .simulado-button:hover {
+    background-color: #61616185;
+  }
+  
+  .simulado-submit-button {
+    background-color: #E53935;
+  }
+  
+  .simulado-submit-button:hover {
+    background-color: #e53835a8;
+  }
+  
+  /* Gabarito container (campos gerados dinamicamente) */
+  .simulado-gabarito {
+    max-height: 400px; /* Ajuste conforme necessário */
+    overflow-y: auto; /* Adiciona rolagem vertical */
+    padding-right: 10px; /* Para evitar que a rolagem fique sobre o conteúdo */
+    margin-top: 20px;
+  }
+  
+  .simulado-gabarito-item {
+    display: grid;
+    grid-template-columns: 50px 150px 100px 80px 1fr;
+    gap: 10px;
+    margin-bottom: 15px;
+    align-items: center;
+    color: #ffffff;
+    font-size: 15px;
+    font-family: Raleway, sans-serif;
+  }
+  
+  .simulado-gabarito-item textarea {
+    width: 100%;
+    height: 150px; /* Aumenta a altura da caixa de comentário */
+    font-family: "Raleway", sans-serif;
+    font-size: 14px;
+    color: #5C5C5C;
+    background-color: #F2F2F2;
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    resize: vertical; /* Permite que o usuário redimensione a caixa */
+}
+  
+  @media (max-width: 768px) {
+    .simulado-gabarito-item {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .show {
+    display: block; /* Garantir que o conteúdo seja visível */
+  }
+  
+    .simulado-gabarito-item {
+      grid-template-columns: 1fr;
+    }
+  
+  
+/* SIMULADO DOS ALUNOS */
+
+/* Container Principal */
+.geral{
+    display: flex;
+    justify-content: center;
+    
+}
+
+.graficos-grid{
+padding-left: 30px;
+width: 600px;
+display: flex;
+flex-direction: row;
+}
+
+.ajuste{
+    width:45%;
+    display: flex;
+    gap:12px
+}
+.simulado-aluno-container {
+    max-width: 1200px;
+    width: 600px;
+    /* margin: 0 auto; */
+    padding: 30px;
+    font-family: 'Raleway', sans-serif;
+    background-color: #f8f9fa10;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-right: 30px;
+}
+
+/* Títulos */
+.dashboard-title {
+    color: #ffffff;
+    font-size: 29px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    align-items: center;
+  justify-content: center;
+  display: flex;
+  font-family: 'Raleway', sans-serif;
+}
+.simulado-aluno-titulo,
+.simulado-aluno-label {
+    color: #ffffff;
+}
+
+/* Cards de Gráficos */
+.grafico-card {
+    background: rgba(255, 255, 255, 0.212);
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 25px;
+    min-height: 300px; /* Altura mínima */
+    height: 350px !important;
+    width: 600px;
+    
+}
+
+
+.grafico-card h3 {
+    color: #ffffff;
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-weight: 500;
+    font-family: Raleway;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Botões */
+.btn-retry, .btn-login {
+    background-color: #181313;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.btn-retry:hover, .btn-login:hover {
+    background-color: #ff5d5d;
+}
+
+/* Mensagens de Status */
+.loading-dashboard {
+    text-align: center;
+    color: #575757;
+    font-size: 16px;
+    padding: 30px;
+}
+
+.dashboard-error {
+    background: #fde8e8;
+    padding: 20px;
+    border-radius: 5px;
+    color: #c62828;
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* Grid de Gráficos */
+.graficos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+/* Gráficos Full Width */
+.full-width {
+    grid-column: 1 / -1;
+}
+
+/* Resultados do Simulado */
+.resultado-card {
+    background: white;
+    border-radius: 8px;
+    padding: 25px;
+    margin-top: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.resumo-notas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.nota-item {
+    background: #f8f9fa;
+    border-radius: 6px;
+    padding: 15px;
+    text-align: center;
+}
+
+.nota-label {
+    color: #575757;
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.nota-valor {
+    font-size: 24px;
+    font-weight: bold;
+    color: #181313;
+}
+
+/* Gabarito */
+.gabarito-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1px;
+    background: #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+    margin: 20px 0;
+}
+
+.grid-header {
+    background: #181313;
+    color: white;
+    padding: 12px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.questao-row > div {
+    padding: 12px;
+    background: white;
+}
+
+.acerto > div {
+    background: #e8f5e9;
+}
+
+.erro > div {
+    background: #ffebee;
+}
+
+/* Comentários */
+.comentarios-section {
+    margin-top: 30px;
+    background: #fff8e1;
+    padding: 20px;
+    border-radius: 6px;
+}
+
+.comentario-item {
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #e0e0e0;
+}
+
+.comentario-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.simulado-aluno-select{
+    width: 350px;
+    height: 30px;
+
+    margin-top: 8px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    background: #F2F2F2;
+    color: #5C5C5C;
+    font-family: Raleway;
+    font-weight: 400;
+    text-align: left;
+}
+.questao-numero, .disciplina-tag {
+    color: #FFF;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    gap: 5px;
+
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .simulado-aluno-container {
+        padding: 15px;
+    }
+    
+    .graficos-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .gabarito-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .grid-header {
+        display: none;
+    }
+    
+    .questao-row {
+        display: block;
+        margin-bottom: 15px;
+        background: white;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .questao-row > div {
+        display: block;
+        padding: 10px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    
+    .questao-row > div::before {
+        content: attr(data-label);
+        font-weight: bold;
+        display: inline-block;
+        width: 100px;
+        color: #575757;
+    }
+}
+.questao-input{
+    width: 320px;
+    height: 30px;
+    flex-shrink: 0;
+    border-radius: 5px;
+    border: 2px solid #242424;
+    background: #171717;
+    color: #f5f5f5;
+    font-family: Inter;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.nota-item-pontos {
+    background: #f8f9fa;
+      border-radius: 6px;
+      padding: 15px;
+      text-align: center;
+        width: 520px
+    }
+    
+    .grind-header{
+    background: #393838;
+      color: white;
+      padding: 12px;
+      font-weight: 500;
+      text-align: center;
+      justify-content: f;
+      justify-content: space-between;
+      display: flex;
+    }
+    
+    .gabarito-grid{
+    display: block;
+    ;
+      background: #e0e0e0;
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 20px 0;
+    
+    
+    }
+    
+    .comentarios-section {
+        margin-top: 30px;
+        background: #ccc;
+        padding: 20px;
+        border-radius: 6px;
+    }      
+    .resultado-card {
+        background: #ffffffc9;
+        border-radius: 8px;
+        padding: 25px;
+        margin-top: 30px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+
+      .nao-respondida {
+        animation: pulse 3.0s infinite;
+        border-left: 4px solid rgba(255, 146, 146, 0);
+        color: #151515;
+      }
+/* Animações */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.mensagem-sucesso {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Estilo para questões não respondidas */
+.nao-respondida {
+    animation: pulse 1.5s infinite;
+    border-left: 4px solid #ff9800;
+}
+
+
+
+@keyframes pulse {
+    0% { background-color: #fff8e1; }
+    50% { background-color: #ffecb3; }
+    100% { background-color: #fff8e1; }
+}

@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', async () => {
+document.EventListener('DOMContentLoaded', async () => {
     try {
         console.log('Iniciando carregamento do ranking...');
 
@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             // Toggle do menu
-            toggleButton.addEventListener("click", (e) => {
+            toggleButton.EventListener("click", (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 sidebar.classList.toggle("expanded");
@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             // Fechar ao clicar fora do menu (desktop)
-            document.addEventListener("click", (e) => {
+            document.EventListener("click", (e) => {
                 if (!sidebar.contains(e.target) && !toggleButton.contains(e.target)) {
                     sidebar.classList.remove("expanded");
                 }
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             Object.entries(menuActions).forEach(([id, action]) => {
                 const btn = document.getElementById(id);
                 if (btn) {
-                    btn.addEventListener("click", (e) => {
+                    btn.EventListener("click", (e) => {
                         e.preventDefault();
                         if (window.innerWidth <= 768) {
                             sidebar.classList.remove("expanded");
@@ -70,13 +70,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // 4. Event listeners para os filtros
         if (disciplinaFilter) {
-            disciplinaFilter.addEventListener('change', async function () {
+            disciplinaFilter.EventListener('change', async function () {
                 await carregarAssuntos(this.value);
             });
         }
 
         if (filterButton) {
-            filterButton.addEventListener('click', async function (e) {
+            filterButton.EventListener('click', async function (e) {
                 e.preventDefault();
                 
                 // Atualiza a URL com os parâmetros de filtro e datas
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (resetButton) {
-            resetButton.addEventListener('click', async function (e) {
+            resetButton.EventListener('click', async function (e) {
                 e.preventDefault();
                 if (disciplinaFilter) disciplinaFilter.value = '';
                 if (assuntoFilter) assuntoFilter.value = '';
@@ -273,3 +273,4 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.error('Erro inesperado:', error);
     }
 });
+

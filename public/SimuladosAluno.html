@@ -3,36 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Simulado - Aluno</title>
-    <link rel="stylesheet" href="/style.css"> <!-- Novo CSS exclusivo -->
+    <link rel="stylesheet" href="/style.css"> <!-- Seu CSS -->
 </head>
 <body>
-    <div class="simulado-aluno-container">
-        <h1 class="simulado-aluno-titulo">Simulado - Aluno</h1>
+    <div class="geral">
 
-        <!-- Seleção de Simulado e Prova -->
-        <div class="simulado-aluno-select-box">
-            <label for="simulado" class="simulado-aluno-label">Escolha o Simulado:</label>
-            <select id="simulado" class="simulado-aluno-select" required>
-                <option value="">Selecione</option>
-            </select>
+        <div class="simulado-aluno-container"> 
+        
+            <h1 class="simulado-aluno-titulo">Registre seu simulado</h1>
+    
+            <!-- Seleção de Simulado -->
+            <div class="simulado-aluno-select-box">
+                <label for="simulado" class="simulado-aluno-label">Escolha o Simulado:</label>
+                <select id="simulado" class="simulado-aluno-select" required>
+                    <option value="">Selecione um simulado</option>
+                </select>
+            </div>
+    
+            <!-- Container para Exibir as Questões -->
+            <div id="questoes-container" class="simulado-aluno-questoes"></div>
+    
+            <!-- Botão para finalizar o simulado -->
+            <button id="finalizarSimulado" class="simulado-aluno-btn" disabled>Finalizar Simulado</button>
         </div>
 
-        <div class="simulado-aluno-select-box">
-            <label for="prova" class="simulado-aluno-label">Escolha a Prova:</label>
-            <select id="prova" class="simulado-aluno-select" required disabled>
-                <option value="">Selecione uma prova</option>
-            </select>
-        </div>
-
-        <button id="carregarQuestoes" class="simulado-aluno-btn" disabled>Carregar Questões</button>
-
-        <!-- Container para Exibir as Questões -->
-        <div id="questoes-container" class="simulado-aluno-questoes"></div>
-
-        <button id="finalizarSimulado" class="simulado-aluno-btn" disabled>Finalizar Simulado</button>
+           <div id="dashboard-container">
+        <!-- Gráficos serão carregados aqui -->
+      </div>
     </div>
 
-    <script src="/simuladosAluno.js"></script>
+
+    <!-- <div id="dashboard-container">
+        Gráficos serão carregados aqui
+      </div> -->
+    <script src="/simuladosAluno.js"></script> <!-- Script com a lógica de simulado -->
+    <!-- Adicione estas bibliotecas -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
 </body>
 </html>

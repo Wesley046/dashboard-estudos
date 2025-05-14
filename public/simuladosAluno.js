@@ -271,7 +271,6 @@ document.addEventListener("DOMContentLoaded", function() {
             <span class="nota-valor">${formatarPontos(totalPontos)}pts (${percentual}%)</span>
           </div>
         </div>
-        
         <div class="tipo-simulado-info">
           <strong>Tipo de Prova:</strong> ${resultado.tipo_simulado}
           ${resultado.tipo_simulado === "Certo ou Errado" ? 

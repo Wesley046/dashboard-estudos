@@ -150,7 +150,7 @@ form.addEventListener("submit", async (e) => {
   dados.questoes = questoes;
 
   try {
-    const response = await fetch("http://localhost:3000/api/simulados/cadastrar", {
+    const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/simulados/cadastrar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(dados)

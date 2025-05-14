@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // 1. Carregar simulados disponíveis
   async function carregarSimulados() {
     try {
-      const response = await fetch("http://localhost:3000/api/simulado-aluno/simulados");
+      const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/simulado-aluno/simulados");
       if (!response.ok) throw new Error("Erro ao carregar simulados");
       
       const simulados = await response.json();
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function() {
       questoesContainer.innerHTML = '<p class="loading">Carregando questões...</p>';
       finalizarBtn.disabled = true;
       
-      const response = await fetch(`http://localhost:3000/api/simulado-aluno/simulados/${simuladoId}/questoes`);
+      const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/simulado-aluno/simulados/${simuladoId}/questoes`);
       if (!response.ok) throw new Error("Erro ao carregar questões");
       
       const data = await response.json();
@@ -200,7 +200,7 @@ document.addEventListener("DOMContentLoaded", function() {
       finalizarBtn.disabled = true;
       finalizarBtn.textContent = "Salvando...";
   
-      const response = await fetch("http://localhost:3000/api/simulado-aluno/respostas", {
+      const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/simulado-aluno/respostas", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -388,7 +388,7 @@ document.addEventListener("DOMContentLoaded", function() {
       container.innerHTML = '<div class="loading">Carregando análise de desempenho...</div>';
   
       // Chamada à API com o ID do aluno na URL
-      const response = await fetch(`http://localhost:3000/api/simulado-aluno/aluno/${alunoId}/desempenho`);
+      const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/simulado-aluno/aluno/${alunoId}/desempenho`);
       
       if (!response.ok) {
         const errorData = await response.json();

@@ -7,7 +7,10 @@ const router = express.Router();
 
 // Configuração do cliente PostgreSQL
 const client = new Client({
-  connectionString: process.env.DATABASE_URL, // A variável de ambiente DATABASE_URL
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 client.connect();
 

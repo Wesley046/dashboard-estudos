@@ -1,12 +1,6 @@
 const express = require("express");
-const { Client } = require("pg");
+const db = require("../config/db"); // Ajuste o caminho conforme seu projeto
 const router = express.Router();
-
-// Configuração do cliente PostgreSQL
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-});
-client.connect();
 
 // Middleware para verificar existência do simulado
 async function verificarSimulado(req, res, next) {

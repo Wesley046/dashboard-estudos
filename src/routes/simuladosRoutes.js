@@ -1,18 +1,11 @@
 const express = require('express');
-const { Client } = require('pg');
+const db = require('../config/db'); // caminho correto para seu db.js
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
 
 const router = express.Router();
 
-// Configuração do cliente PostgreSQL
-const client = new Client({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
-});
-client.connect();
+
 
 // Rota GET para carregar o HTML
 router.get('/cadastrar', (req, res) => {

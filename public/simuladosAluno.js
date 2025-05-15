@@ -103,15 +103,21 @@ document.addEventListener("DOMContentLoaded", function() {
     if (tipoProva === "Certo ou Errado") {
       input = document.createElement("select");
       input.className = "questao-input";
-      
-      ['', 'C', 'E'].forEach(opcao => {
+    
+      const opcoes = [
+        { value: "EM_BRANCO", text: "Em Branco" },  // <-- valor claro para backend
+        { value: "C", text: "Certo" },
+        { value: "E", text: "Errado" }
+      ];
+    
+      opcoes.forEach(opcao => {
         const option = document.createElement("option");
-        option.value = opcao;
-        option.textContent = opcao === '' ? 'Selecione' : 
-                          (opcao === 'C' ? 'Certo' : 'Errado');
+        option.value = opcao.value;
+        option.textContent = opcao.text;
         input.appendChild(option);
       });
-    } 
+    }
+    
     else if (tipoProva === "Acertivas A-D") {
       input = document.createElement("select");
       input.className = "questao-input";

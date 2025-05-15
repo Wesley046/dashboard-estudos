@@ -134,25 +134,29 @@ router.post("/respostas", async (req, res) => {
         console.warn(`Questão ${resposta.numero_questao} sem gabarito válido`);
         continue;
       }
-
+    
       const respostaAluno = resposta.resposta_aluno?.toUpperCase().trim() || '';
       const gabaritoOficial = questao.gabarito.toUpperCase().trim();
-      const pesoQuestao = parseFloat(questao.peso) || 1;
+      const pesoQuestaoOriginal = parseFloat(questao.peso) || 1;
+      let pesoQuestao = pesoQuestaoOriginal;
       let nota = 0;
       let acertou = false;
-
+    
       if (tipoSimulado === "Certo ou Errado") {
-        acertou = respostaAluno === gabaritoOficial;
-        nota = acertou ? pesoQuestao : -1;
-      } else {
-        acertou = respostaAluno === gabaritoOficial;
-        nota = acertou ? pesoQuestao : 0;
+        if (respostaAluno === "EM_BRANCO") {
+          nota = 0;      // peso zero, zero pontos
+          acertou = false; // não conta como acerto
+        } else {
+          acertou = respostaAluno === gabaritoOficial;
+          nota = acertou ? pesoQuestao : -1;
+        }
       }
-
+    
       if (acertou) acertos++;
       totalPontos += nota;
       totalPossivel += pesoQuestao;
-
+    
+      // Acumular dados por disciplina
       if (questao.disciplina) {
         if (!disciplinasMap.has(questao.disciplina)) {
           disciplinasMap.set(questao.disciplina, {
@@ -166,8 +170,8 @@ router.post("/respostas", async (req, res) => {
         disciplina.pontos += nota;
         if (acertou) disciplina.acertos++;
       }
-
-      // Inserir ou atualizar resposta do aluno
+    
+      // Registrar resposta no banco
       await client.query(
         `INSERT INTO public.respostas_aluno (
           aluno_id, simulado_id, numero_questao, resposta,
@@ -184,19 +188,19 @@ router.post("/respostas", async (req, res) => {
           resposta.numero_questao,
           resposta.resposta_aluno,
           gabaritoOficial,
-          questao.peso,
+          pesoQuestao,
           questao.comentario,
           tipoSimulado,
           nota,
           acertou
         ]
       );
-
+    
       detalhes.push({
         numero_questao: resposta.numero_questao,
         resposta_aluno: resposta.resposta_aluno,
         gabarito: gabaritoOficial,
-        peso: questao.peso,
+        peso: pesoQuestao,
         nota,
         acertou,
         tipo_prova: tipoSimulado,

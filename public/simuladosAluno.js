@@ -14,7 +14,27 @@ document.addEventListener("DOMContentLoaded", function() {
   const resultadoContainer = document.createElement("div");
   resultadoContainer.id = "resultado-container";
   document.querySelector(".simulado-aluno-container").appendChild(resultadoContainer);
+// 2. Controle do Menu Lateral
 
+const sidebar = document.querySelector(".sidebar");
+const toggleButton = document.querySelector("#toggleSidebar");
+
+if (toggleButton && sidebar) {
+  toggleButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    sidebar.classList.toggle("expanded");
+    
+    // Fechar automaticamente em mobile após 3 segundos
+    if (window.innerWidth <= 768) {
+      setTimeout(() => {
+        if (sidebar.classList.contains("expanded")) {
+          sidebar.classList.remove("expanded");
+        }
+      }, 3000);
+    }
+  });
+}
+  
   // 1. Carregar simulados disponíveis
   async function carregarSimulados() {
     try {

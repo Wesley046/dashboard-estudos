@@ -19,6 +19,7 @@
     <!-- <button class="menu-item" id="openForm"> Dashboard</button> -->
     <button class="menu-item" id="openForm"> Registro de Estudos</button>
     <button class="menu-item" id="btnRanking"> Ranking </button>
+    <button class="menu-item" id="btnSimulados">Simulados</button> <!-- Botão para ir pra tela de simulados -->
     <!-- <button class="menu-item" id="openForm">Cronograma</button> -->
   </div>
 
@@ -95,12 +96,18 @@
         document.body.classList.add('overlay-active');
       });
     });
-
+  
     document.getElementById('closeForm').addEventListener('click', function() {
       document.getElementById('overlay').style.display = 'none';
       document.getElementById('formPopup').style.display = 'none';
       document.body.classList.remove('overlay-active');
     });
+  
+    // Redirecionamento para a tela de Simulados
+    document.getElementById('btnSimulados').addEventListener('click', function() {
+      window.location.href = 'SimuladosAluno.html';
+    });
   </script>
+  
 </body>
 </html>

@@ -8,6 +8,14 @@
     <link rel="stylesheet" href="/style.css"> <!-- Seu CSS -->
 </head>
 <body>
+    <div class="sidebar">
+      <button class="toggle-btn" id="toggleSidebar">
+        <img src="https://i.ibb.co/xtFND3Rp/SERGIPE-29-7-x-42-cm.png" alt="Expandir/Recolher">
+      </button>
+      <button class="menu-item" id="btnRanking">Ranking</button>
+      <button class="menu-item" id="openForm"> Dashboard</button>
+    </div>
+  
     <div class="geral">
 
         <div class="simulado-aluno-container"> 
@@ -43,5 +51,18 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/moment"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+<script>
+
+    // Redireciona para Ranking
+    document.getElementById('btnRanking').addEventListener('click', function() {
+      window.location.href = 'ranking.html'; // Substitua pelo nome real da tela de ranking
+    });
+  
+    // Redireciona para Dashboard
+    document.getElementById('openForm').addEventListener('click', function() {
+      window.location.href = 'dashboard.html'; // Substitua pelo nome real da dashboard
+    });
+  </script>
+  
 </body>
 </html>

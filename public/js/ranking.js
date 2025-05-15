@@ -1,4 +1,4 @@
-document.EventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', async () => {
     try {
         console.log('Iniciando carregamento do ranking...');
 
@@ -13,7 +13,7 @@ document.EventListener('DOMContentLoaded', async () => {
             }
 
             // Toggle do menu
-            toggleButton.EventListener("click", (e) => {
+            toggleButton.addEventListener("click", (e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 sidebar.classList.toggle("expanded");
@@ -27,7 +27,7 @@ document.EventListener('DOMContentLoaded', async () => {
             });
 
             // Fechar ao clicar fora do menu (desktop)
-            document.EventListener("click", (e) => {
+            document.addEventListener("click", (e) => {
                 if (!sidebar.contains(e.target) && !toggleButton.contains(e.target)) {
                     sidebar.classList.remove("expanded");
                 }
@@ -43,7 +43,7 @@ document.EventListener('DOMContentLoaded', async () => {
             Object.entries(menuActions).forEach(([id, action]) => {
                 const btn = document.getElementById(id);
                 if (btn) {
-                    btn.EventListener("click", (e) => {
+                    btn.addEventListener("click", (e) => {
                         e.preventDefault();
                         if (window.innerWidth <= 768) {
                             sidebar.classList.remove("expanded");
@@ -70,25 +70,23 @@ document.EventListener('DOMContentLoaded', async () => {
 
         // 4. Event listeners para os filtros
         if (disciplinaFilter) {
-            disciplinaFilter.EventListener('change', async function () {
+            disciplinaFilter.addEventListener('change', async function () {
                 await carregarAssuntos(this.value);
             });
         }
 
         if (filterButton) {
-            filterButton.EventListener('click', async function (e) {
+            filterButton.addEventListener('click', async function (e) {
                 e.preventDefault();
-                
-                // Atualiza a URL com os parâmetros de filtro e datas
+
                 atualizarURLComFiltros();
 
-                // Recarrega os dados com os novos parâmetros
                 await carregarRankingData();
             });
         }
 
         if (resetButton) {
-            resetButton.EventListener('click', async function (e) {
+            resetButton.addEventListener('click', async function (e) {
                 e.preventDefault();
                 if (disciplinaFilter) disciplinaFilter.value = '';
                 if (assuntoFilter) assuntoFilter.value = '';
@@ -103,8 +101,8 @@ document.EventListener('DOMContentLoaded', async () => {
             try {
                 console.log('Iniciando carregamento do ranking...');
 
-                const disciplina = document.getElementById('disciplinaFilter')?.value || '';
-                const assunto = document.getElementById('assuntoFilter')?.value || '';
+                const disciplina = disciplinaFilter?.value || '';
+                const assunto = assuntoFilter?.value || '';
                 const dataInicio = dataInicioInput?.value || '';
                 const dataFim = dataFimInput?.value || '';
 
@@ -216,6 +214,7 @@ document.EventListener('DOMContentLoaded', async () => {
 
                 if (!disciplinaNome) {
                     assuntoFilter.innerHTML = '<option value="">Todos assuntos</option>';
+                    assuntoFilter.disabled = false;
                     return;
                 }
 
@@ -252,8 +251,8 @@ document.EventListener('DOMContentLoaded', async () => {
 
         // Atualiza a URL com os filtros selecionados
         function atualizarURLComFiltros() {
-            const disciplina = document.getElementById('disciplinaFilter')?.value || '';
-            const assunto = document.getElementById('assuntoFilter')?.value || '';
+            const disciplina = disciplinaFilter?.value || '';
+            const assunto = assuntoFilter?.value || '';
             const dataInicio = dataInicioInput?.value || '';
             const dataFim = dataFimInput?.value || '';
 
@@ -273,4 +272,3 @@ document.EventListener('DOMContentLoaded', async () => {
         console.error('Erro inesperado:', error);
     }
 });
-

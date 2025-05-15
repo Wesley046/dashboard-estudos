@@ -17,7 +17,6 @@
     </button>
     <button class="menu-item" id="openForm"> Dashboard</button>
     <!-- <button class="menu-item" id="openForm">Registro de Estudos</button> -->
-    <button class="menu-item active" id="btnRanking">Ranking</button>
     <!-- <button class="menu-item" id="openCronograma">Cronograma </button> -->
     <button class="menu-item" id="btnSimulados">Simulados</button> <!-- Botão para ir pra tela de simulados -->
   </div>
@@ -77,6 +76,13 @@
 
   <!-- Scripts -->
   <script src="/js/ranking.js"></script>
+
+  <script>
+    document.getElementById('btnSimulados').addEventListener('click', function() {
+      window.location.href = 'SimuladosAluno.html';
+    });
+  </script>
+  
 </body>
 
 </html>

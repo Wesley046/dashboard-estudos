@@ -1,4 +1,12 @@
 document.addEventListener("DOMContentLoaded", function() {
+  // Detecta se está rodando localmente
+  const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+  // Define a base da API conforme ambiente
+  const API_BASE_URL = isLocalhost 
+    ? "http://localhost:3000/api" 
+    : "https://dashboard-objetivo-policial.onrender.com/api";
+
   // Elementos da interface
   const simuladoSelect = document.getElementById("simulado");
   const finalizarBtn = document.getElementById("finalizarSimulado");
@@ -10,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
   // 1. Carregar simulados disponíveis
   async function carregarSimulados() {
     try {
-      const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/simulado-aluno/simulados");
+      const response = await fetch(`${API_BASE_URL}/simulado-aluno/simulados`);
       if (!response.ok) throw new Error("Erro ao carregar simulados");
       
       const simulados = await response.json();
@@ -39,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
       questoesContainer.innerHTML = '<p class="loading">Carregando questões...</p>';
       finalizarBtn.disabled = true;
       
-      const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/simulado-aluno/simulados/${simuladoId}/questoes`);
+      const response = await fetch(`${API_BASE_URL}/simulado-aluno/simulados/${simuladoId}/questoes`);
       if (!response.ok) throw new Error("Erro ao carregar questões");
       
       const data = await response.json();
@@ -200,7 +208,7 @@ document.addEventListener("DOMContentLoaded", function() {
       finalizarBtn.disabled = true;
       finalizarBtn.textContent = "Salvando...";
   
-      const response = await fetch("https://dashboard-objetivo-policial.onrender.com/api/simulado-aluno/respostas", {
+      const response = await fetch(`${API_BASE_URL}/simulado-aluno/respostas`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -388,8 +396,7 @@ document.addEventListener("DOMContentLoaded", function() {
       container.innerHTML = '<div class="loading">Carregando análise de desempenho...</div>';
   
       // Chamada à API com o ID do aluno na URL
-      const response = await fetch(`https://dashboard-objetivo-policial.onrender.com/api/simulado-aluno/aluno/${alunoId}/desempenho`);
-      
+      const response = await fetch(`${API_BASE_URL}/simulado-aluno/aluno/${alunoId}/desempenho`);
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Erro ao carregar dados");

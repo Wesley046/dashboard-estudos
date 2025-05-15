@@ -1,6 +1,12 @@
 const express = require("express");
-const db = require("../config/db"); // Ajuste o caminho conforme seu projeto
+const { Client } = require("pg");
 const router = express.Router();
+
+// Configuração do cliente PostgreSQL
+const client = new Client({
+  connectionString: process.env.DATABASE_URL,
+});
+client.connect();
 
 // Middleware para verificar existência do simulado
 async function verificarSimulado(req, res, next) {
@@ -38,31 +44,30 @@ router.get("/simulados", async (req, res) => {
 
 // Rota GET para carregar questões + tipo de prova
 router.get("/simulados/:simulado_id/questoes", verificarSimulado, async (req, res) => {
-    try {
-      const { simulado_id } = req.params;
-      const result = await client.query(
-        `SELECT id, numero_questao, gabarito, peso, comentario, disciplina 
-         FROM public.questoes_simulado 
-         WHERE simulado_id = $1 
-         ORDER BY numero_questao`,
-        [simulado_id]
-      );
-      
-      res.status(200).json({
-        tipo_simulado: req.tipo_simulado,
-        questoes: result.rows
-      });
-    } catch (error) {
-      console.error("Erro ao carregar questões:", error);
-      res.status(500).json({ error: "Erro ao carregar questões" });
-    }
-  });
+  try {
+    const { simulado_id } = req.params;
+    const result = await client.query(
+      `SELECT id, numero_questao, gabarito, peso, comentario, disciplina 
+       FROM public.questoes_simulado 
+       WHERE simulado_id = $1 
+       ORDER BY numero_questao`,
+      [simulado_id]
+    );
+    
+    res.status(200).json({
+      tipo_simulado: req.tipo_simulado,
+      questoes: result.rows
+    });
+  } catch (error) {
+    console.error("Erro ao carregar questões:", error);
+    res.status(500).json({ error: "Erro ao carregar questões" });
+  }
+});
 
-// Rota POST para registrar respostas - Versão corrigida
+// Rota POST para registrar respostas
 router.post("/respostas", async (req, res) => {
   const { aluno_id, simulado_id, respostas } = req.body;
 
-  // Validação inicial
   if (!aluno_id || !simulado_id || !respostas || !Array.isArray(respostas)) {
     return res.status(400).json({
       success: false,
@@ -74,13 +79,13 @@ router.post("/respostas", async (req, res) => {
   try {
     await client.query("BEGIN");
 
-    // 1. Verificar se aluno e simulado existem
+    // Verificar existência do aluno e do simulado
     const verification = await client.query(
       `SELECT 1 FROM public.usuarios WHERE id = $1 UNION ALL
        SELECT 1 FROM public.cadastro_simulados WHERE id = $2`,
       [aluno_id, simulado_id]
     );
-    
+
     if (verification.rows.length < 2) {
       await client.query("ROLLBACK");
       return res.status(404).json({
@@ -90,13 +95,14 @@ router.post("/respostas", async (req, res) => {
       });
     }
 
-    // 2. Obter informações do simulado e questões COM GABARITO
+    // Obter tipo do simulado
     const simuladoInfo = await client.query(
       `SELECT tipo_simulado FROM public.cadastro_simulados WHERE id = $1`,
       [simulado_id]
     );
     const tipoSimulado = simuladoInfo.rows[0].tipo_simulado;
 
+    // Buscar questões com gabarito
     const questoes = await client.query(
       `SELECT numero_questao, gabarito, peso, comentario, disciplina 
        FROM public.questoes_simulado 
@@ -114,109 +120,104 @@ router.post("/respostas", async (req, res) => {
       });
     }
 
-    // 3. Processar respostas e calcular nota
+    // Processar respostas e calcular nota
     let acertos = 0;
     let totalPontos = 0;
     let totalPossivel = 0;
     const detalhes = [];
-    const disciplinasMap = new Map(); // Mapa para armazenar dados por disciplina
+    const disciplinasMap = new Map();
 
     for (const resposta of respostas) {
-        const questao = questoes.rows.find(q => q.numero_questao === resposta.numero_questao);
-        
-        if (!questao || !questao.gabarito) {
-            console.warn(`Questão ${resposta.numero_questao} sem gabarito válido`);
-            continue;
+      const questao = questoes.rows.find(q => q.numero_questao === resposta.numero_questao);
+      
+      if (!questao || !questao.gabarito) {
+        console.warn(`Questão ${resposta.numero_questao} sem gabarito válido`);
+        continue;
+      }
+
+      const respostaAluno = resposta.resposta_aluno?.toUpperCase().trim() || '';
+      const gabaritoOficial = questao.gabarito.toUpperCase().trim();
+      const pesoQuestao = parseFloat(questao.peso) || 1;
+      let nota = 0;
+      let acertou = false;
+
+      if (tipoSimulado === "Certo ou Errado") {
+        acertou = respostaAluno === gabaritoOficial;
+        nota = acertou ? pesoQuestao : -1;
+      } else {
+        acertou = respostaAluno === gabaritoOficial;
+        nota = acertou ? pesoQuestao : 0;
+      }
+
+      if (acertou) acertos++;
+      totalPontos += nota;
+      totalPossivel += pesoQuestao;
+
+      if (questao.disciplina) {
+        if (!disciplinasMap.has(questao.disciplina)) {
+          disciplinasMap.set(questao.disciplina, {
+            acertos: 0,
+            total: 0,
+            pontos: 0
+          });
         }
+        const disciplina = disciplinasMap.get(questao.disciplina);
+        disciplina.total++;
+        disciplina.pontos += nota;
+        if (acertou) disciplina.acertos++;
+      }
 
-        const respostaAluno = resposta.resposta_aluno?.toUpperCase().trim() || '';
-        const gabaritoOficial = questao.gabarito.toUpperCase().trim();
-        const pesoQuestao = parseFloat(questao.peso) || 1;
-        let nota = 0;
-        let acertou = false;
-
-        // Lógica de correção por tipo de simulado
-        if (tipoSimulado === "Certo ou Errado") {
-            acertou = respostaAluno === gabaritoOficial;
-            nota = acertou ? pesoQuestao : -1;
-        } else {
-            acertou = respostaAluno === gabaritoOficial;
-            nota = acertou ? pesoQuestao : 0;
-        }
-
-        if (acertou) acertos++;
-        totalPontos += nota;
-        totalPossivel += pesoQuestao;
-
-        // Acumular dados por disciplina
-        if (questao.disciplina) {
-            if (!disciplinasMap.has(questao.disciplina)) {
-                disciplinasMap.set(questao.disciplina, {
-                    acertos: 0,
-                    total: 0,
-                    pontos: 0
-                });
-            }
-            const disciplina = disciplinasMap.get(questao.disciplina);
-            disciplina.total++;
-            disciplina.pontos += nota;
-            if (acertou) disciplina.acertos++;
-        }
-
-        // 4. Registrar resposta no banco
-        await client.query(
-          `INSERT INTO public.respostas_aluno (
-            aluno_id, simulado_id, numero_questao, resposta,
-            gabarito_oficial, peso, comentario, tipo_prova, nota, acertou
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-          ON CONFLICT ON CONSTRAINT unique_resposta 
-          DO UPDATE SET
-            resposta = EXCLUDED.resposta,
-            nota = EXCLUDED.nota,
-            acertou = EXCLUDED.acertou`,
-          [
-            aluno_id,
-            simulado_id,
-            resposta.numero_questao,
-            resposta.resposta_aluno,
-            gabaritoOficial,
-            questao.peso,
-            questao.comentario,
-            tipoSimulado,
-            nota,
-            acertou
-          ]
-        );
-
-        detalhes.push({
-          numero_questao: resposta.numero_questao,
-          resposta_aluno: resposta.resposta_aluno,
-          gabarito: gabaritoOficial,
-          peso: questao.peso,
+      // Inserir ou atualizar resposta do aluno
+      await client.query(
+        `INSERT INTO public.respostas_aluno (
+          aluno_id, simulado_id, numero_questao, resposta,
+          gabarito_oficial, peso, comentario, tipo_prova, nota, acertou
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        ON CONFLICT ON CONSTRAINT unique_resposta 
+        DO UPDATE SET
+          resposta = EXCLUDED.resposta,
+          nota = EXCLUDED.nota,
+          acertou = EXCLUDED.acertou`,
+        [
+          aluno_id,
+          simulado_id,
+          resposta.numero_questao,
+          resposta.resposta_aluno,
+          gabaritoOficial,
+          questao.peso,
+          questao.comentario,
+          tipoSimulado,
           nota,
-          acertou,
-          tipo_prova: tipoSimulado,
-          comentario: questao.comentario,
-          disciplina: questao.disciplina // Adicionando a disciplina aqui
-        });
+          acertou
+        ]
+      );
+
+      detalhes.push({
+        numero_questao: resposta.numero_questao,
+        resposta_aluno: resposta.resposta_aluno,
+        gabarito: gabaritoOficial,
+        peso: questao.peso,
+        nota,
+        acertou,
+        tipo_prova: tipoSimulado,
+        comentario: questao.comentario,
+        disciplina: questao.disciplina
+      });
     }
 
     await client.query("COMMIT");
 
-    // 5. Calcular percentuais e desempenho por disciplina
     const disciplinas = Array.from(disciplinasMap.entries()).map(([nome, dados]) => ({
-        nome,
-        acertos: dados.acertos,
-        erros: dados.total - dados.acertos,
-        total: dados.total,
-        pontos: dados.pontos,
-        percentual: dados.total > 0 ? (dados.acertos / dados.total * 100) : 0
+      nome,
+      acertos: dados.acertos,
+      erros: dados.total - dados.acertos,
+      total: dados.total,
+      pontos: dados.pontos,
+      percentual: dados.total > 0 ? (dados.acertos / dados.total * 100) : 0
     }));
 
-    // Ordenar disciplinas por percentual
     disciplinas.sort((a, b) => b.percentual - a.percentual);
 
-    // Identificar melhor e pior disciplina
     const melhorDisciplina = disciplinas.length > 0 ? disciplinas[0] : null;
     const piorDisciplina = disciplinas.length > 0 ? disciplinas[disciplinas.length - 1] : null;
 
@@ -225,23 +226,21 @@ router.post("/respostas", async (req, res) => {
 
     const percentual_acertos = totalPossivel > 0 ? Math.round((totalPontos / totalPossivel) * 100) : 0;
 
-// Retornar o percentual no formato desejado junto com o total de pontos
-return res.json({
-    success: true,
-    data: {
+    return res.json({
+      success: true,
+      data: {
         total_questoes: questoes.rows.length,
         acertos,
-        total_pontos: totalPontos, // Total de pontos certo
+        total_pontos: totalPontos,
         total_pontos_possivel: totalPossivel,
-        percentual: percentual_acertos, // Percentual de acertos
+        percentual: percentual_acertos,
         tipo_simulado: tipoSimulado,
         disciplinas,
         melhor_disciplina: melhorDisciplina,
         pior_disciplina: piorDisciplina,
         detalhes: detalhes.sort((a, b) => a.numero_questao - b.numero_questao)
-    }
-});
-
+      }
+    });
   } catch (error) {
     await client.query("ROLLBACK");
     console.error("Erro detalhado:", error);
@@ -255,11 +254,9 @@ return res.json({
   }
 });
 
-// rota dos graficos
-// Rota GET para desempenho do aluno - VERSÃO CORRIGIDA
+// Rota GET para desempenho do aluno
 router.get("/aluno/:aluno_id/desempenho", async (req, res) => {
   try {
-    // Obter o ID do aluno dos parâmetros da rota
     const alunoId = req.params.aluno_id;
     
     if (!alunoId || isNaN(alunoId)) {
@@ -269,7 +266,6 @@ router.get("/aluno/:aluno_id/desempenho", async (req, res) => {
       });
     }
 
-    // Dados consolidados de desempenho
     const desempenhoQuery = await client.query(`
       SELECT 
         COUNT(CASE WHEN ra.acertou = true THEN 1 END) as acertos,
@@ -288,7 +284,6 @@ router.get("/aluno/:aluno_id/desempenho", async (req, res) => {
       ORDER BY MAX(ra.created_at) DESC
     `, [alunoId]);
 
-    // Dados por disciplina
     const disciplinaQuery = await client.query(`
       SELECT 
         qs.disciplina,
@@ -304,7 +299,6 @@ router.get("/aluno/:aluno_id/desempenho", async (req, res) => {
       ORDER BY percentual_acerto DESC
     `, [alunoId]);
 
-    // Dados para evolução temporal
     const evolucaoQuery = await client.query(`
       SELECT
         DATE(ra.created_at) as data,
@@ -317,7 +311,6 @@ router.get("/aluno/:aluno_id/desempenho", async (req, res) => {
       ORDER BY DATE(ra.created_at) ASC
     `, [alunoId]);
 
-    // Notas finais por simulado
     const notasFinaisQuery = await client.query(`
       SELECT 
         cs.id as simulado_id,
@@ -340,7 +333,6 @@ router.get("/aluno/:aluno_id/desempenho", async (req, res) => {
         notasFinais: notasFinaisQuery.rows
       }
     });
-
   } catch (error) {
     console.error("Erro ao carregar desempenho:", error);
     res.status(500).json({ 

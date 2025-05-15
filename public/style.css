@@ -947,7 +947,7 @@ body.overlay-active {
 /* Estilo principal do container */
 .simulado-container {
     display: block;
-    position: fixed;
+    position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);

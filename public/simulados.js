@@ -29,7 +29,17 @@ gerarBtn.addEventListener("click", () => {
     "HISTÓRIA",
     "GEOGRAFIA",
     "CONTABILIDADE",
-    "DIREITO CONSTITUCIONAL"
+    "DIREITO CONSTITUCIONAL",
+    "LEGISLAÇÃO DA PMAL",
+    "HISTÓRIA DE ALAGOAS",
+    "GEOGRAFIA DE ALAGOAS",
+    "ATUALIDADES",
+    "HISTÓRIA DO CEARÁ",
+    "GEOGRAFIA DO CEARÁ",
+    "LEGISLAÇÃO DA PMSE",
+    "HISTORIA DE SERGIPE",
+    "GEOGRAFIA DE SERGIPE",
+    "CONHECIMENTOS GERAIS SOBRE O MUNICÍPIO DE ARAPIRACA"
   ];
 
   for (let i = 1; i <= quantidadeQuestoes; i++) {

@@ -64,6 +64,26 @@ router.get("/simulados/:simulado_id/questoes", verificarSimulado, async (req, re
   }
 });
 
+// Rota GET para checar se o aluno já respondeu este simulado
+router.get("/respostas/check", async (req, res) => {
+  const { aluno_id, simulado_id } = req.query;
+  if (!aluno_id || !simulado_id) {
+    return res.status(400).json({ error: "Faltam aluno_id ou simulado_id" });
+  }
+  try {
+    const { rows } = await client.query(
+      `SELECT 1 FROM public.respostas_aluno
+       WHERE aluno_id = $1 AND simulado_id = $2
+       LIMIT 1`,
+      [aluno_id, simulado_id]
+    );
+    res.json({ jaRespondido: rows.length > 0 });
+  } catch (err) {
+    console.error("Erro ao verificar respostas:", err);
+    res.status(500).json({ error: "Erro ao verificar respostas" });
+  }
+});
+
 // Rota POST para registrar respostas
 router.post("/respostas", async (req, res) => {
   const { aluno_id, simulado_id, respostas } = req.body;
@@ -141,16 +161,20 @@ router.post("/respostas", async (req, res) => {
       let pesoQuestao = pesoQuestaoOriginal;
       let nota = 0;
       let acertou = false;
-    
-      if (tipoSimulado === "Certo ou Errado") {
+        if (tipoSimulado === "Certo ou Errado") {
         if (respostaAluno === "EM_BRANCO") {
-          nota = 0;      // peso zero, zero pontos
-          acertou = false; // não conta como acerto
+          nota = 0;
+          acertou = false;
         } else {
           acertou = respostaAluno === gabaritoOficial;
-          nota = acertou ? pesoQuestao : -1;
+          nota = acertou ? pesoQuestaoOriginal : -1;
         }
-      }
+      } else {
+  // PROVA NORMAL (ex.: múltipla escolha)
+  acertou = respostaAluno === gabaritoOficial;
+  nota = acertou ? pesoQuestaoOriginal : 0;
+}
+
     
       if (acertou) acertos++;
       totalPontos += nota;

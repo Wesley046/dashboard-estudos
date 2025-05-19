@@ -190,10 +190,37 @@ if (toggleButton && sidebar) {
       setTimeout(() => mensagem.remove(), 500);
     }, 5000);
   }
+/**
+ * Retorna true se o aluno já respondeu este simulado e exibe um alert.
+ */
+async function verificarSimuladoRealizado(alunoId, simuladoId) {
+  try {
+    const resp = await fetch(
+      `${API_BASE_URL}/respostas/check?aluno_id=${alunoId}&simulado_id=${simuladoId}`
+    );
+    if (!resp.ok) return false;
+    const { jaRespondido } = await resp.json();
+    if (jaRespondido) {
+      alert("Você já respondeu a este simulado!");
+      return true;
+    }
+    return false;
+  } catch {
+    // em caso de erro de rede, deixamos seguir normalmente
+    return false;
+  }
+}
 
-  async function enviarRespostas() {
-    const simuladoId = simuladoSelect.value;
-    const alunoId = obterIdAlunoLogado();
+async function enviarRespostas() {
+  const simuladoId = simuladoSelect.value;
+  const alunoId    = obterIdAlunoLogado();
+
+  // 1) Checar se já respondeu
+  const bloqueado = await verificarSimuladoRealizado(alunoId, simuladoId);
+  if (bloqueado) {
+    // interrompe o envio
+    return;
+  }
   
     if (!alunoId) {
       alert("Aluno não identificado. Faça login novamente.");
@@ -786,9 +813,44 @@ function criarGraficoNotasFinais(data) {
   });
 }
 
-  // Event listeners
-  simuladoSelect.addEventListener("change", carregarQuestoes);
-  finalizarBtn.addEventListener("click", enviarRespostas);
+// Ao mudar de simulado, verifica antes se já foi respondido
+simuladoSelect.addEventListener("change", async () => {
+  const simuladoId = simuladoSelect.value;
+  const alunoId    = obterIdAlunoLogado();
+
+  // Limpa container de questões
+  questoesContainer.innerHTML = "";
+  resultadoContainer.style.display = "none";
+
+  if (!simuladoId || !alunoId) return;
+
+  try {
+    // Observe o prefixo "simulado-aluno" aqui:
+    const resp = await fetch(
+      `${API_BASE_URL}/simulado-aluno/respostas/check?aluno_id=${alunoId}&simulado_id=${simuladoId}`
+    );
+    if (!resp.ok) throw new Error("Falha ao verificar simulado");
+    const { jaRespondido } = await resp.json();
+
+    if (jaRespondido) {
+      alert("Você já respondeu a este simulado!");
+      return; // bloqueia o carregamento das questões
+    }
+  } catch (err) {
+    console.error("Erro ao verificar simulado:", err);
+    // Opcional: alert("Não foi possível verificar se já respondeu.");
+    // Aqui podemos deixar seguir mesmo com erro, ou abortar:
+    return;
+  }
+
+  // Se chegou até aqui, ainda não respondeu
+  carregarQuestoes();
+});
+
+
+// 2) Botão enviar permanece igual
+finalizarBtn.addEventListener("click", enviarRespostas);
+
   
   // Inicialização
   carregarSimulados();

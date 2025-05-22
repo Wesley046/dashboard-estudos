@@ -5,26 +5,15 @@ const db = require('../config/db');
 // Rota para listar simulados para o ranking
 router.get('/simulados', async (req, res) => {
     try {
-        const { numero } = req.query;
-        
-        let query = `
-            SELECT id, prova, numero_simulado 
+        const query = `
+            SELECT id, prova 
             FROM cadastro_simulados 
+            ORDER BY prova;
         `;
-        
-        const params = [];
-        
-        if (numero) {
-            query += ` WHERE numero_simulado = $1`;
-            params.push(numero);
-        }
-        
-        query += ` ORDER BY prova, numero_simulado`;
-        
-        const { rows } = await db.query(query, params);
+        const { rows } = await db.query(query);
         res.json(rows);
     } catch (err) {
-        console.error('Erro ao buscar simulados:', err);
+        console.error('Erro ao buscar simulados para ranking:', err);
         res.status(500).json({ 
             error: 'Erro ao buscar simulados',
             details: err.message 
@@ -32,30 +21,32 @@ router.get('/simulados', async (req, res) => {
     }
 });
 
-// Rota para dados do ranking de um simulado específico
 router.get('/:simulado_id', async (req, res) => {
     try {
         const { simulado_id } = req.params;
-        
+
+        // Query ajustada para o ranking de simulados
         const query = `
             SELECT 
                 r.aluno_id,
                 u.nome,
                 COUNT(CASE WHEN r.acertou = true THEN 1 END) AS total_certas,
                 COUNT(CASE WHEN r.acertou = false THEN 1 END) AS total_erradas,
-                COUNT(r.numero_questao) AS total_questoes,
+                SUM(r.nota) AS total_questoes,  -- Soma das notas (total_questoes)
                 CASE 
-                    WHEN COUNT(r.numero_questao) = 0 THEN 0
-                    ELSE ROUND((COUNT(CASE WHEN r.acertou = true THEN 1 END) * 100.0 / 
-                        NULLIF(COUNT(r.numero_questao), 0)), 1)
-                END as aproveitamento
+                    WHEN SUM(r.peso) = 0 THEN 0
+                    ELSE ROUND(
+                        (SUM(r.nota) * 100.0 / SUM(r.peso))::numeric,  -- Aproveitamento calculado com base nas notas e pesos
+                        1
+                    )
+                END AS aproveitamento
             FROM respostas_aluno r
             JOIN usuarios u ON r.aluno_id = u.id
             WHERE r.simulado_id = $1
             GROUP BY r.aluno_id, u.nome
             ORDER BY aproveitamento DESC
         `;
-        
+
         const { rows } = await db.query(query, [simulado_id]);
         res.json(rows);
     } catch (err) {
@@ -66,5 +57,6 @@ router.get('/:simulado_id', async (req, res) => {
         });
     }
 });
+
 
 module.exports = router;

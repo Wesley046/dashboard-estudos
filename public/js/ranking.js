@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Configuração da URL base da API
         const API_BASE_URL = 'https://dashboard-objetivo-policial.onrender.com';
-        const API_BASE_URL2 = 'https://dashboard-objetivo-policial.onrender.com';
+        // const API_BASE_URL2 = 'https://dashboard-objetivo-policial.onrender.com';
 
         // Elementos do DOM
         const rankingList = document.getElementById('rankingList');
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }
                     if (!simuladoId) throw new Error('Selecione um simulado primeiro');
                     
-                    url = `${API_BASE_URL2}/api/ranking-simulados/${simuladoId}`;
+                    url = `${API_BASE_URL}/api/ranking-simulados/${simuladoId}`;
                 } else {
                     // Ranking de Questões
                     url = `${API_BASE_URL}/api/ranking`;
@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             try {
                 simuladoFilter.innerHTML = '<option value="">Carregando simulados...</option>';
                 
-                const response = await fetch(`${API_BASE_URL2}/api/ranking-simulados/simulados`);
+                const response = await fetch(`${API_BASE_URL}/api/ranking-simulados/simulados`);
                 if (!response.ok) throw new Error('Erro ao carregar simulados');
                 
                 const simulados = await response.json();

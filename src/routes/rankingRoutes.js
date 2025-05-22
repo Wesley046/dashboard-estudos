@@ -61,7 +61,7 @@ router.get('/', cors(), async (req, res) => {
         // Query para ranking de questões
         if (tipoRanking === 'questoes') {
             const query = `
-                SELECT 
+                 SELECT 
                     u.id,
                     u.nome,
                     COALESCE(SUM(e.questoes_certas), 0) as total_certas,
@@ -69,8 +69,11 @@ router.get('/', cors(), async (req, res) => {
                     (COALESCE(SUM(e.questoes_certas), 0) + COALESCE(SUM(e.questoes_erradas), 0)) as total_questoes,
                     CASE 
                         WHEN (COALESCE(SUM(e.questoes_certas), 0) + COALESCE(SUM(e.questoes_erradas), 0)) = 0 THEN 0
-                        ELSE ROUND((COALESCE(SUM(e.questoes_certas), 0) * 100.0 / 
-                            NULLIF((COALESCE(SUM(e.questoes_certas), 0) + COALESCE(SUM(e.questoes_erradas), 0)), 0), 1)
+                        ELSE ROUND(
+                            (COALESCE(SUM(e.questoes_certas), 0) * 100.0 / 
+                            NULLIF((COALESCE(SUM(e.questoes_certas), 0) + COALESCE(SUM(e.questoes_erradas), 0)), 0))::numeric, 
+                            1
+                        )
                     END as aproveitamento
                 FROM usuarios u
                 LEFT JOIN estudos e ON u.id = e.usuario_id
@@ -82,7 +85,7 @@ router.get('/', cors(), async (req, res) => {
                 HAVING (COALESCE(SUM(e.questoes_certas), 0) + COALESCE(SUM(e.questoes_erradas), 0)) > 0
                 ORDER BY aproveitamento DESC
             `;
-            
+          
             const params = [
                 disciplina || null,
                 assunto || null,
@@ -105,7 +108,7 @@ router.get('/', cors(), async (req, res) => {
             }
 
             const query = `
-                SELECT 
+                  SELECT 
                     r.aluno_id,
                     u.nome,
                     COUNT(CASE WHEN r.acertou = true THEN 1 END) AS total_certas,
@@ -113,8 +116,11 @@ router.get('/', cors(), async (req, res) => {
                     COUNT(r.numero_questao) AS total_questoes,
                     CASE 
                         WHEN COUNT(r.numero_questao) = 0 THEN 0
-                        ELSE ROUND((COUNT(CASE WHEN r.acertou = true THEN 1 END) * 100.0 / 
-                            NULLIF(COUNT(r.numero_questao), 0)), 1)
+                        ELSE ROUND(
+                            (COUNT(CASE WHEN r.acertou = true THEN 1 END) * 100.0 / 
+                            NULLIF(COUNT(r.numero_questao), 0))::numeric, 
+                            1
+                        )
                     END as aproveitamento
                 FROM respostas_aluno r
                 JOIN usuarios u ON r.aluno_id = u.id

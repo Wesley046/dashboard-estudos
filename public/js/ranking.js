@@ -185,50 +185,50 @@ if (btnSimulados) {
             }
         }
 
-        // Função para renderizar os rankings
-        function renderRanking(rankingData) {
-            if (!rankingList) {
-                console.error('Elemento rankingList não encontrado');
-                return;
-            }
+       // Função para renderizar os rankings
+function renderRanking(rankingData) {
+    if (!rankingList) {
+        console.error('Elemento rankingList não encontrado');
+        return;
+    }
 
-            rankingList.innerHTML = '';
+    rankingList.innerHTML = '';
 
-            if (!rankingData || rankingData.length === 0) {
-                rankingList.innerHTML = `
-                    <div class="no-data-message">
-                        <i class="fas fa-info-circle"></i>
-                        Nenhum dado disponível para os filtros selecionados
-                    </div>
-                `;
-                return;
-            }
+    if (!rankingData || rankingData.length === 0) {
+        rankingList.innerHTML = `
+            <div class="no-data-message">
+                <i class="fas fa-info-circle"></i>
+                Nenhum dado disponível para os filtros selecionados
+            </div>
+        `;
+        return;
+    }
 
-            rankingData.forEach((aluno, index) => {
-                const alunoElement = document.createElement('div');
-                alunoElement.className = 'ranking-item';
-                
-                const aproveitamento = aluno.aproveitamento ?
-                    parseFloat(aluno.aproveitamento).toFixed(1) :
-                    '0.0';
+rankingData.forEach((aluno, index) => {
+    const alunoElement = document.createElement('div');
+    alunoElement.className = 'ranking-item';
 
-                alunoElement.innerHTML = `
-                    <div class="rank-position">${index + 1}º</div>
-                    <div class="student-name">${aluno.nome || 'N/A'}</div>
-                    <div class="questions-stats">
-                        <span class="correct-questions">${aluno.total_certas || 0}</span>
-                        <span class="separator">/</span>
-                        <span class="wrong-questions">${aluno.total_erradas || 0}</span>
-                    </div>
-                    <div class="total-questions">${aluno.total_questoes || 0}</div>
-                    <div class="student-performance">
-                        <span class="performance-badge ${getBadgeClass(aproveitamento)}"></span>
-                        ${aproveitamento}%
-                    </div>
-                `;
-                rankingList.appendChild(alunoElement);
-            });
-        }
+    const aproveitamento = aluno.aproveitamento ? parseFloat(aluno.aproveitamento).toFixed(1) : '0.0';
+
+    alunoElement.innerHTML = `
+        <div class="rank-position">${index + 1}º</div>
+        <div class="student-name">${aluno.nome || 'N/A'}</div>
+        <div class="questions-stats">
+            <span class="correct-questions">${aluno.total_certas || 0}</span>
+            <span class="separator">/</span>
+            <span class="wrong-questions">${aluno.total_erradas || 0}</span>
+        </div>
+        <div class="student-note">
+            <span class="nota-final">${aluno.nota_final || 0}</span>
+        </div>
+        <div class="student-performance">
+            <span class="performance-badge ${getBadgeClass(aproveitamento)}"></span>
+            ${aproveitamento}%
+        </div>
+    `;
+    rankingList.appendChild(alunoElement);
+});
+
 
         // Função para obter a classe do desempenho do aluno
         function getBadgeClass(aproveitamento) {
@@ -339,7 +339,9 @@ if (btnSimulados) {
             }
         }
 
-    } catch (error) {
+    } 
+}
+catch (error) {
         console.error('Erro inesperado:', error);
         mostrarErro('Ocorreu um erro inesperado. Por favor, recarregue a página.');
     }

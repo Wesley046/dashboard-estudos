@@ -108,25 +108,25 @@ router.get('/', cors(), async (req, res) => {
             }
 
             const query = `
-                        SELECT 
-                          r.aluno_id,
-                          u.nome,
-                          SUM(r.nota) AS nota_final,  -- Soma das notas para a nota final
-                          COUNT(CASE WHEN r.acertou = true THEN 1 END) AS total_certas,
-                          COUNT(CASE WHEN r.acertou = false THEN 1 END) AS total_erradas,
-                          CASE 
-                              WHEN SUM(r.peso) = 0 THEN 0  -- Evitar divisão por zero
-                              ELSE ROUND(
-                                  (SUM(r.nota) * 100.0 / SUM(r.peso))::numeric,  -- Calculando o aproveitamento
-                                  1
-                              )
-                          END AS aproveitamento
-                        FROM respostas_aluno r
-                        JOIN usuarios u ON r.aluno_id = u.id
-                        WHERE r.simulado_id = $1
-                        GROUP BY r.aluno_id, u.nome
-                        ORDER BY aproveitamento DESC
-                      `;
+                  SELECT 
+                    r.aluno_id,
+                    u.nome,
+                    COUNT(CASE WHEN r.acertou = true THEN 1 END) AS total_certas,
+                    COUNT(CASE WHEN r.acertou = false THEN 1 END) AS total_erradas,
+                    SUM(r.nota) AS total_questoes,
+                    CASE 
+                         WHEN SUM(r.peso) = 0 THEN 0  -- Evitar divisão por zero
+        ELSE ROUND(
+            (SUM(r.nota) * 100.0 / SUM(r.peso))::numeric,  -- Calculando o aproveitamento
+            1
+        )
+    END AS aproveitamento
+                FROM respostas_aluno r
+                JOIN usuarios u ON r.aluno_id = u.id
+                WHERE r.simulado_id = $1
+                GROUP BY r.aluno_id, u.nome
+                ORDER BY aproveitamento DESC
+            `;
             
             console.log('Executando query para ranking de simulados com simulado_id:', simulado_id);
             const { rows } = await db.query(query, [simulado_id]);

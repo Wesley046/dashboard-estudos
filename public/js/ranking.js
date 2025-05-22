@@ -1,10 +1,9 @@
 document.addEventListener('DOMContentLoaded', async () => {
     try {
         console.log('Iniciando carregamento do ranking...');
-        
+
         // Configuração da URL base da API
         const API_BASE_URL = 'https://dashboard-objetivo-policial.onrender.com';
-  
 
         // Elementos do DOM
         const rankingList = document.getElementById('rankingList');
@@ -17,115 +16,68 @@ document.addEventListener('DOMContentLoaded', async () => {
         const dataInicioInput = document.getElementById('dataInicio');
         const dataFimInput = document.getElementById('dataFim');
         const assuntoFilter = document.getElementById('assuntoFilter');
-        
+
         // Carregar dados iniciais
         await carregarSimulados();
         await carregarDisciplinas();
         await carregarRankingData(); // Carrega com o estado inicial do toggle
 
-// Controle do Menu Lateral
-const sidebar = document.querySelector(".sidebar");
-const toggleButton = document.querySelector("#toggleSidebar");
-const openFormButton = document.querySelector("#openForm");
-const btnSimulados = document.querySelector("#btnSimulados");
-
-if (toggleButton && sidebar) {
-  // Toggle do menu
-  toggleButton.addEventListener("click", (e) => {
-    e.preventDefault();
-    sidebar.classList.toggle("expanded");
-    
-    // Fechar automaticamente em mobile após 3 segundos
-    if (window.innerWidth <= 768) {
-      setTimeout(() => {
-        if (sidebar.classList.contains("expanded")) {
-          sidebar.classList.remove("expanded");
-        }
-      }, 3000);
-    }
-  });
-  
-  // Fechar menu ao clicar em um item (para mobile)
-  sidebar.addEventListener("click", (e) => {
-    if (window.innerWidth <= 768 && e.target.closest(".menu-item")) {
-      setTimeout(() => sidebar.classList.remove("expanded"), 300);
-    }
-  });
-}
-
-// Navegação para Dashboard
-if (openFormButton) {
-  openFormButton.addEventListener("click", (e) => {
-    e.preventDefault();
-    window.location.href = "/dashboard";
-  });
-}
-
-// Navegação para Simulados
-if (btnSimulados) {
-  btnSimulados.addEventListener("click", (e) => {
-    e.preventDefault();
-    window.location.href = "/simuladosAluno";
-  });
-}
-        // Event Listener para o Toggle
-        rankingToggle.addEventListener('change', async function() {
-            await atualizarInterfaceRanking();
-            await carregarRankingData();
-        });
-
-        // Event listeners para os filtros
-        if (disciplinaFilter) {
-            disciplinaFilter.addEventListener('change', async function() {
-                await carregarAssuntos(this.value);
-                await carregarRankingData();
-            });
+        // Função para exibir mensagens de erro
+        function mostrarErro(message) {
+            if (rankingList) {
+                rankingList.innerHTML = `
+                    <div class="error">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        ${message}
+                    </div>
+                `;
+            }
         }
 
-        if (assuntoFilter) {
-            assuntoFilter.addEventListener('change', async function() {
-                await carregarRankingData();
-            });
+        // Função para carregar os simulados
+        // Função para carregar os simulados
+        async function carregarSimulados() {
+            try {
+                simuladoFilter.innerHTML = '<option value="">Carregando simulados...</option>';
+
+                const response = await fetch(`${API_BASE_URL}/api/ranking-simulados/simulados`);
+                if (!response.ok) throw new Error('Erro ao carregar simulados');
+
+                const simulados = await response.json();
+
+                simuladoFilter.innerHTML = '<option value="">Selecione um simulado</option>';
+
+                simulados.forEach(simulado => {
+                    const option = document.createElement('option');
+                    option.value = simulado.id;
+                    option.textContent = `Simulado ${simulado.numero_simulado} - ${simulado.prova}`;
+                    simuladoFilter.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error('Erro ao carregar simulados:', error);
+                simuladoFilter.innerHTML = '<option value="">Erro ao carregar simulados</option>';
+            }
         }
 
-        if (simuladoFilter) {
-            simuladoFilter.addEventListener('change', async function() {
-                await carregarRankingData();
-            });
-        }
+        // Função para carregar as disciplinas
+        async function carregarDisciplinas() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/disciplinas`);
+                if (!response.ok) throw new Error('Erro ao carregar disciplinas');
 
-        if (filterButton) {
-            filterButton.addEventListener('click', async function(e) {
-                e.preventDefault();
-                await carregarRankingData();
-            });
-        }
+                const disciplinas = await response.json();
+                disciplinaFilter.innerHTML = '<option value="">Todas disciplinas</option>';
 
-        if (resetButton) {
-            resetButton.addEventListener('click', async function(e) {
-                e.preventDefault();
-                resetarFiltros();
-                await carregarRankingData();
-            });
-        }
-
-        // Função para atualizar a interface com base no estado do toggle
-        async function atualizarInterfaceRanking() {
-            const isSimulado = rankingToggle.checked;
-            
-            // Mostrar/ocultar elementos conforme o tipo de ranking
-            simuladoFilterGroup.style.display = isSimulado ? 'block' : 'none';
-            disciplinaFilter.style.display = isSimulado ? 'none' : 'block';
-            dataInicioInput.style.display = isSimulado ? 'none' : 'block';
-            dataFimInput.style.display = isSimulado ? 'none' : 'block';
-            assuntoFilter.style.display = isSimulado ? 'none' : 'block';
-            
-            // Resetar filtros quando alternar
-            if (isSimulado) {
-                simuladoFilter.value = '';
-            } else {
-                disciplinaFilter.value = '';
-                assuntoFilter.value = '';
+                disciplinas.forEach(disciplina => {
+                    const option = document.createElement('option');
+                    option.value = disciplina.disciplina;
+                    option.textContent = disciplina.disciplina;
+                    disciplinaFilter.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Erro ao carregar disciplinas:', error);
+                mostrarErro('Erro ao carregar lista de disciplinas. Tente recarregar a página.');
             }
         }
 
@@ -146,7 +98,7 @@ if (btnSimulados) {
                         return await carregarRankingData();
                     }
                     if (!simuladoId) throw new Error('Selecione um simulado primeiro');
-                    
+
                     url = `${API_BASE_URL}/api/ranking-simulados/${simuladoId}`;
                 } else {
                     // Ranking de Questões
@@ -185,50 +137,50 @@ if (btnSimulados) {
             }
         }
 
-       // Função para renderizar os rankings
-function renderRanking(rankingData) {
-    if (!rankingList) {
-        console.error('Elemento rankingList não encontrado');
-        return;
-    }
+        // Função para renderizar os rankings
+        function renderRanking(rankingData) {
+            if (!rankingList) {
+                console.error('Elemento rankingList não encontrado');
+                return;
+            }
 
-    rankingList.innerHTML = '';
+            rankingList.innerHTML = '';
 
-    if (!rankingData || rankingData.length === 0) {
-        rankingList.innerHTML = `
-            <div class="no-data-message">
-                <i class="fas fa-info-circle"></i>
-                Nenhum dado disponível para os filtros selecionados
-            </div>
-        `;
-        return;
-    }
+            if (!rankingData || rankingData.length === 0) {
+                rankingList.innerHTML = `
+                    <div class="no-data-message">
+                        <i class="fas fa-info-circle"></i>
+                        Nenhum dado disponível para os filtros selecionados
+                    </div>
+                `;
+                return;
+            }
 
-rankingData.forEach((aluno, index) => {
-    const alunoElement = document.createElement('div');
-    alunoElement.className = 'ranking-item';
+            rankingData.forEach((aluno, index) => {
+                const alunoElement = document.createElement('div');
+                alunoElement.className = 'ranking-item';
 
-    const aproveitamento = aluno.aproveitamento ? parseFloat(aluno.aproveitamento).toFixed(1) : '0.0';
+                const aproveitamento = aluno.aproveitamento ? parseFloat(aluno.aproveitamento).toFixed(1) : '0.0';
 
-    alunoElement.innerHTML = `
-        <div class="rank-position">${index + 1}º</div>
-        <div class="student-name">${aluno.nome || 'N/A'}</div>
-        <div class="questions-stats">
-            <span class="correct-questions">${aluno.total_certas || 0}</span>
-            <span class="separator">/</span>
-            <span class="wrong-questions">${aluno.total_erradas || 0}</span>
-        </div>
-        <div class="student-note">
-            <span class="nota-final">${aluno.nota_final || 0}</span>
-        </div>
-        <div class="student-performance">
-            <span class="performance-badge ${getBadgeClass(aproveitamento)}"></span>
-            ${aproveitamento}%
-        </div>
-    `;
-    rankingList.appendChild(alunoElement);
-});
-
+                alunoElement.innerHTML = `
+                    <div class="rank-position">${index + 1}º</div>
+                    <div class="student-name">${aluno.nome || 'N/A'}</div>
+                    <div class="questions-stats">
+                        <span class="correct-questions">${aluno.total_certas || 0}</span>
+                        <span class="separator">/</span>
+                        <span class="wrong-questions">${aluno.total_erradas || 0}</span>
+                    </div>
+                    <div class="student-note">
+                        <span class="nota-final">${aluno.nota_final || 0}</span>
+                    </div>
+                    <div class="student-performance">
+                        <span class="performance-badge ${getBadgeClass(aproveitamento)}"></span>
+                        ${aproveitamento}%
+                    </div>
+                `;
+                rankingList.appendChild(alunoElement);
+            });
+        }
 
         // Função para obter a classe do desempenho do aluno
         function getBadgeClass(aproveitamento) {
@@ -238,110 +190,7 @@ rankingData.forEach((aluno, index) => {
             return 'badge-red';
         }
 
-        // Função para carregar os simulados
-        async function carregarSimulados() {
-            try {
-                simuladoFilter.innerHTML = '<option value="">Carregando simulados...</option>';
-                
-                const response = await fetch(`${API_BASE_URL}/api/ranking-simulados/simulados`);
-                if (!response.ok) throw new Error('Erro ao carregar simulados');
-                
-                const simulados = await response.json();
-                
-                simuladoFilter.innerHTML = '<option value="">Selecione um simulado</option>';
-                
-                simulados.forEach(simulado => {
-                    const option = document.createElement('option');
-                    option.value = simulado.id;
-                    option.textContent = `Simulado ${simulado.numero_simulado} - ${simulado.prova}`;
-                    simuladoFilter.appendChild(option);
-                });
-                
-            } catch (error) {
-                console.error('Erro ao carregar simulados:', error);
-                simuladoFilter.innerHTML = '<option value="">Erro ao carregar simulados</option>';
-            }
-        }
-
-        // Função para carregar as disciplinas
-        async function carregarDisciplinas() {
-            try {
-                const response = await fetch(`${API_BASE_URL}/api/disciplinas`);
-                if (!response.ok) throw new Error('Erro ao carregar disciplinas');
-                
-                const disciplinas = await response.json();
-                disciplinaFilter.innerHTML = '<option value="">Todas disciplinas</option>';
-                
-                disciplinas.forEach(disciplina => {
-                    const option = document.createElement('option');
-                    option.value = disciplina.disciplina;
-                    option.textContent = disciplina.disciplina;
-                    disciplinaFilter.appendChild(option);
-                });
-            } catch (error) {
-                console.error('Erro ao carregar disciplinas:', error);
-                mostrarErro('Erro ao carregar lista de disciplinas. Tente recarregar a página.');
-            }
-        }
-
-        // Função para carregar assuntos com base na disciplina
-        async function carregarAssuntos(disciplinaNome) {
-            try {
-                assuntoFilter.innerHTML = '<option value="">Carregando...</option>';
-                assuntoFilter.disabled = true;
-
-                if (!disciplinaNome) {
-                    assuntoFilter.innerHTML = '<option value="">Todos assuntos</option>';
-                    assuntoFilter.disabled = false;
-                    return;
-                }
-
-                const response = await fetch(`${API_BASE_URL}/api/disciplinas/assuntos?disciplina=${encodeURIComponent(disciplinaNome)}`);
-                if (!response.ok) throw new Error('Erro ao buscar assuntos');
-
-                const assuntos = await response.json();
-
-                assuntoFilter.innerHTML = '<option value="">Todos assuntos</option>';
-                assuntos.forEach(item => {
-                    const option = document.createElement('option');
-                    option.value = item.nome;
-                    option.textContent = item.nome;
-                    assuntoFilter.appendChild(option);
-                });
-
-                assuntoFilter.disabled = false;
-
-            } catch (error) {
-                console.error('Erro ao carregar assuntos:', error);
-                assuntoFilter.innerHTML = '<option value="">Erro ao carregar</option>';
-            }
-        }
-
-        // Função para resetar todos os filtros
-        function resetarFiltros() {
-            disciplinaFilter.value = '';
-            simuladoFilter.value = '';
-            dataInicioInput.value = '';
-            dataFimInput.value = '';
-            assuntoFilter.value = '';
-            console.log('Filtros resetados.');
-        }
-
-        // Função para exibir mensagens de erro
-        function mostrarErro(message) {
-            if (rankingList) {
-                rankingList.innerHTML = `
-                    <div class="error">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        ${message}
-                    </div>
-                `;
-            }
-        }
-
-    } 
-}
-catch (error) {
+    } catch (error) {
         console.error('Erro inesperado:', error);
         mostrarErro('Ocorreu um erro inesperado. Por favor, recarregue a página.');
     }

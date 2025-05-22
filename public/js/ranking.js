@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('Iniciando carregamento do ranking...');
         
         // Configuração da URL base da API
-        const API_BASE_URL = 'http://localhost:3000';
+        const API_BASE_URL = 'https://dashboard-objetivo-policial.onrender.com';
   
 
         // Elementos do DOM

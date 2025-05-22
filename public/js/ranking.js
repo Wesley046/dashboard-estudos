@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Configuração da URL base da API
         const API_BASE_URL = 'https://dashboard-objetivo-policial.onrender.com';
-        // const API_BASE_URL2 = 'https://dashboard-objetivo-policial.onrender.com';
+  
 
         // Elementos do DOM
         const rankingList = document.getElementById('rankingList');
@@ -22,7 +22,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         await carregarSimulados();
         await carregarDisciplinas();
         await carregarRankingData(); // Carrega com o estado inicial do toggle
+        
+  // 2. Controle do Menu Lateral
+  const sidebar = document.querySelector(".sidebar");
+  const toggleButton = document.querySelector("#toggleSidebar");
 
+  if (toggleButton && sidebar) {
+    toggleButton.addEventListener("click", (e) => {
+      e.preventDefault();
+      sidebar.classList.toggle("expanded");
+      
+      // Fechar automaticamente em mobile após 3 segundos
+      if (window.innerWidth <= 768) {
+        setTimeout(() => {
+          if (sidebar.classList.contains("expanded")) {
+            sidebar.classList.remove("expanded");
+          }
+        }, 3000);
+      }
+    });
+    
+    // Fechar menu ao clicar em um item (para mobile)
+    sidebar.addEventListener("click", (e) => {
+      if (window.innerWidth <= 768 && e.target.closest(".menu-item")) {
+        setTimeout(() => sidebar.classList.remove("expanded"), 300);
+      }
+    });
+  }
         // Event Listener para o Toggle
         rankingToggle.addEventListener('change', async function() {
             await atualizarInterfaceRanking();

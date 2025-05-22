@@ -577,11 +577,16 @@ body.overlay-active {
     gap: 15px;
     margin-bottom: 20px;
     align-items: flex-end;
+    margin-top: 2%;
 }
 
 .filter-group {
     flex: 1;
     min-width: 200px;
+}
+
+.filter-group2 {
+    margin-right: 1800px;
 }
 
 .filter-buttons {
@@ -653,10 +658,12 @@ body.overlay-active {
 }
 
 /* Mensagens */
-.no-data, .error-message {
-    text-align: center;
-    padding: 20px;
-    color: #6c757d;
+.no-data, .error-message, .no-data-message {
+     color: #FFF;
+    font-family: "Bebas Neue";
+    font-size: 25px;
+    font-style: normal;
+    padding: 5px;
 }
 
 .error-message {
@@ -694,15 +701,20 @@ body.overlay-active {
     border: 1px solid #B92C2C;
     background: rgba(71, 0, 13, 0.18);
     color: #ffffff;
-    font-family: Inter;
-    font-size: 16px;
+    font-family: "Bebas Neue";
+    font-size: 21px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
     padding: 0 15px;
     appearance: none;
+    margin-top: 10px;
+    display: flex;
+    align-content: center;
+    align-items:center;
+    justify-content: space-between;
   }
-  
+
   /* SEGUNDO SELECT (.form-control2) - Mantendo suas medidas exatas */
   .form-control2 {
     width: 550px; /* Primeira medida de width */
@@ -711,23 +723,30 @@ body.overlay-active {
     border-radius: 5px;
     border: 1px solid #B92C2C;
     background: rgba(71, 0, 13, 0.18);
-    color: #ffffff;
-    font-family: Inter;
-    font-size: 16px;
+    color: #000000;
+    font-family: "Bebas Neue";
+    font-size: 19px;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
     /* Removi a segunda declaração width: 877px para manter o valor original */
     padding: 0 15px;
     appearance: none;
+    display: flex;
+    align-items: center;
   }
   
   /* ESTILO COMPARTILHADO PARA AS OPÇÕES (BACKGROUND PRETO) */
   .form-control option,
   .form-control2 option {
-    background: #b92c2c85; /* Preto sólido */
-    color: #FFFFFF; /* Texto branco */
+    background: #00000085; /* Preto sólido */
+    color: #ffffff; /* Texto branco */
     padding: 8px 12px; /* Espaçamento interno ajustado */
+    font-family: "Bebas Neue";
+    font-size: 15px;
+    font-style: normal;
+    display: flex;
+    align-items: center;
   }
   
   /* MELHORIA: Seta personalizada para ambos (opcional) */
@@ -738,13 +757,17 @@ body.overlay-active {
     background-position: right 15px center;
     background-size: 16px;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    justify-content: space-between;
   }
   
   /* Estado de foco */
   .form-control:focus,
   .form-control2:focus {
     outline: none;
-    box-shadow: 0 0 0 2px rgba(185, 44, 44, 0.3);
+    box-shadow: 0 0 0 2px rgba(66, 66, 66, 0.3);
   }
   .filter-buttons-container {
     display: flex;
@@ -764,6 +787,7 @@ body.overlay-active {
   font-weight: 200;
   border: none;
   cursor: pointer;
+  margin-top: 5px;
   /* Removi o gap pois agora está no container */
   transition: all 0.3s ease; /* Adiciona transição suave */
 }
@@ -824,6 +848,99 @@ body.overlay-active {
     font-weight: 400;
     width: 100%;
   }
+  .error,
+  .loading-message{
+    font-family: Montserrat;
+    font-size: 25px;
+    font-weight: 400;
+    color: #FFF;}
+.ranking-controls {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+/* Estilo do toggle switch */
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 220px;
+    height: 40px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #000000;
+    border: 1px solid #ffbcbc;
+    transition: .4s;
+    border-radius: 20px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 32px;
+    width: 100px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #ff002b;
+    transition: .4s;
+    border-radius: 16px;
+}
+
+input:checked + .slider {
+    background-color: #000000;
+}
+
+input:checked + .slider:before {
+    transform: translateX(112px);
+}
+
+.labels {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    font-family: "Bebas Neue";
+    font-size: 25px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    margin-top: 10%;
+}
+
+.labels:after {
+    content: attr(data-off);
+    transition: opacity 0.3s;
+}
+
+input:checked ~ .labels:after {
+    opacity: 0;
+}
+
+.labels:before {
+    content: attr(data-on);
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+input:checked ~ .labels:before {
+    opacity: 1;
+}
+
   
   /* Classes para controle preciso das colunas */
   .ranking-list-header div,

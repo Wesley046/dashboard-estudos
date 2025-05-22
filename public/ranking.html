@@ -12,51 +12,68 @@
 <body class="ranking-page">
   <!-- Menu Lateral -->
   <div class="sidebar">
-    <button class="toggle-btn" id="toggleSidebar">
+    <button class="toggle-btn" id="toggleSidebar" aria-label="Alternar menu">
       <img src="https://i.ibb.co/xtFND3Rp/SERGIPE-29-7-x-42-cm.png" alt="Menu">
     </button>
-    <button class="menu-item" id="openForm"> Dashboard</button>
-    <!-- <button class="menu-item" id="openForm">Registro de Estudos</button> -->
-    <!-- <button class="menu-item" id="openCronograma">Cronograma </button> -->
-    <button class="menu-item" id="btnSimulados">Simulados</button> <!-- Botão para ir pra tela de simulados -->
+    <button class="menu-item" id="openForm">Dashboard</button>
+    <button class="menu-item" id="btnSimulados">Simulados</button>
   </div>
 
   <!-- Conteúdo Principal -->
   <main class="ranking-main">
     <div class="ranking-header">
-      <h1 class="ranking-title">RANKING DE </h1>
-      <h1 class="ranking-title1">DESEMPENHO </h1>
+      <h1 class="ranking-title">RANKING DE DESEMPENHO</h1>
     </div>
 
+<!-- Controles do Ranking -->
+<div class="ranking-controls">
+    <div class="ranking-type-selector">
+        <!-- Toggle Switch para alternar o tipo de ranking -->
+        <label class="toggle-switch">
+            <input type="checkbox" id="rankingToggle">
+            <span class="slider"></span>
+            <span class="labels" data-on="Ranking de Simulados" data-off="Ranking de Questões"></span>
+        </label>
+    </div>
+</div>
     <!-- Filtros -->
     <div class="ranking-filters">
       <div class="filter-group">
-        <select id="disciplinaFilter" class="form-control">
-          <option value="">Disciplina</option>
+        <select id="disciplinaFilter" class="form-control" aria-label="Filtrar por disciplina">
+          <option value="">Todas disciplinas</option>
           <!-- Opções serão carregadas via JavaScript -->
         </select>
       </div>
 
-
-        <!-- Inputs de data de início e fim (já existentes no seu código) -->
-        <input class="form-control" type="date" id="dataInicio" />
-        <input class="form-control" type="date" id="dataFim" />
-
-
-      <div class="filter-group2">
-        <select id="assuntoFilter" class="form-control2" disabled>
-          <option id="Valorfiltro" value="">Assunto</option>
+      <div class="filter-group2" id="simuladoFilterGroup" style="display:none;">
+        <select id="simuladoFilter" class="form-control" aria-label="Filtrar por simulado">
+          <option value="">Selecione um simulado</option>
+          <!-- Os simulados serão carregados aqui dinamicamente -->
         </select>
       </div>
 
+      <div class="filter-group">
+        <input type="date" id="dataInicio" class="form-control" aria-label="Filtrar por data inicial">
+      </div>
+
+      <div class="filter-group">
+        <input type="date" id="dataFim" class="form-control" aria-label="Filtrar por data final">
+      </div>
+
+      <div class="filter-group">
+        <select id="assuntoFilter" class="form-control" disabled aria-label="Filtrar por assunto">
+          <option value="">Todos assuntos</option>
+        </select>
+      </div>
     </div>
 
-    <div class="filter-buttons-container">
+    <!-- Botões de Ação -->
+    <div class="filter-actions">
       <button id="filterButton" class="filter-btn filter-btn-primary">Filtrar</button>
-      <button id="resetButton" class="filter-btn filter-btn-secondary">Limpar</button>
+      <button id="resetButton" class="filter-btn filter-btn-secondary">Limpar filtros</button>
     </div>
-    <!-- Lista de Ranking -->
 
+    <!-- Lista de Ranking -->
     <div class="ranking-list-container">
       <div class="ranking-list-header">
         <div>Posição</div>
@@ -66,23 +83,53 @@
         <div>Aproveitamento</div>
       </div>
       
-    <div class="ranking-list" id="rankingList">
-      <div class="loading-message">
-        <i class="fas fa-spinner fa-spin"></i> Carregando ranking...
+      <div class="ranking-list" id="rankingList" aria-live="polite">
+        <div class="loading-message">
+          <i class="fas fa-spinner fa-spin" aria-hidden="true"></i> 
+          <span>Carregando ranking...</span>
+        </div>
       </div>
-    </div>
     </div>
   </main>
 
   <!-- Scripts -->
-  <script src="/js/ranking.js"></script>
-
+  <script src="/js/ranking.js" defer></script>
   <script>
-    document.getElementById('btnSimulados').addEventListener('click', function() {
-      window.location.href = 'SimuladosAluno.html';
+    document.addEventListener('DOMContentLoaded', function() {
+      const rankingTypeToggle = document.getElementById('rankingTypeToggle');
+      const simuladoFilterGroup = document.getElementById('simuladoFilterGroup');
+      const disciplinaFilter = document.getElementById('disciplinaFilter');
+      const dataInicioInput = document.getElementById('dataInicio');
+      const dataFimInput = document.getElementById('dataFim');
+      const assuntoFilter = document.getElementById('assuntoFilter');
+
+      rankingTypeToggle.addEventListener('change', function () {
+        const tipoRanking = this.value;
+
+        // Exibe os filtros corretos dependendo do tipo de ranking
+        if (tipoRanking === 'simulados') {
+          simuladoFilterGroup.style.display = 'block';
+          disciplinaFilter.style.display = 'none';
+          dataInicioInput.style.display = 'none';
+          dataFimInput.style.display = 'none';
+          assuntoFilter.style.display = 'none';
+          assuntoFilter.disabled = true;
+        } else {
+          simuladoFilterGroup.style.display = 'none';
+          disciplinaFilter.style.display = 'block';
+          dataInicioInput.style.display = 'block';
+          dataFimInput.style.display = 'block';
+          assuntoFilter.style.display = 'block';
+          assuntoFilter.disabled = false;
+        }
+
+        carregarRankingData();
+      });
+
+      document.getElementById('btnSimulados').addEventListener('click', function() {
+        window.location.href = 'SimuladosAluno.html';
+      });
     });
   </script>
-  
 </body>
-
 </html>

@@ -22,33 +22,52 @@ document.addEventListener('DOMContentLoaded', async () => {
         await carregarSimulados();
         await carregarDisciplinas();
         await carregarRankingData(); // Carrega com o estado inicial do toggle
-        
-  // 2. Controle do Menu Lateral
-  const sidebar = document.querySelector(".sidebar");
-  const toggleButton = document.querySelector("#toggleSidebar");
 
-  if (toggleButton && sidebar) {
-    toggleButton.addEventListener("click", (e) => {
-      e.preventDefault();
-      sidebar.classList.toggle("expanded");
-      
-      // Fechar automaticamente em mobile após 3 segundos
-      if (window.innerWidth <= 768) {
-        setTimeout(() => {
-          if (sidebar.classList.contains("expanded")) {
-            sidebar.classList.remove("expanded");
-          }
-        }, 3000);
-      }
-    });
+// Controle do Menu Lateral
+const sidebar = document.querySelector(".sidebar");
+const toggleButton = document.querySelector("#toggleSidebar");
+const openFormButton = document.querySelector("#openForm");
+const btnSimulados = document.querySelector("#btnSimulados");
+
+if (toggleButton && sidebar) {
+  // Toggle do menu
+  toggleButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    sidebar.classList.toggle("expanded");
     
-    // Fechar menu ao clicar em um item (para mobile)
-    sidebar.addEventListener("click", (e) => {
-      if (window.innerWidth <= 768 && e.target.closest(".menu-item")) {
-        setTimeout(() => sidebar.classList.remove("expanded"), 300);
-      }
-    });
-  }
+    // Fechar automaticamente em mobile após 3 segundos
+    if (window.innerWidth <= 768) {
+      setTimeout(() => {
+        if (sidebar.classList.contains("expanded")) {
+          sidebar.classList.remove("expanded");
+        }
+      }, 3000);
+    }
+  });
+  
+  // Fechar menu ao clicar em um item (para mobile)
+  sidebar.addEventListener("click", (e) => {
+    if (window.innerWidth <= 768 && e.target.closest(".menu-item")) {
+      setTimeout(() => sidebar.classList.remove("expanded"), 300);
+    }
+  });
+}
+
+// Navegação para Dashboard
+if (openFormButton) {
+  openFormButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    window.location.href = "/dashboard";
+  });
+}
+
+// Navegação para Simulados
+if (btnSimulados) {
+  btnSimulados.addEventListener("click", (e) => {
+    e.preventDefault();
+    window.location.href = "/simuladosAluno";
+  });
+}
         // Event Listener para o Toggle
         rankingToggle.addEventListener('change', async function() {
             await atualizarInterfaceRanking();

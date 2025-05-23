@@ -6,26 +6,26 @@ const cors = require('cors');
 // Habilita CORS para esta rota específica
 router.use(cors());
 
-// Adicione esta rota ANTES da rota principal '/'
+
+// Rota para listar simulados para o ranking
 router.get('/simulados', async (req, res) => {
     try {
-        console.log('Acessando endpoint /api/simulados');
         const query = `
-            SELECT id, prova 
+            SELECT id, numero_simulado, prova  -- Incluindo numero_simulado na consulta
             FROM cadastro_simulados 
             ORDER BY prova;
         `;
         const { rows } = await db.query(query);
-        console.log(`Retornando ${rows.length} simulados`);
         res.json(rows);
     } catch (err) {
-        console.error('Erro ao buscar simulados:', err);
+        console.error('Erro ao buscar simulados para ranking:', err);
         res.status(500).json({ 
             error: 'Erro ao buscar simulados',
             details: err.message 
         });
     }
 });
+
 
 // Rota principal do ranking (com CORS e melhor tratamento de parâmetros)
 router.get('/', cors(), async (req, res) => {

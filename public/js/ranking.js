@@ -241,28 +241,29 @@ if (toggleButton && sidebar) {
 
         // Função para carregar os simulados
         async function carregarSimulados() {
-            try {
-                simuladoFilter.innerHTML = '<option value="">Carregando simulados...</option>';
-                
-                const response = await fetch(`${API_BASE_URL}/api/ranking-simulados/simulados`);
-                if (!response.ok) throw new Error('Erro ao carregar simulados');
-                
-                const simulados = await response.json();
-                
-                simuladoFilter.innerHTML = '<option value="">Selecione um simulado</option>';
-                
-                simulados.forEach(simulado => {
-                    const option = document.createElement('option');
-                    option.value = simulado.id;
-                    option.textContent = `Simulado ${simulado.numero_simulado} - ${simulado.prova}`;
-                    simuladoFilter.appendChild(option);
-                });
-                
-            } catch (error) {
-                console.error('Erro ao carregar simulados:', error);
-                simuladoFilter.innerHTML = '<option value="">Erro ao carregar simulados</option>';
-            }
-        }
+    try {
+        simuladoFilter.innerHTML = '<option value="">Carregando simulados...</option>';
+
+        const response = await fetch(`${API_BASE_URL}/api/ranking-simulados/simulados`);
+        if (!response.ok) throw new Error('Erro ao carregar simulados');
+
+        const simulados = await response.json();
+
+        simuladoFilter.innerHTML = '<option value="">Selecione um simulado</option>';
+
+        simulados.forEach(simulado => {
+            // Acessa o campo numero_simulado retornado pela API
+            const option = document.createElement('option');
+            option.value = simulado.id;
+            option.textContent = `Simulado ${simulado.numero_simulado} - ${simulado.prova}`; // Aqui está o uso de numero_simulado
+            simuladoFilter.appendChild(option);
+        });
+
+    } catch (error) {
+        console.error('Erro ao carregar simulados:', error);
+        simuladoFilter.innerHTML = '<option value="">Erro ao carregar simulados</option>';
+    }
+}
 
         // Função para carregar as disciplinas
         async function carregarDisciplinas() {

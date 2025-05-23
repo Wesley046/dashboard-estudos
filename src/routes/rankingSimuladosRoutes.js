@@ -6,7 +6,7 @@ const db = require('../config/db');
 router.get('/simulados', async (req, res) => {
     try {
         const query = `
-            SELECT id, prova 
+            SELECT id, numero_simulado, prova  -- Adicionando numero_simulado na consulta
             FROM cadastro_simulados 
             ORDER BY prova;
         `;
